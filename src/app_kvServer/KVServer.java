@@ -42,8 +42,7 @@ public class KVServer implements IKVServer {
 	}
 	
 	public int getPort(){
-		// TODO Auto-generated method stub
-		return -1;
+		return port;
 	}
 
     public String getHostname(){
@@ -52,14 +51,13 @@ public class KVServer implements IKVServer {
 	}
 
     public CacheStrategy getCacheStrategy(){
+		//TODO: Fix so it returns the actual strategy
 		return CacheStrategy.None;
-		// TODO Auto-generated method stub
 		// return strategy;
 	}
 
     public int getCacheSize(){
-		// TODO Auto-generated method stub
-		return -1;
+		return cacheSize;
 	}
 
     public boolean inStorage(String key){
@@ -90,7 +88,7 @@ public class KVServer implements IKVServer {
 	}
 
     public void run(){
-		initializeServer();
+		running = initializeServer();
 
 		if(serverSocket != null) {
 	        while(isRunning()){
@@ -100,9 +98,9 @@ public class KVServer implements IKVServer {
 	                // 		new ClientConnection(client);
 	                // new Thread(connection).start();
 	                
-	                // logger.info("Connected to " 
-	                // 		+ client.getInetAddress().getHostName() 
-	                // 		+  " on port " + client.getPort());
+	                logger.info("Connected to " 
+	                		+ client.getInetAddress().getHostName() 
+	                		+  " on port " + client.getPort());
 	            } catch (IOException e) {
 	            	logger.error("Error! " +
 	            			"Unable to establish connection. \n", e);
@@ -144,21 +142,23 @@ public class KVServer implements IKVServer {
 	
 	public static void main(String[] args) {
     	try {
-			// new LogSetup("logs/server.log", Level.ALL);
+			new LogSetup("logs/server.log", Level.ALL);
 			if(args.length != 1) {
 				System.out.println("Error! Invalid number of arguments!");
 				System.out.println("Usage: Server <port>!");
 			} else {
 				int port = Integer.parseInt(args[0]);
 				// new KVServer(port, 10, CacheStrategy.None).start();
+				System.out.print("Setting up ksserver\n");
 				new KVServer(port, 10, "None").run();
+				System.out.print("Done setting up ksserver\n");
 			}
 		} 
-		// catch (IOException e) {
-		// 	System.out.println("Error! Unable to initialize logger!");
-		// 	e.printStackTrace();
-		// 	System.exit(1);
-		// } 
+		catch (IOException e) {
+			System.out.println("Error! Unable to initialize logger!");
+			e.printStackTrace();
+			System.exit(1);
+		} 
 		catch (NumberFormatException nfe) {
 			System.out.println("Error! Invalid argument <port>! Not a number!");
 			System.out.println("Usage: Server <port>!");
