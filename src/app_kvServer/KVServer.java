@@ -148,10 +148,9 @@ public class KVServer implements IKVServer {
 				System.out.println("Usage: Server <port>!");
 			} else {
 				int port = Integer.parseInt(args[0]);
+				//TODO: Replace to use threading
 				// new KVServer(port, 10, CacheStrategy.None).start();
-				System.out.print("Setting up ksserver\n");
 				new KVServer(port, 10, "None").run();
-				System.out.print("Done setting up ksserver\n");
 			}
 		} 
 		catch (IOException e) {
