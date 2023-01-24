@@ -1,5 +1,7 @@
 package client;
 
+import java.net.Socket;
+
 import shared.messages.KVMessage;
 
 public class KVStore implements KVCommInterface {
@@ -8,13 +10,27 @@ public class KVStore implements KVCommInterface {
 	 * @param address the address of the KVServer
 	 * @param port the port of the KVServer
 	 */
+
+	private String address;
+	private int port;
+	private Client client = null; //TODO: We don't know what this class is
+
 	public KVStore(String address, int port) {
-		// TODO Auto-generated method stub
+		this.address = address;
+		this.port = port;
 	}
 
 	@Override
 	public void connect() throws Exception {
-		// TODO Auto-generated method stub
+		throws UnknownHostException, IOException {
+		client = new Client(address, port);
+		
+		new Socket(address, port);
+		// listeners = new HashSet<ClientSocketListener>();
+		logger.info("Connection established");
+
+		// client.addListener(this);
+		// client.start();
 	}
 
 	@Override
