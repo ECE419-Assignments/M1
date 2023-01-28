@@ -22,15 +22,7 @@ public class KVStore implements KVCommInterface {
 
 	@Override
 	public void connect() throws Exception {
-		throws UnknownHostException, IOException {
-		client = new Client(address, port);
-		
-		new Socket(address, port);
-		// listeners = new HashSet<ClientSocketListener>();
-		logger.info("Connection established");
-
-		// client.addListener(this);
-		// client.start();
+		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -40,13 +32,17 @@ public class KVStore implements KVCommInterface {
 
 	@Override
 	public KVMessage put(String key, String value) throws Exception {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub. Needs to utilize KVMessage to encode the data
+		// then send the request through the socket. (Probably need buffers for this).
+		// Need a connected check before executing.
 		return null;
 	}
 
 	@Override
 	public KVMessage get(String key) throws Exception {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub. Needs to utilize KVMessage to encode the data.
+		// Then send the request through the socket.
+		// Need a connected check before executing.
 		return null;
 	}
 }

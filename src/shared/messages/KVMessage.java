@@ -1,7 +1,7 @@
 package shared.messages;
 
 public interface KVMessage {
-	
+
 	public enum StatusType {
 		GET, 			/* Get - request */
 		GET_ERROR, 		/* requested tuple (i.e. value) not found */
@@ -34,4 +34,19 @@ public interface KVMessage {
 	
 }
 
+//TODO: Needs a buffer for the bytes in ASCII encoding. Needs a intialization function for inputing strings and
+// Inputing bytest with the required conversion.
 
+
+/*
+ * String Input Side:
+ * (String key, String value, String status)
+ * Create string message
+ * EX: "status|key|value\n\r"
+ * ASCII encode
+ * 
+ * Byte Side:
+ * (bytes[] ascii bytes)
+ * splice the "G|key|value\n\r"
+ * 
+ */
