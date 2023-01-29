@@ -4,16 +4,19 @@ import java.net.Socket;
 
 import shared.messages.KVMessage;
 
+import app_kvClient.KVClient;
+
 public class KVStore implements KVCommInterface {
 	/**
 	 * Initialize KVStore with address and port of KVServer
+	 * 
 	 * @param address the address of the KVServer
-	 * @param port the port of the KVServer
+	 * @param port    the port of the KVServer
 	 */
 
 	private String address;
 	private int port;
-	private Client client = null; //TODO: We don't know what this class is
+	private KVClient client = null; // TODO: We don't know what this class is
 
 	public KVStore(String address, int port) {
 		this.address = address;
@@ -22,12 +25,11 @@ public class KVStore implements KVCommInterface {
 
 	@Override
 	public void connect() throws Exception {
-		throws UnknownHostException, IOException {
-		client = new Client(address, port);
-		
+		client = new KVClient();
+
 		new Socket(address, port);
 		// listeners = new HashSet<ClientSocketListener>();
-		logger.info("Connection established");
+		// logger.info("Connection established");
 
 		// client.addListener(this);
 		// client.start();
