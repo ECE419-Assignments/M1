@@ -45,11 +45,7 @@ public class KVClient implements IKVClient {
             } else {
                 String hostname = args[0];
                 int port = Integer.parseInt(args[1]);
-
                 new KVClient().newConnection(hostname, port);
-                // TODO: Replace to use threading
-                // new KVServer(port, 10, CacheStrategy.None).start();
-                new KVServer(port, 10, "None").run();
             }
         } catch (IOException e) {
             System.out.println("Error! Unable to initialize logger!");
@@ -57,11 +53,11 @@ public class KVClient implements IKVClient {
             System.exit(1);
         } catch (NumberFormatException nfe) {
             System.out.println("Error! Invalid argument <port>! Not a number!");
-            System.out.println("Usage: Server <port>!");
+            System.out.println("Usage: Client <hostname> <port>!");
             System.exit(1);
         } catch (Exception e) {
-            System.out.println("Error! Invalid argument <port>! Not a number!");
-            System.out.println("Usage: Server <port>!");
+            System.out.println("Unknown Error!");
+            System.out.println("Usage: Client <hostname> <port>!");
             System.exit(1);
         }
 
