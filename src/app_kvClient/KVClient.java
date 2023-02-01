@@ -24,8 +24,10 @@ public class KVClient implements IKVClient {
         this.hostname = hostname;
         this.port = port;
         this.getStore().connect();
-        // TODO Auto-generated method stub
-        // create KVComminterface -> Connect to hostname and
+        Thread.sleep(1000);
+        this.getStore().put("hello", "world");
+        Thread.sleep(1000);
+        this.getStore().get("hello");
     }
 
     @Override
@@ -56,6 +58,7 @@ public class KVClient implements IKVClient {
             System.out.println("Usage: Client <hostname> <port>!");
             System.exit(1);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Unknown Error!");
             System.out.println("Usage: Client <hostname> <port>!");
             System.exit(1);
