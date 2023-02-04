@@ -47,6 +47,8 @@ public interface KVMessage {
  * 
  * Byte Side:
  * (bytes[] ascii bytes)
- * splice the "G|key|value\n\r"
+ * splice the "status|key|value"
+ * 
+ * 
  * 
  */

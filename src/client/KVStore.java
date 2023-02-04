@@ -13,7 +13,6 @@ public class KVStore implements KVCommInterface {
 
 	private String address;
 	private int port;
-	private Client client = null; //TODO: We don't know what this class is
 
 	public KVStore(String address, int port) {
 		this.address = address;
@@ -46,3 +45,8 @@ public class KVStore implements KVCommInterface {
 		return null;
 	}
 }
+
+/*
+ * Receives messages from Server and passes them to KVClient
+ * Used by KVClient to run actions on the server.
+ */
