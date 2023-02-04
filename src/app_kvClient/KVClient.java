@@ -25,9 +25,7 @@ public class KVClient implements IKVClient {
         this.port = port;
         this.getStore().connect();
         Thread.sleep(1000);
-        this.getStore().put("hello", "world");
-        Thread.sleep(1000);
-        this.getStore().get("hello");
+        this.getStore().sendMessage(new TextMessage("close"));
     }
 
     @Override

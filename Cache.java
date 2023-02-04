@@ -70,21 +70,6 @@ class Cache extends Thread {
         return ":::not_found";
     }
 
-    public boolean containsKey(String key) {
-        return cache.containsKey(key) || onDisk(key);
-    }
-
-    public void clearCache() {
-        cache.clear();
-    }
-
-    public void clearDisk() {
-        File dir = new File(".cache");
-        for (File file : dir.listFiles())
-            if (!file.isDirectory())
-                file.delete();
-    }
-
     public void printCache() {
         System.out.println(cache);
     }
