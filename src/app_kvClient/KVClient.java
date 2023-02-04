@@ -10,8 +10,26 @@ import org.apache.log4j.Logger;
 
 import logger.LogSetup;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.UnknownHostException;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
+import logger.LogSetup;
+
+import app_kvServer.KVServer; //TODO: Why is this here??
 import client.KVCommInterface;
 import client.KVStore;
+
+import logger.LogSetup;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class KVClient implements IKVClient {
 
@@ -21,11 +39,17 @@ public class KVClient implements IKVClient {
 	private boolean stop = false;
 	private String hostname;
 	private int port;
-    private KVStore kvStore = null;
+    private KVStore kvStore = null;;
 
     @Override
-    public void newConnection(String hostname, int port) throws Exception{
-
+    public void newConnection(String hostname, int port) throws Exception {
+        this.hostname = hostname;
+        this.port = port;
+        this.getStore().connect();
+        Thread.sleep(1000);
+        this.getStore().put("hello", "world");
+        Thread.sleep(1000);
+        this.getStore().get("hello");
     }
 
     @Override
@@ -221,7 +245,29 @@ public class KVClient implements IKVClient {
 
 }
 
-/*
- * TODO: This is the application interface.
- * Anything received from the CLI should essentially just call KVStore to run some shit.
+/* NAVIDS CODE FOR MAIN MIGHT NEED FOR INTEGRATION
+    public static void main(String[] args) {
+        try {
+            new LogSetup("logs/client.log", Level.ALL);
+            if (args.length != 2) {
+                System.out.println("Error! Invalid number of arguments!");
+                System.out.println("Usage: Server <hostname> <port>!");
+            } else {
+                String hostname = args[0];
+                int port = Integer.parseInt(args[1]);
+                new KVClient().newConnection(hostname, port);
+            }
+        } catch (IOException e) {
+            System.out.println("Error! Unable to initialize logger!");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NumberFormatException nfe) {
+            System.out.println("Error! Invalid argument <port>! Not a number!");
+            System.out.println("Usage: Client <hostname> <port>!");
+            System.exit(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Unknown Error!");
+            System.out.println("Usage: Client <hostname> <port>!");
+            System.exit(1);
  */
