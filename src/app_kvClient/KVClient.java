@@ -3,7 +3,7 @@ package app_kvClient;
 import app_kvServer.KVServer;
 import client.KVCommInterface;
 import client.KVStore;
-
+import client.TextMessage;
 import logger.LogSetup;
 import java.io.IOException;
 import java.lang.reflect.Constructor;

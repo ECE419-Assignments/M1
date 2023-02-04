@@ -33,13 +33,13 @@ public class KVServer extends Thread implements IKVServer {
 	// private static Logger logger = Logger.getRootLogger();
 
 	private int port;
-	private String strategy;
+	private CacheStrategy strategy;
 	private boolean running;
 	private int cacheSize;
 	private ServerSocket serverSocket;
 	private Cache cache;
 
-	public KVServer(int port, int cacheSize, String strategy) {
+	public KVServer(int port, int cacheSize, CacheStrategy strategy) {
 		this.port = port;
 		this.cacheSize = cacheSize;
 		this.strategy = strategy;
@@ -52,14 +52,11 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public String getHostname() {
-		// TODO Auto-generated method stub
-		return null;
+		return "127.0.0.1";
 	}
 
 	public CacheStrategy getCacheStrategy() {
-		// TODO: Fix so it returns the actual strategy
-		return CacheStrategy.None;
-		// return strategy;
+		return strategy;
 	}
 
 	public int getCacheSize() {
@@ -67,13 +64,11 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public boolean inStorage(String key) {
-		// TODO Auto-generated method stub
-		return false;
+		return cache.onDisk(key);
 	}
 
 	public boolean inCache(String key) {
-		// TODO Auto-generated method stub
-		return false;
+		return cache.containsKey(key);
 	}
 
 	public String getKV(String key) throws Exception {
@@ -86,11 +81,11 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public void clearCache() {
-		// TODO Auto-generated method stub
+		cache.clearCache();
 	}
 
 	public void clearStorage() {
-		// TODO Auto-generated method stub
+		cache.clearDisk();
 	}
 
 	public void run() {
@@ -99,6 +94,7 @@ public class KVServer extends Thread implements IKVServer {
 		if (serverSocket != null) {
 			while (isRunning()) {
 				try {
+					logger.info("opening connection");
 					Socket client = serverSocket.accept();
 					ClientConnection connection = new ClientConnection(this, client);
 					new Thread(connection).start();
@@ -111,16 +107,24 @@ public class KVServer extends Thread implements IKVServer {
 							"Unable to establish connection. \n");
 				}
 			}
+			logger.info("done with while");
+			if (connection != null) {
+				logger.info("closing connection");
+				connection.close();
+			}
+
 		}
-		// logger.info("Server stopped.");
 	}
 
 	public void kill() {
-		// TODO Auto-generated method stub
+		logger.info("Killing server!");
+		System.exit(0);
 	}
 
 	public void close() {
-		// TODO Auto-generated method stub
+		logger.info("Closing server!");
+		this.running = false;
+		System.exit(0);
 	}
 
 	private boolean isRunning() {
@@ -152,7 +156,8 @@ public class KVServer extends Thread implements IKVServer {
 				System.out.println("Usage: Server <port>!");
 			} else {
 				int port = Integer.parseInt(args[0]);
-				new KVServer(port, 10, "None").start();
+				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO);
+				kvServer.start();
 			}
 		} catch (IOException e) {
 			System.out.println("Error! Unable to initialize logger!");
