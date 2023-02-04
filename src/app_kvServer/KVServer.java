@@ -108,11 +108,6 @@ public class KVServer extends Thread implements IKVServer {
 				}
 			}
 			logger.info("done with while");
-			if (connection != null) {
-				logger.info("closing connection");
-				connection.close();
-			}
-
 		}
 	}
 
