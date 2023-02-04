@@ -42,13 +42,14 @@ public class ClientConnection implements Runnable {
 		this.kvServer = kvServer;
 	}
 
-	public void close() {
+		publicvoid
+
 		this.isOpen = false;
 	}
 
-	/**
-	 * Initializes and starts the client connection.
-	 * Loops until the connection is closed or aborted by the client.
+
+		 * Ini	 * Loos un
+
 	 */
 	public void run() {
 		try {

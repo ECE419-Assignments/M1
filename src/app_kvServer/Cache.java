@@ -78,6 +78,8 @@ class Cache extends Thread {
         cache.clear();
     }
 
+
+    
     public void clearDisk() {
         File dir = new File(".cache");
         for (File file : dir.listFiles())

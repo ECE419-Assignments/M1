@@ -3,7 +3,7 @@ package app_kvClient;
 import app_kvServer.KVServer;
 import client.KVCommInterface;
 import client.KVStore;
-
+import client.TextMessage;
 import logger.LogSetup;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -25,7 +25,9 @@ public class KVClient implements IKVClient {
         this.port = port;
         this.getStore().connect();
         Thread.sleep(1000);
-        this.getStore().sendMessage(new TextMessage("close"));
+        this.getStore().put("hello", "world");
+        Thread.sleep(1000);
+        this.getStore().get("hello");
     }
 
     @Override
