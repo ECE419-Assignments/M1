@@ -1,5 +1,7 @@
 package shared.messages;
 
+import java.nio.charset.StandardCharsets;
+
 public interface KVMessage {
 	
 	public enum StatusType {
@@ -14,57 +16,47 @@ public interface KVMessage {
 		DELETE_ERROR 	/* Delete - request successful */
 	}
 
+	String key = null;
+    String value = null;
+    StatusType status = null;
+	
+    public static void msgDecoder(byte[] msgBytes) {
+        String decodedMessage = new String(msgBytes, StandardCharsets.US_ASCII);
+        String[] parts = decodedMessage.split(":");
+
+        // if (parts.length != 3) {
+        //     throw new IllegalArgumentException("Encoded message does not have the correct format");
+        // }
+
+        String key = parts[0];
+        String value = parts[1];
+        StatusType status = StatusType.valueOf(parts[2]);
+
+        if (!key.matches("[a-zA-Z]+") || !value.matches("[a-zA-Z]+")) {
+            throw new IllegalArgumentException("Key or value contain characters outside of [a-zA-Z]");
+        }
+    }
 
 	/**
 	 * @return the key that is associated with this message, 
 	 * 		null if not key is associated.
 	 */
-	// public String getKey();
-	public default String getKey(String message) {
-        String[] parts = message.split(":");
-        if (parts.length >= 2) {
-            String key = parts[1];
-            if (key.matches("[a-zA-Z]+")) {
-                return key;
-            } else {
-                throw new IllegalArgumentException("Key must contain only letters");
-            }
-        }
-        return null;
-    }
+	public default String getKey() {
+		return key;
+	  }
 	
 	/**
 	 * @return the value that is associated with this message, 
 	 * 		null if not value is associated.
 	 */
-	// public String getValue();
-	public default String getValue(String message) {
-        String[] parts = message.split(":");
-        if (parts.length >= 3) {
-            String value = parts[2];
-            if (value.matches("[a-zA-Z]+")) {
-                return value;
-            } else {
-                throw new IllegalArgumentException("Value must contain only letters");
-            }
-        }
-        return null;
-    }
+	public default String getValue() {
+		return value;
+	  }
 	/**
 	 * @return a status string that is used to identify request types, 
 	 * response types and error types associated to the message.
 	 */
-	// public StatusType getStatus();
-	public default StatusType getStatus(String message) {
-		String[] parts = message.split(":");
-		if (parts.length < 1) {
-			return null;
-		}
-		try {
-			return StatusType.valueOf(parts[0]);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-	}
-	
+	public default StatusType getStatus() {
+		return status;
+	  }
 }
