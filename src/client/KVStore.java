@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import shared.messages.KVMessage;
+import app_kvClient.KVClient;
 
 public class KVStore extends Thread implements KVCommInterface {
 	/**
@@ -22,7 +24,7 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	private boolean running;
 	private Logger logger = Logger.getLogger("KVStore");
-	private Set<ClientSocketListener> listeners;
+	private Set<KVClient> listeners;
 	private Socket clientSocket;
 	private String address;
 	private int port;
@@ -42,7 +44,7 @@ public class KVStore extends Thread implements KVCommInterface {
 			while (isRunning()) {
 				try {
 					TextMessage latestMsg = receiveMessage();
-					for (ClientSocketListener listener : listeners) {
+					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
 					}
 				} catch (IOException ioe) {
@@ -50,7 +52,8 @@ public class KVStore extends Thread implements KVCommInterface {
 						logger.info("Connection lost!");
 						try {
 							tearDownConnection();
-							// for (ClientSocketListener listener : listeners) {
+							// TODO:
+							// for (KVClient listener : listeners) {
 							// // listener.handleStatus(
 							// // SocketStatus.CONNECTION_LOST);
 							// }
@@ -73,17 +76,14 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public void connect() throws Exception {
+	public void connect() throws UnknownHostException, IOException {
 		this.clientSocket = new Socket(address, port);
-		this.listeners = new HashSet<ClientSocketListener>();
+		this.listeners = new HashSet<KVClient>();
 		setRunning(true);
 		logger.info("Connection established");
 		this.start();
-		// listeners = new HashSet<ClientSocketListener>();
+		// listeners = new HashSet<KVClient>();
 		// logger.info("Connection established");
-
-		// client.addListener(this);
-		// client.start();
 	}
 
 	@Override
@@ -97,6 +97,10 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	public void setRunning(boolean run) {
 		this.running = run;
+	}
+
+	public void addListener(KVClient listener) {
+		listeners.add(listener);
 	}
 
 	private TextMessage receiveMessage() throws IOException {
@@ -167,13 +171,13 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVMessage put(String key, String value) throws Exception {
+	public KVMessage put(String key, String value) throws IOException {
 		sendMessage(new TextMessage("put:" + key + ":" + value));
 		return null;
 	}
 
 	@Override
-	public KVMessage get(String key) throws Exception {
+	public KVMessage get(String key) throws IOException {
 		sendMessage(new TextMessage("get:" + key));
 		return null;
 	}
@@ -191,3 +195,8 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 }
+
+/*
+ * Receives messages from Server and passes them to KVClient
+ * Used by KVClient to run actions on the server.
+ */
