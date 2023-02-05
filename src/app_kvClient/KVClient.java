@@ -9,8 +9,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import logger.LogSetup;
-
- //TODO: Why is this here??
 import client.KVCommInterface;
 import client.KVStore;
 import client.TextMessage;
@@ -19,6 +17,7 @@ import java.lang.reflect.Constructor;
 
 public class KVClient implements IKVClient {
 
+	public enum SocketStatus{CONNECTED, DISCONNECTED, CONNECTION_LOST};
     private static Logger logger = Logger.getRootLogger();
 	private static final String PROMPT = "KVServer> ";
 	private BufferedReader stdin;
@@ -43,9 +42,7 @@ public class KVClient implements IKVClient {
 
     @Override
     public KVCommInterface getStore(){
-        if (this.kvStore == null) {
-            this.kvStore = new KVStore(this.hostname, this.port);
-        }
+    	this.kvStore = new KVStore(this.hostname, this.port);
         return this.kvStore;
     }
 
@@ -91,18 +88,27 @@ public class KVClient implements IKVClient {
 				printError("Invalid number of parameters!");
 			}
         }else if (tokens[0].equals("put")){
-            if(tokens.length == 3) {
+            if(tokens.length >= 3) {
                 if(kvStore != null && kvStore.isRunning()){
                     String key = tokens[1];
-                    String value = tokens[2];
+
+					StringBuilder value = new StringBuilder();
+					for(int i = 1; i < tokens.length; i++) {
+						value.append(tokens[i]);
+						if (i != tokens.length -1 ) {
+							value.append(" ");
+						}
+					}
+
                     try {
-                        //TODO Message handeling from kVstore
-                        kvStore.put(key, value);
+                        kvStore.put(key, value.toString());
                     } catch (IOException e) {
                         printError("Unable to send message!");
                         disconnect();
                     }     
-                }
+                } else {
+					printError("Connection has not been established or was lost.");
+				}
 				
 			} else {
 				printError("Invalid number of parameters!");
@@ -117,6 +123,8 @@ public class KVClient implements IKVClient {
                         printError("Unable to send message!");
                         disconnect();
                     }
+				} else {
+					printError("Connection has not been established or was lost.");
                 }
 				
 			} else {
@@ -152,19 +160,21 @@ public class KVClient implements IKVClient {
 			kvStore = null;
 		}
 	}
-    //TODO: Add get and put
+
     private void printHelp() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(PROMPT).append("ECHO CLIENT HELP (Usage):\n");
+		sb.append(PROMPT).append("KV CLIENT HELP (Usage):\n");
 		sb.append(PROMPT);
 		sb.append("::::::::::::::::::::::::::::::::");
 		sb.append("::::::::::::::::::::::::::::::::\n");
 		sb.append(PROMPT).append("connect <host> <port>");
-		sb.append("\t establishes a connection to a server\n");
-		sb.append(PROMPT).append("send <text message>");
-		sb.append("\t\t sends a text message to the server \n");
+		sb.append("\t\t establishes a connection to a server\n");
 		sb.append(PROMPT).append("disconnect");
 		sb.append("\t\t\t disconnects from the server \n");
+		sb.append(PROMPT).append("get <key>");
+		sb.append("\t\t\t retrieves the value of key\n");
+		sb.append(PROMPT).append("put <key> <value>");
+		sb.append("\t\t stores value under key\n");
 		
 		sb.append(PROMPT).append("logLevel");
 		sb.append("\t\t\t changes the logLevel \n");
@@ -172,7 +182,7 @@ public class KVClient implements IKVClient {
 		sb.append("ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF \n");
 		
 		sb.append(PROMPT).append("quit ");
-		sb.append("\t\t\t exits the program");
+		sb.append("\t\t\t\t exits the program");
 		System.out.println(sb.toString());
 	}
 	
@@ -222,12 +232,28 @@ public class KVClient implements IKVClient {
 		}
 	}
 
+	public void handleStatus(SocketStatus status) {
+		if(status == SocketStatus.CONNECTED) {
+
+		} else if (status == SocketStatus.DISCONNECTED) {
+			System.out.print(PROMPT);
+			System.out.println("Connection terminated: " 
+					+ hostname + " / " + port);
+			
+		} else if (status == SocketStatus.CONNECTION_LOST) {
+			System.out.println("Connection lost: " 
+					+ hostname + " / " + port);
+			System.out.print(PROMPT);
+		}
+		
+	}
+
     /*
     Entry point for the client side.
      */
     public static void main(String[] args) {
     	try {
-			new LogSetup("logs/client.log", Level.OFF);
+			new LogSetup("logs/client.log", Level.ALL);
 			KVClient app = new KVClient();
 			app.run();
 		} catch (IOException e) {

@@ -10,13 +10,7 @@ import org.apache.log4j.Logger;
 
 import client.TextMessage;
 
-/**
- * Represents a connection end point for a particular client that is
- * connected to the server. This class is responsible for message reception
- * and sending.
- * The class also implements the echo functionality. Thus whenever a message
- * is received it is going to be echoed back to the client.
- */
+
 public class ClientConnection implements Runnable {
 
 	private Logger logger = Logger.getLogger("Client Connection");
@@ -56,7 +50,7 @@ public class ClientConnection implements Runnable {
 			input = clientSocket.getInputStream();
 
 			sendMessage(new TextMessage(
-					"Connection to MSRG Echo server established: "
+					"Connection to KV server established: "
 							+ clientSocket.getLocalAddress() + " / "
 							+ clientSocket.getLocalPort()));
 

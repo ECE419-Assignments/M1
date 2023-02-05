@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import shared.messages.KVMessage;
 import app_kvClient.KVClient;
+import app_kvClient.KVClient.SocketStatus;
 
 public class KVStore extends Thread implements KVCommInterface {
 	/**
@@ -52,11 +53,10 @@ public class KVStore extends Thread implements KVCommInterface {
 						logger.info("Connection lost!");
 						try {
 							tearDownConnection();
-							// TODO:
-							// for (KVClient listener : listeners) {
-							// // listener.handleStatus(
-							// // SocketStatus.CONNECTION_LOST);
-							// }
+							for (KVClient listener : listeners) {
+							listener.handleStatus(
+							SocketStatus.CONNECTION_LOST);
+							}
 						} catch (IOException e) {
 							logger.error("Unable to close connection!");
 						}
@@ -65,8 +65,7 @@ public class KVStore extends Thread implements KVCommInterface {
 			}
 		} catch (IOException ioe) {
 			logger.error("Connection could not be established!");
-			// closeConnection();
-			// }
+			disconnect();
 		}
 	}
 
@@ -82,13 +81,20 @@ public class KVStore extends Thread implements KVCommInterface {
 		setRunning(true);
 		logger.info("Connection established");
 		this.start();
-		// listeners = new HashSet<KVClient>();
-		// logger.info("Connection established");
 	}
 
 	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
+	public synchronized void disconnect() {
+		logger.info("try to close connection ...");
+
+		try {
+			tearDownConnection();
+			for (KVClient listener : listeners) {
+				listener.handleStatus(SocketStatus.DISCONNECTED);
+			}
+		} catch (IOException ioe) {
+			logger.error("Unable to close connection!");
+		}
 	}
 
 	public boolean isRunning() {
@@ -186,8 +192,8 @@ public class KVStore extends Thread implements KVCommInterface {
 		setRunning(false);
 		logger.info("tearing down the connection ...");
 		if (clientSocket != null) {
-			// input.close();
-			// output.close();
+			input.close();
+			output.close();
 			clientSocket.close();
 			clientSocket = null;
 			logger.info("connection closed!");
