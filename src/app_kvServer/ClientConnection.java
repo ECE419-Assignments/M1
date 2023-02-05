@@ -42,6 +42,10 @@ public class ClientConnection implements Runnable {
 		this.kvServer = kvServer;
 	}
 
+	public void close() {
+		this.isOpen = false;
+	}
+
 	/**
 	 * Initializes and starts the client connection.
 	 * Loops until the connection is closed or aborted by the client.
@@ -68,6 +72,12 @@ public class ClientConnection implements Runnable {
 						String value = "success:" + this.kvServer.getKV(msgParts[1]);
 						logger.info(value);
 						sendMessage(new TextMessage(value));
+					} else if (msgParts[0].equals("kill")) {
+						this.kvServer.kill();
+						sendMessage(new TextMessage("success"));
+					} else if (msgParts[0].equals("close")) {
+						this.kvServer.close();
+						sendMessage(new TextMessage("success"));
 					}
 				} catch (IOException ioe) {
 					logger.error("Error! Connection lost!");
