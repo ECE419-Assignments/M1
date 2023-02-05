@@ -3,6 +3,9 @@ package app_kvServer;
 import java.util.*;
 import java.io.*;
 
+import shared.messages.KVMessage.StatusType;
+//TODO real delete functionality
+//TODO move into KVServer
 class Cache extends Thread {
 
     LinkedHashMap<String, String> cache;
@@ -20,6 +23,7 @@ class Cache extends Thread {
         return String.format("./.cache/%s", key);
     }
 
+    //TODO MAKE THIS SYNCHRONIZED??
     private void saveToDisk(String key, String value) {
         String filepath = getFilepath(key);
         File file = new File(filepath);
@@ -38,6 +42,7 @@ class Cache extends Thread {
         return file.exists();
     }
 
+    //TODO MAKE THIS SYNCHRONIZED??
     private String findFromDisk(String key) {
         String filepath = getFilepath(key);
         File file = new File(filepath);
@@ -47,17 +52,21 @@ class Cache extends Thread {
             reader.close();
             return value;
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            return " "; //TODO Change this to something better
         }
-        return ":::not_found";
     }
 
-    public void save(String key, String value) {
+    public StatusType save(String key, String value) {
+        StatusType status = StatusType.PUT;
         if (cache.containsKey(key)) {
             cache.remove(key);
+            status = StatusType.PUT_UPDATE;
+
         }
         cache.put(key, value);
         saveToDisk(key, value);
+
+        return status;
     }
 
     public String find(String key) {
@@ -67,7 +76,7 @@ class Cache extends Thread {
         if (onDisk(key)) {
             return findFromDisk(key);
         }
-        return ":::not_found";
+        return " "; //TODO Make something better
     }
 
     public boolean containsKey(String key) {
@@ -77,9 +86,7 @@ class Cache extends Thread {
     public void clearCache() {
         cache.clear();
     }
-
-
-    
+   
     public void clearDisk() {
         File dir = new File(".cache");
         for (File file : dir.listFiles())
@@ -91,18 +98,19 @@ class Cache extends Thread {
         System.out.println(cache);
     }
 
-    public void run() {
-        save("1", "A");
-        save("2", "B");
-        save("3", "C");
-        save("1", "D");
-        save("4", "E");
-        printCache();
-        System.out.println(find("2"));
-    }
+    //TODO: THIS IS TEST CODE?
+    // public void run() {
+    //     save("1", "A");
+    //     save("2", "B");
+    //     save("3", "C");
+    //     save("1", "D");
+    //     save("4", "E");
+    //     printCache();
+    //     System.out.println(find("2"));
+    // }
 
-    public static void main(String[] args) {
-        new Cache(3).start();
-        System.out.println("hello world");
-    }
+    // public static void main(String[] args) {
+    //     new Cache(3).start();
+    //     System.out.println("hello world");
+    // }
 }

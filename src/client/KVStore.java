@@ -11,7 +11,8 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import shared.messages.KVMessage;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
 import app_kvClient.KVClient;
 import app_kvClient.KVClient.SocketStatus;
 
@@ -44,7 +45,7 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			while (isRunning()) {
 				try {
-					TextMessage latestMsg = receiveMessage();
+					KVM latestMsg = receiveMessage();
 					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
 					}
@@ -109,7 +110,7 @@ public class KVStore extends Thread implements KVCommInterface {
 		listeners.add(listener);
 	}
 
-	private TextMessage receiveMessage() throws IOException {
+	private KVM receiveMessage() throws IOException {
 
 		int index = 0;
 		byte[] msgBytes = null, tmp = null;
@@ -164,12 +165,12 @@ public class KVStore extends Thread implements KVCommInterface {
 		msgBytes = tmp;
 
 		/* build final String */
-		TextMessage msg = new TextMessage(msgBytes);
+		KVM msg = new KVM(msgBytes);
 		logger.info("Receive message:\t '" + msg.getMsg() + "'");
 		return msg;
 	}
 
-	public void sendMessage(TextMessage msg) throws IOException {
+	public void sendMessage(KVM msg) throws IOException {
 		byte[] msgBytes = msg.getMsgBytes();
 		output.write(msgBytes, 0, msgBytes.length);
 		output.flush();
@@ -177,14 +178,17 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVMessage put(String key, String value) throws IOException {
-		sendMessage(new TextMessage("put:" + key + ":" + value));
+	public KVM put(String key, String value) throws IOException {
+		StatusType status = StatusType.PUT;
+		if(value.equals("null")) {status = StatusType.DELETE;}
+		sendMessage(new KVM(status, key, value));
 		return null;
 	}
 
+	//TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
-	public KVMessage get(String key) throws IOException {
-		sendMessage(new TextMessage("get:" + key));
+	public KVM get(String key) throws IOException {
+		sendMessage(new KVM(StatusType.GET, key, " "));
 		return null;
 	}
 

@@ -13,6 +13,8 @@ import logger.LogSetup;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import shared.messages.KVMessage.StatusType;
+
 public class KVServer extends Thread implements IKVServer {
 
 	private static Logger logger = Logger.getLogger("KV Server");
@@ -51,6 +53,7 @@ public class KVServer extends Thread implements IKVServer {
 		return port;
 	}
 
+	//TODO: Make this not hardcoded
 	public String getHostname() {
 		return "127.0.0.1";
 	}

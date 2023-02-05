@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import logger.LogSetup;
 import client.KVCommInterface;
 import client.KVStore;
-import client.TextMessage;
+import shared.messages.KVM;
 
 import java.lang.reflect.Constructor;
 
@@ -91,15 +91,13 @@ public class KVClient implements IKVClient {
             if(tokens.length >= 3) {
                 if(kvStore != null && kvStore.isRunning()){
                     String key = tokens[1];
-
 					StringBuilder value = new StringBuilder();
-					for(int i = 1; i < tokens.length; i++) {
+					for(int i = 2; i < tokens.length; i++) {
 						value.append(tokens[i]);
 						if (i != tokens.length -1 ) {
 							value.append(" ");
 						}
 					}
-
                     try {
                         kvStore.put(key, value.toString());
                     } catch (IOException e) {
@@ -178,7 +176,7 @@ public class KVClient implements IKVClient {
 		
 		sb.append(PROMPT).append("logLevel");
 		sb.append("\t\t\t changes the logLevel \n");
-		sb.append(PROMPT).append("\t\t\t\t ");
+		sb.append("\t\t\t\t\t ");
 		sb.append("ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF \n");
 		
 		sb.append(PROMPT).append("quit ");
@@ -225,7 +223,7 @@ public class KVClient implements IKVClient {
 		System.out.println(PROMPT + "Error! " +  error);
 	}
 
-	public void handleNewMessage(TextMessage msg) {
+	public void handleNewMessage(KVM msg) {
 		if(!stop) {
 			System.out.println(msg.getMsg());
 			System.out.print(PROMPT);
