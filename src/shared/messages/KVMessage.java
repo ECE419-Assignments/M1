@@ -21,12 +21,17 @@ public interface KVMessage {
 	 */
 	// public String getKey();
 	public default String getKey(String message) {
-		String[] parts = message.split(":");
-		if (parts.length < 2) {
-			return null;
-		}
-		return parts[1];
-	}
+        String[] parts = message.split(":");
+        if (parts.length >= 2) {
+            String key = parts[1];
+            if (key.matches("[a-zA-Z]+")) {
+                return key;
+            } else {
+                throw new IllegalArgumentException("Key must contain only letters");
+            }
+        }
+        return null;
+    }
 	
 	/**
 	 * @return the value that is associated with this message, 
@@ -34,13 +39,17 @@ public interface KVMessage {
 	 */
 	// public String getValue();
 	public default String getValue(String message) {
-		String[] parts = message.split(":");
-		if (parts.length < 3) {
-			return null;
-		}
-		return parts[2];
-	}
-	
+        String[] parts = message.split(":");
+        if (parts.length >= 3) {
+            String value = parts[2];
+            if (value.matches("[a-zA-Z]+")) {
+                return value;
+            } else {
+                throw new IllegalArgumentException("Value must contain only letters");
+            }
+        }
+        return null;
+    }
 	/**
 	 * @return a status string that is used to identify request types, 
 	 * response types and error types associated to the message.
