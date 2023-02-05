@@ -47,13 +47,14 @@ public class KVServer extends Thread implements IKVServer {
 		this.strategy = strategy;
 		this.running = false;
 		this.cache = new Cache(cacheSize);
+		this.start();
 	}
 
 	public int getPort() {
 		return port;
 	}
 
-	//TODO: Make this not hardcoded
+	// TODO: Make this not hardcoded
 	public String getHostname() {
 		return "127.0.0.1";
 	}
@@ -76,6 +77,10 @@ public class KVServer extends Thread implements IKVServer {
 
 	public String getKV(String key) throws Exception {
 		return cache.find(key);
+	}
+
+	public StatusType deleteKV(String key) throws Exception {
+		return cache.delete(key);
 	}
 
 	public void putKV(String key, String value) throws Exception {
@@ -155,7 +160,6 @@ public class KVServer extends Thread implements IKVServer {
 			} else {
 				int port = Integer.parseInt(args[0]);
 				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO);
-				kvServer.start();
 			}
 		} catch (IOException e) {
 			System.out.println("Error! Unable to initialize logger!");
