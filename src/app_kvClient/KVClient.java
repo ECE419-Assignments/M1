@@ -10,26 +10,12 @@ import org.apache.log4j.Logger;
 
 import logger.LogSetup;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.UnknownHostException;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import logger.LogSetup;
-
-import app_kvServer.KVServer; //TODO: Why is this here??
+ //TODO: Why is this here??
 import client.KVCommInterface;
 import client.KVStore;
+import client.TextMessage;
 
-import logger.LogSetup;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
 public class KVClient implements IKVClient {
 
@@ -39,30 +25,34 @@ public class KVClient implements IKVClient {
 	private boolean stop = false;
 	private String hostname;
 	private int port;
-    private KVStore kvStore = null;;
+    private KVStore kvStore = null;
 
     @Override
-    public void newConnection(String hostname, int port) throws Exception {
+    public void newConnection(String hostname, int port) throws UnknownHostException, IOException {
         this.hostname = hostname;
         this.port = port;
-        this.getStore().connect();
-        Thread.sleep(1000);
-        this.getStore().put("hello", "world");
-        Thread.sleep(1000);
-        this.getStore().get("hello");
+		this.getStore();
+		try{
+        	this.kvStore.connect();
+			this.kvStore.addListener(this);
+		} catch (Exception e){
+			printError("Connection failed !");
+			logger.warn("Could not connect", e);
+		}
     }
 
     @Override
     public KVCommInterface getStore(){
-        KVCommInterface test = null;
-        return test;
+        if (this.kvStore == null) {
+            this.kvStore = new KVStore(this.hostname, this.port);
+        }
+        return this.kvStore;
     }
 
     public void run() {
 		while(!stop) {
 			stdin = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print(PROMPT);
-			
 			try {
 				String cmdLine = stdin.readLine();
 				this.handleCommand(cmdLine);
@@ -86,8 +76,7 @@ public class KVClient implements IKVClient {
 				try{
 					hostname = tokens[1];
 					port = Integer.parseInt(tokens[2]);
-					System.out.println(hostname + port);
-					kvStore = newConnection(hostname, port);
+					this.newConnection(hostname, port);
 				} catch(NumberFormatException nfe) {
 					printError("No valid address. Port must be a number!");
 					logger.info("Unable to parse argument <port>", nfe);
@@ -122,9 +111,7 @@ public class KVClient implements IKVClient {
             if(tokens.length == 2) {
                 if(kvStore != null && kvStore.isRunning()){
                     String key = tokens[1];
-                    String value = tokens[2];
                     try {
-                        //TODO Message handeling from kVstore
                         kvStore.get(key);
                     } catch (IOException e) {
                         printError("Unable to send message!");
@@ -226,6 +213,13 @@ public class KVClient implements IKVClient {
 
     private void printError(String error){
 		System.out.println(PROMPT + "Error! " +  error);
+	}
+
+	public void handleNewMessage(TextMessage msg) {
+		if(!stop) {
+			System.out.println(msg.getMsg());
+			System.out.print(PROMPT);
+		}
 	}
 
     /*
