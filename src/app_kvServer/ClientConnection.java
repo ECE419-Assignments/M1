@@ -22,6 +22,7 @@ public class ClientConnection implements Runnable {
 	private Socket clientSocket;
 	private InputStream input;
 	private OutputStream output;
+	private KVM latestMsg;
 
 	private KVServer kvServer;
 
@@ -68,9 +69,18 @@ public class ClientConnection implements Runnable {
 						status = StatusType.PUT_ERROR;
 
 						try {
+							boolean alreadyExists = false;
+							if (this.kvServer.inCache(key)) {
+								alreadyExists = true;
+							}
+
 							this.kvServer.putKV(key, value);
 							logger.info(key + value);
-							status = StatusType.PUT_SUCCESS;
+							if (!alreadyExists) {
+								status = StatusType.PUT_SUCCESS;
+							} else {
+								status = StatusType.PUT_UPDATE;
+							}
 						} catch (Exception e) {
 							// Log message
 						}
@@ -115,7 +125,10 @@ public class ClientConnection implements Runnable {
 						// sendMessage(new TextMessage("success"));
 					}
 				} catch (IOException ioe) {
+					System.out.println(ioe);
 					logger.error("Error! Connection lost!", ioe);
+					isOpen = false;
+				} catch (NumberFormatException e) {
 					isOpen = false;
 				} catch (Exception e) {
 					logger.error("Error! Connection lost!", e);
@@ -140,6 +153,10 @@ public class ClientConnection implements Runnable {
 		}
 	}
 
+	public KVM getLatestMsg() {
+		return latestMsg;
+	}
+
 	/**
 	 * Method sends a message using this socket.
 	 * 
@@ -156,7 +173,7 @@ public class ClientConnection implements Runnable {
 				+ msg.getMsg() + "'");
 	}
 
-	private KVM receiveMessage() throws IOException {
+	private KVM receiveMessage() throws IOException, Exception {
 
 		int index = 0;
 		byte[] msgBytes = null, tmp = null;

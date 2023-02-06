@@ -13,12 +13,9 @@ import logger.LogSetup;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import shared.messages.KVMessage.StatusType;
-
 public class KVServer extends Thread implements IKVServer {
 
 	private static Logger logger = Logger.getLogger("KV Server");
-	private HashMap<String, String> kvMap = new HashMap<String, String>();
 	/**
 	 * Start KV Server at given port
 	 * 
@@ -54,7 +51,6 @@ public class KVServer extends Thread implements IKVServer {
 		return port;
 	}
 
-	// TODO: Make this not hardcoded
 	public String getHostname() {
 		return "127.0.0.1";
 	}
@@ -72,7 +68,7 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public boolean inCache(String key) {
-		return cache.containsKey(key);
+		return cache.cache.containsKey(key) || cache.onDisk(key);
 	}
 
 	public String getKV(String key) throws Exception {

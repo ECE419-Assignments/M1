@@ -1,0 +1,557 @@
+2023-02-06 14:43:10,272 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 14:43:10,272 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:22:21,714 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:22:21,717 ERROR [Thread-9] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:171)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:22:21,718 ERROR [Thread-11] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:23:22,982 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:23:30,517 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.net.SocketException: Broken pipe
+	at java.base/sun.nio.ch.NioSocketImpl.implWrite(NioSocketImpl.java:420)
+	at java.base/sun.nio.ch.NioSocketImpl.write(NioSocketImpl.java:440)
+	at java.base/sun.nio.ch.NioSocketImpl$2.write(NioSocketImpl.java:826)
+	at java.base/java.net.Socket$SocketOutputStream.write(Socket.java:1035)
+	at app_kvServer.ClientConnection.sendMessage(ClientConnection.java:156)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:79)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:26:32,385 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:26:42,832 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:26:47,389 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:27:23,648 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:28:55,717 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:28:59,685 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:10,569 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:12,865 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:22,740 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:171)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:34,086 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:39,370 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:50,234 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:29:54,693 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:10,082 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:16,215 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:23,064 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:23,067 ERROR [Thread-9] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:41,764 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:30:45,174 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:31:18,204 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:31:24,426 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:31:29,222 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:05,974 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:14,785 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:17,521 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:20,775 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:37,235 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:32:44,622 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:217)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:37:29,133 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:37:29,133 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:37:32,390 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:37:32,391 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:37:35,292 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:37:35,292 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:37:37,919 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:37:37,920 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:37:40,394 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:37:40,395 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:38:35,963 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:38:35,966 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:38:48,798 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:38:56,148 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:180)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:39:03,291 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:39:07,426 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:37)
+	at shared.messages.KVM.<init>(KVM.java:20)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:46:49,923 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:46:49,924 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:47:01,529 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:47:01,529 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:47:21,563 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:47:21,563 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:47:25,301 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:47:25,302 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:47:38,191 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:47:38,193 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:47:47,445 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:47:47,446 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:48:07,571 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:48:07,572 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:52:36,552 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:52:36,553 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 15:52:41,531 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:38)
+	at shared.messages.KVM.<init>(KVM.java:21)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:52:41,537 ERROR [Thread-9] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:180)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:52:41,538 ERROR [Thread-11] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:38)
+	at shared.messages.KVM.<init>(KVM.java:21)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:52:45,848 ERROR [Thread-7] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:38)
+	at shared.messages.KVM.<init>(KVM.java:21)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:52:45,852 ERROR [Thread-9] Client Connection: Error! Connection lost!
+java.lang.NumberFormatException: For input string: ""
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Integer.parseInt(Integer.java:678)
+	at java.base/java.lang.Integer.parseInt(Integer.java:786)
+	at shared.messages.KVM.splitString(KVM.java:38)
+	at shared.messages.KVM.<init>(KVM.java:21)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:226)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 15:53:03,535 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 15:53:03,536 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:04:10,307 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:04:10,308 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:04:23,935 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:04:23,936 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:04:55,472 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:04:55,473 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:05:56,287 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:05:56,288 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:06:33,923 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:06:33,923 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:06:50,157 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:06:50,158 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:14:24,049 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:14:24,050 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:32:05,206 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:32:05,207 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:32:05,509 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:32:50,293 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:32:50,294 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:33:46,755 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:33:46,756 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:33:46,764 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:34:01,886 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:34:01,887 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:35:07,095 ERROR [Thread-9] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:183)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 16:35:12,926 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:35:18,017 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:35:28,786 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:35:28,787 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:35:34,685 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:35:34,686 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:35:52,036 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:35:52,037 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:00,175 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:36:00,176 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:00,192 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:36:06,305 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:36:06,306 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:11,213 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:36:11,214 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:11,229 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:36:16,953 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:36:16,954 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:16,974 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:36:29,597 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:36:29,598 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:36:29,604 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:36:29,608 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:37:58,955 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:37:58,956 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:37:58,966 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:38:28,515 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:38:28,516 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:38:38,889 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:38:38,890 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:38:49,524 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:38:49,525 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:38:56,343 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:38:56,344 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:39:05,953 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:39:05,954 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:39:05,964 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 16:40:42,223 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:40:42,224 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:40:54,547 ERROR [Thread-0] KV Server: Error! Cannot open server socket:
+2023-02-06 16:40:54,547 ERROR [Thread-0] KV Server: Port 50000 is already bound!
+2023-02-06 16:51:25,866 ERROR [main] KVStore: Unable to close connection!
+2023-02-06 17:06:40,976 ERROR [Thread-5] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:183)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 17:06:52,512 ERROR [Thread-5] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:183)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2023-02-06 17:07:41,573 ERROR [Thread-5] Client Connection: Error! Connection lost!
+java.net.SocketException: Connection reset
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:323)
+	at java.base/sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:350)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:803)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:966)
+	at java.base/java.net.Socket$SocketInputStream.read(Socket.java:961)
+	at app_kvServer.ClientConnection.receiveMessage(ClientConnection.java:183)
+	at app_kvServer.ClientConnection.run(ClientConnection.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:833)

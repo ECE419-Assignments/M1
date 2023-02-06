@@ -30,6 +30,8 @@ public class KVStore extends Thread implements KVCommInterface {
 	private Socket clientSocket;
 	private String address;
 	private int port;
+	private static volatile KVM latestMsg;
+	private static volatile int msgCount = 0;
 
 	private OutputStream output;
 	private InputStream input;
@@ -45,7 +47,8 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			while (isRunning()) {
 				try {
-					KVM latestMsg = receiveMessage();
+					latestMsg = receiveMessage();
+					msgCount++;
 					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
 					}
@@ -62,12 +65,20 @@ public class KVStore extends Thread implements KVCommInterface {
 							logger.error("Unable to close connection!");
 						}
 					}
+				} catch (NumberFormatException ex) {
+					logger.info("empty string sent");
+				} catch (Exception ex) {
+					logger.error("exception");
 				}
 			}
 		} catch (IOException ioe) {
 			logger.error("Connection could not be established!");
 			disconnect();
 		}
+	}
+
+	public KVM getLatestMsg() {
+		return latestMsg;
 	}
 
 	public KVStore(String address, int port) {
@@ -82,6 +93,10 @@ public class KVStore extends Thread implements KVCommInterface {
 		setRunning(true);
 		logger.info("Connection established");
 		this.start();
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
@@ -91,9 +106,10 @@ public class KVStore extends Thread implements KVCommInterface {
 		try {
 			tearDownConnection();
 			for (KVClient listener : listeners) {
+				logger.info("Closing listener");
 				listener.handleStatus(SocketStatus.DISCONNECTED);
 			}
-		} catch (IOException ioe) {
+		} catch (Exception ioe) {
 			logger.error("Unable to close connection!");
 		}
 	}
@@ -110,7 +126,7 @@ public class KVStore extends Thread implements KVCommInterface {
 		listeners.add(listener);
 	}
 
-	private KVM receiveMessage() throws IOException {
+	private KVM receiveMessage() throws IOException, Exception {
 
 		int index = 0;
 		byte[] msgBytes = null, tmp = null;
@@ -170,6 +186,20 @@ public class KVStore extends Thread implements KVCommInterface {
 		return msg;
 	}
 
+	public KVM getNextMsg() {
+		int prevMsgCount = msgCount;
+		while (prevMsgCount == msgCount) {
+			prevMsgCount = msgCount;
+			try {
+				Thread.sleep(1);
+			} catch (Exception e) {
+
+			}
+		}
+		System.out.println(getLatestMsg().getStatus());
+		return getLatestMsg();
+	}
+
 	public void sendMessage(KVM msg) throws IOException {
 		byte[] msgBytes = msg.getMsgBytes();
 		output.write(msgBytes, 0, msgBytes.length);
@@ -184,14 +214,14 @@ public class KVStore extends Thread implements KVCommInterface {
 			status = StatusType.DELETE;
 		}
 		sendMessage(new KVM(status, key, value));
-		return null;
+		return getNextMsg();
 	}
 
 	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
 	public KVM get(String key) throws IOException {
 		sendMessage(new KVM(StatusType.GET, key, " "));
-		return null;
+		return getNextMsg();
 	}
 
 	private void tearDownConnection() throws IOException {
