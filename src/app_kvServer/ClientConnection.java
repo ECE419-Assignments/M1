@@ -8,15 +8,9 @@ import java.net.Socket;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import client.TextMessage;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
 
-/**
- * Represents a connection end point for a particular client that is
- * connected to the server. This class is responsible for message reception
- * and sending.
- * The class also implements the echo functionality. Thus whenever a message
- * is received it is going to be echoed back to the client.
- */
 public class ClientConnection implements Runnable {
 
 	private Logger logger = Logger.getLogger("Client Connection");
@@ -28,6 +22,7 @@ public class ClientConnection implements Runnable {
 	private Socket clientSocket;
 	private InputStream input;
 	private OutputStream output;
+	private KVM latestMsg;
 
 	private KVServer kvServer;
 
@@ -55,35 +50,88 @@ public class ClientConnection implements Runnable {
 			output = clientSocket.getOutputStream();
 			input = clientSocket.getInputStream();
 
-			sendMessage(new TextMessage(
-					"Connection to MSRG Echo server established: "
-							+ clientSocket.getLocalAddress() + " / "
+			// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
+			sendMessage(new KVM(StatusType.MESSAGE, " ",
+					"Connection to KV server established "
+							+ clientSocket.getLocalAddress() + " "
 							+ clientSocket.getLocalPort()));
 
+			// TODO: More informative logs on server side.
 			while (isOpen) {
 				try {
-					TextMessage latestMsg = receiveMessage();
-					String[] msgParts = latestMsg.getMsg().split(":");
-					logger.info(msgParts[0]);
-					if (msgParts[0].equals("put")) {
-						this.kvServer.putKV(msgParts[1], msgParts[2]);
-						sendMessage(new TextMessage("success"));
-					} else if (msgParts[0].equals("get")) {
-						String value = "success:" + this.kvServer.getKV(msgParts[1]);
-						logger.info(value);
-						sendMessage(new TextMessage(value));
-					} else if (msgParts[0].equals("kill")) {
-						this.kvServer.kill();
-						sendMessage(new TextMessage("success"));
-					} else if (msgParts[0].equals("close")) {
-						this.kvServer.close();
-						sendMessage(new TextMessage("success"));
+					KVM latestMsg = receiveMessage();
+					StatusType status = latestMsg.getStatus();
+					logger.info(status);
+
+					if (status.equals(StatusType.PUT)) {
+						String key = latestMsg.getKey();
+						String value = latestMsg.getValue();
+						status = StatusType.PUT_ERROR;
+
+						try {
+							boolean alreadyExists = false;
+							if (this.kvServer.inCache(key)) {
+								alreadyExists = true;
+							}
+
+							this.kvServer.putKV(key, value);
+							logger.info(key + value);
+							if (!alreadyExists) {
+								status = StatusType.PUT_SUCCESS;
+							} else {
+								status = StatusType.PUT_UPDATE;
+							}
+						} catch (Exception e) {
+							// Log message
+						}
+
+						sendMessage(new KVM(status, key, value));
+
+					} else if (status.equals(StatusType.GET)) {
+						String key = latestMsg.getKey();
+						status = StatusType.GET_ERROR;
+						String value = " "; // TODO Change from empty string
+
+						try {
+							value = this.kvServer.getKV(latestMsg.getKey());
+							status = StatusType.GET_SUCCESS;
+							logger.info(value);
+						} catch (Exception e) {
+							// Log Message
+						}
+
+						sendMessage(new KVM(status, key, value));
+
+					} else if (status.equals(StatusType.DELETE)) {
+						String key = latestMsg.getKey();
+						String value = latestMsg.getValue();
+						status = StatusType.DELETE_ERROR;
+
+						try {
+							this.kvServer.deleteKV(key);
+							status = StatusType.DELETE_SUCCESS;
+							logger.info(key + value);
+						} catch (Exception e) {
+							// Log message
+						}
+
+						sendMessage(new KVM(status, key, value));
+
+						// } else if (msgParts[0].equals("kill")) {
+						// this.kvServer.kill();
+						// sendMessage(new TextMessage("success"));
+						// } else if (msgParts[0].equals("close")) {
+						// this.kvServer.close();
+						// sendMessage(new TextMessage("success"));
 					}
 				} catch (IOException ioe) {
-					logger.error("Error! Connection lost!");
+					System.out.println(ioe);
+					logger.error("Error! Connection lost!", ioe);
+					isOpen = false;
+				} catch (NumberFormatException e) {
 					isOpen = false;
 				} catch (Exception e) {
-					logger.error("Error! Connection lost!");
+					logger.error("Error! Connection lost!", e);
 					isOpen = false;
 				}
 			}
@@ -105,13 +153,17 @@ public class ClientConnection implements Runnable {
 		}
 	}
 
+	public KVM getLatestMsg() {
+		return latestMsg;
+	}
+
 	/**
-	 * Method sends a TextMessage using this socket.
+	 * Method sends a message using this socket.
 	 * 
 	 * @param msg the message that is to be sent.
 	 * @throws IOException some I/O error regarding the output stream
 	 */
-	public void sendMessage(TextMessage msg) throws IOException {
+	public void sendMessage(KVM msg) throws IOException {
 		byte[] msgBytes = msg.getMsgBytes();
 		output.write(msgBytes, 0, msgBytes.length);
 		output.flush();
@@ -121,7 +173,7 @@ public class ClientConnection implements Runnable {
 				+ msg.getMsg() + "'");
 	}
 
-	private TextMessage receiveMessage() throws IOException {
+	private KVM receiveMessage() throws IOException, Exception {
 
 		int index = 0;
 		byte[] msgBytes = null, tmp = null;
@@ -130,13 +182,6 @@ public class ClientConnection implements Runnable {
 		/* read first char from stream */
 		byte read = (byte) input.read();
 		boolean reading = true;
-
-		// logger.info("First Char: " + read);
-		// Check if stream is closed (read returns -1)
-		// if (read == -1){
-		// TextMessage msg = new TextMessage("");
-		// return msg;
-		// }
 
 		while (/* read != 13 && */ read != 10 && read != -1 && reading) {/* CR, LF, error */
 			/* if buffer filled, copy to msg array */
@@ -181,7 +226,7 @@ public class ClientConnection implements Runnable {
 		msgBytes = tmp;
 
 		/* build final String */
-		TextMessage msg = new TextMessage(msgBytes);
+		KVM msg = new KVM(msgBytes);
 		logger.info("RECEIVE \t<"
 				+ clientSocket.getInetAddress().getHostAddress() + ":"
 				+ clientSocket.getPort() + ">: '"

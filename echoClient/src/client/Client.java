@@ -79,6 +79,7 @@ public class Client extends Thread {
 
 		try {
 			tearDownConnection();
+			System.out.println(listeners.size());
 			for (ClientSocketListener listener : listeners) {
 				listener.handleStatus(SocketStatus.DISCONNECTED);
 			}

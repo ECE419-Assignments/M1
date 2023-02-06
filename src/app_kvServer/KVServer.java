@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 public class KVServer extends Thread implements IKVServer {
 
 	private static Logger logger = Logger.getLogger("KV Server");
-	private HashMap<String, String> kvMap = new HashMap<String, String>();
 	/**
 	 * Start KV Server at given port
 	 * 
@@ -45,6 +44,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.strategy = strategy;
 		this.running = false;
 		this.cache = new Cache(cacheSize);
+		this.start();
 	}
 
 	public int getPort() {
@@ -68,11 +68,15 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public boolean inCache(String key) {
-		return cache.containsKey(key);
+		return cache.cache.containsKey(key) || cache.onDisk(key);
 	}
 
 	public String getKV(String key) throws Exception {
 		return cache.find(key);
+	}
+
+	public void deleteKV(String key) throws Exception {
+		cache.delete(key);
 	}
 
 	public void putKV(String key, String value) throws Exception {
@@ -152,7 +156,6 @@ public class KVServer extends Thread implements IKVServer {
 			} else {
 				int port = Integer.parseInt(args[0]);
 				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO);
-				kvServer.start();
 			}
 		} catch (IOException e) {
 			System.out.println("Error! Unable to initialize logger!");

@@ -10,8 +10,10 @@ public interface KVMessage {
 		PUT_SUCCESS, 	/* Put - request successful, tuple inserted */
 		PUT_UPDATE, 	/* Put - request successful, i.e. value updated */
 		PUT_ERROR, 		/* Put - request not successful */
+		DELETE,			/* Delete -request */
 		DELETE_SUCCESS, /* Delete - request successful */
-		DELETE_ERROR 	/* Delete - request successful */
+		DELETE_ERROR, 	/* Delete - request successful */
+		MESSAGE			/* Sending a message back to client*/
 	}
 
 	/**
@@ -33,22 +35,3 @@ public interface KVMessage {
 	public StatusType getStatus();
 	
 }
-
-//TODO: Needs a buffer for the bytes in ASCII encoding. Needs a intialization function for inputing strings and
-// Inputing bytest with the required conversion.
-
-
-/*
- * String Input Side:
- * (String key, String value, String status)
- * Create string message
- * EX: "status|key|value\n\r"
- * ASCII encode
- * 
- * Byte Side:
- * (bytes[] ascii bytes)
- * splice the "status|key|value"
- * 
- * 
- * 
- */

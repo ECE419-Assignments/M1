@@ -11,8 +11,10 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import shared.messages.KVMessage;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
 import app_kvClient.KVClient;
+import app_kvClient.KVClient.SocketStatus;
 
 public class KVStore extends Thread implements KVCommInterface {
 	/**
@@ -28,6 +30,8 @@ public class KVStore extends Thread implements KVCommInterface {
 	private Socket clientSocket;
 	private String address;
 	private int port;
+	private static volatile KVM latestMsg;
+	private static volatile int msgCount = 0;
 
 	private OutputStream output;
 	private InputStream input;
@@ -43,7 +47,8 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			while (isRunning()) {
 				try {
-					TextMessage latestMsg = receiveMessage();
+					latestMsg = receiveMessage();
+					msgCount++;
 					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
 					}
@@ -52,22 +57,28 @@ public class KVStore extends Thread implements KVCommInterface {
 						logger.info("Connection lost!");
 						try {
 							tearDownConnection();
-							// TODO:
-							// for (KVClient listener : listeners) {
-							// // listener.handleStatus(
-							// // SocketStatus.CONNECTION_LOST);
-							// }
+							for (KVClient listener : listeners) {
+								listener.handleStatus(
+										SocketStatus.CONNECTION_LOST);
+							}
 						} catch (IOException e) {
 							logger.error("Unable to close connection!");
 						}
 					}
+				} catch (NumberFormatException ex) {
+					logger.info("empty string sent");
+				} catch (Exception ex) {
+					logger.error("exception");
 				}
 			}
 		} catch (IOException ioe) {
 			logger.error("Connection could not be established!");
-			// closeConnection();
-			// }
+			disconnect();
 		}
+	}
+
+	public KVM getLatestMsg() {
+		return latestMsg;
 	}
 
 	public KVStore(String address, int port) {
@@ -82,13 +93,25 @@ public class KVStore extends Thread implements KVCommInterface {
 		setRunning(true);
 		logger.info("Connection established");
 		this.start();
-		// listeners = new HashSet<KVClient>();
-		// logger.info("Connection established");
+		try {
+			Thread.sleep(100);
+		} catch (Exception e) {
+		}
 	}
 
 	@Override
-	public void disconnect() {
-		// TODO Auto-generated method stub
+	public synchronized void disconnect() {
+		logger.info("try to close connection ...");
+
+		try {
+			tearDownConnection();
+			for (KVClient listener : listeners) {
+				logger.info("Closing listener");
+				listener.handleStatus(SocketStatus.DISCONNECTED);
+			}
+		} catch (Exception ioe) {
+			logger.error("Unable to close connection!");
+		}
 	}
 
 	public boolean isRunning() {
@@ -103,7 +126,7 @@ public class KVStore extends Thread implements KVCommInterface {
 		listeners.add(listener);
 	}
 
-	private TextMessage receiveMessage() throws IOException {
+	private KVM receiveMessage() throws IOException, Exception {
 
 		int index = 0;
 		byte[] msgBytes = null, tmp = null;
@@ -158,12 +181,26 @@ public class KVStore extends Thread implements KVCommInterface {
 		msgBytes = tmp;
 
 		/* build final String */
-		TextMessage msg = new TextMessage(msgBytes);
+		KVM msg = new KVM(msgBytes);
 		logger.info("Receive message:\t '" + msg.getMsg() + "'");
 		return msg;
 	}
 
-	public void sendMessage(TextMessage msg) throws IOException {
+	public KVM getNextMsg() {
+		int prevMsgCount = msgCount;
+		while (prevMsgCount == msgCount) {
+			prevMsgCount = msgCount;
+			try {
+				Thread.sleep(1);
+			} catch (Exception e) {
+
+			}
+		}
+		System.out.println(getLatestMsg().getStatus());
+		return getLatestMsg();
+	}
+
+	public void sendMessage(KVM msg) throws IOException {
 		byte[] msgBytes = msg.getMsgBytes();
 		output.write(msgBytes, 0, msgBytes.length);
 		output.flush();
@@ -171,23 +208,28 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVMessage put(String key, String value) throws IOException {
-		sendMessage(new TextMessage("put:" + key + ":" + value));
-		return null;
+	public KVM put(String key, String value) throws IOException {
+		StatusType status = StatusType.PUT;
+		if (value.equals("null")) {
+			status = StatusType.DELETE;
+		}
+		sendMessage(new KVM(status, key, value));
+		return getNextMsg();
 	}
 
+	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
-	public KVMessage get(String key) throws IOException {
-		sendMessage(new TextMessage("get:" + key));
-		return null;
+	public KVM get(String key) throws IOException {
+		sendMessage(new KVM(StatusType.GET, key, " "));
+		return getNextMsg();
 	}
 
 	private void tearDownConnection() throws IOException {
 		setRunning(false);
 		logger.info("tearing down the connection ...");
 		if (clientSocket != null) {
-			// input.close();
-			// output.close();
+			input.close();
+			output.close();
 			clientSocket.close();
 			clientSocket = null;
 			logger.info("connection closed!");
