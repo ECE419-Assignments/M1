@@ -79,8 +79,8 @@ public class KVServer extends Thread implements IKVServer {
 		return cache.find(key);
 	}
 
-	public StatusType deleteKV(String key) throws Exception {
-		return cache.delete(key);
+	public void deleteKV(String key) throws Exception {
+		cache.delete(key);
 	}
 
 	public void putKV(String key, String value) throws Exception {

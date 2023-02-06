@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 
-
 public class ClientConnection implements Runnable {
 
 	private Logger logger = Logger.getLogger("Client Connection");
@@ -50,13 +49,13 @@ public class ClientConnection implements Runnable {
 			output = clientSocket.getOutputStream();
 			input = clientSocket.getInputStream();
 
-			//TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
+			// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 			sendMessage(new KVM(StatusType.MESSAGE, " ",
 					"Connection to KV server established "
 							+ clientSocket.getLocalAddress() + " "
 							+ clientSocket.getLocalPort()));
 
-			//TODO: More informative logs on server side.
+			// TODO: More informative logs on server side.
 			while (isOpen) {
 				try {
 					KVM latestMsg = receiveMessage();
@@ -68,28 +67,27 @@ public class ClientConnection implements Runnable {
 						String value = latestMsg.getValue();
 						status = StatusType.PUT_ERROR;
 
-
-						try{
+						try {
 							this.kvServer.putKV(key, value);
 							logger.info(key + value);
 							status = StatusType.PUT_SUCCESS;
-						} catch (Exception e){
-							//Log message
+						} catch (Exception e) {
+							// Log message
 						}
 
 						sendMessage(new KVM(status, key, value));
-						
+
 					} else if (status.equals(StatusType.GET)) {
 						String key = latestMsg.getKey();
 						status = StatusType.GET_ERROR;
-						String value = " "; //TODO Change from empty string
+						String value = " "; // TODO Change from empty string
 
 						try {
 							value = this.kvServer.getKV(latestMsg.getKey());
-							if (value != " ") {status = StatusType.GET_SUCCESS;}
+							status = StatusType.GET_SUCCESS;
 							logger.info(value);
-						} catch (Exception e){
-							//Log Message
+						} catch (Exception e) {
+							// Log Message
 						}
 
 						sendMessage(new KVM(status, key, value));
@@ -99,23 +97,22 @@ public class ClientConnection implements Runnable {
 						String value = latestMsg.getValue();
 						status = StatusType.DELETE_ERROR;
 
-
-						try{
-							this.kvServer.putKV(key, value);
+						try {
+							this.kvServer.deleteKV(key);
 							status = StatusType.DELETE_SUCCESS;
 							logger.info(key + value);
-						} catch (Exception e){
-							//Log message
+						} catch (Exception e) {
+							// Log message
 						}
 
 						sendMessage(new KVM(status, key, value));
 
-					// } else if (msgParts[0].equals("kill")) {
-					// 	this.kvServer.kill();
-					// 	sendMessage(new TextMessage("success"));
-					// } else if (msgParts[0].equals("close")) {
-					// 	this.kvServer.close();
-					// 	sendMessage(new TextMessage("success"));
+						// } else if (msgParts[0].equals("kill")) {
+						// this.kvServer.kill();
+						// sendMessage(new TextMessage("success"));
+						// } else if (msgParts[0].equals("close")) {
+						// this.kvServer.close();
+						// sendMessage(new TextMessage("success"));
 					}
 				} catch (IOException ioe) {
 					logger.error("Error! Connection lost!", ioe);

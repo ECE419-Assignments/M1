@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 
 import shared.messages.KVMessage.StatusType;
+
 //TODO real delete functionality
 //TODO move into KVServer
 class Cache extends Thread {
@@ -23,7 +24,7 @@ class Cache extends Thread {
         return String.format("./.cache/%s", key);
     }
 
-    //TODO MAKE THIS SYNCHRONIZED??
+    // TODO MAKE THIS SYNCHRONIZED??
     private void saveToDisk(String key, String value) {
         String filepath = getFilepath(key);
         File file = new File(filepath);
@@ -42,7 +43,7 @@ class Cache extends Thread {
         return file.exists();
     }
 
-    //TODO MAKE THIS SYNCHRONIZED??
+    // TODO MAKE THIS SYNCHRONIZED??
     private String findFromDisk(String key) {
         String filepath = getFilepath(key);
         File file = new File(filepath);
@@ -52,7 +53,7 @@ class Cache extends Thread {
             reader.close();
             return value;
         } catch (FileNotFoundException e) {
-            return " "; //TODO Change this to something better
+            return " "; // TODO Change this to something better
         }
     }
 
@@ -69,14 +70,31 @@ class Cache extends Thread {
         return status;
     }
 
-    public String find(String key) {
+    public String find(String key) throws Exception {
         if (cache.containsKey(key)) {
+            System.out.println("Found in cache");
             return cache.get(key);
         }
         if (onDisk(key)) {
             return findFromDisk(key);
         }
-        return " "; //TODO Make something better
+        throw new Exception("Could not find key");
+    }
+
+    public void delete(String key) throws Exception {
+        if (!containsKey(key)) {
+            throw new Exception("Could not find key");
+        }
+        if (cache.containsKey(key)) {
+            cache.remove(key);
+        }
+
+        String filepath = getFilepath(key);
+        File file = new File(filepath);
+        if (file.exists()) {
+            file.delete();
+        }
+
     }
 
     public boolean containsKey(String key) {
@@ -86,7 +104,7 @@ class Cache extends Thread {
     public void clearCache() {
         cache.clear();
     }
-   
+
     public void clearDisk() {
         File dir = new File(".cache");
         for (File file : dir.listFiles())
@@ -98,19 +116,19 @@ class Cache extends Thread {
         System.out.println(cache);
     }
 
-    //TODO: THIS IS TEST CODE?
+    // TODO: THIS IS TEST CODE?
     // public void run() {
-    //     save("1", "A");
-    //     save("2", "B");
-    //     save("3", "C");
-    //     save("1", "D");
-    //     save("4", "E");
-    //     printCache();
-    //     System.out.println(find("2"));
+    // save("1", "A");
+    // save("2", "B");
+    // save("3", "C");
+    // save("1", "D");
+    // save("4", "E");
+    // printCache();
+    // System.out.println(find("2"));
     // }
 
     // public static void main(String[] args) {
-    //     new Cache(3).start();
-    //     System.out.println("hello world");
+    // new Cache(3).start();
+    // System.out.println("hello world");
     // }
 }

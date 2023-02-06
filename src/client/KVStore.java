@@ -55,8 +55,8 @@ public class KVStore extends Thread implements KVCommInterface {
 						try {
 							tearDownConnection();
 							for (KVClient listener : listeners) {
-							listener.handleStatus(
-							SocketStatus.CONNECTION_LOST);
+								listener.handleStatus(
+										SocketStatus.CONNECTION_LOST);
 							}
 						} catch (IOException e) {
 							logger.error("Unable to close connection!");
@@ -180,12 +180,14 @@ public class KVStore extends Thread implements KVCommInterface {
 	@Override
 	public KVM put(String key, String value) throws IOException {
 		StatusType status = StatusType.PUT;
-		if(value.equals("null")) {status = StatusType.DELETE;}
+		if (value.equals("null")) {
+			status = StatusType.DELETE;
+		}
 		sendMessage(new KVM(status, key, value));
 		return null;
 	}
 
-	//TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
+	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
 	public KVM get(String key) throws IOException {
 		sendMessage(new KVM(StatusType.GET, key, " "));
