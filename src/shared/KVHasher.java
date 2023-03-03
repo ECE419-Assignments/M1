@@ -6,7 +6,9 @@ import java.nio.charset.StandardCharsets;
 
 import ecs.ECSNode;
 
-public class KVHasher {
+public class KVHasher { // TODO: Zeni - Remove all updateNodeHashRanges from this class.
+    // Reasoning: The class is used for hashing, it should not be changing
+    // information on ECS nodes. The two classes are too coupled right now
 
     private static String hasher_type = "MD5";
     private static MessageDigest hasher;

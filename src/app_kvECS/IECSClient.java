@@ -38,7 +38,7 @@ public interface IECSClient {
      * 
      * @return name of new server
      */
-    public ECSNode addNode(String cacheStrategy, int cacheSize);
+    public ECSNode addNode(String cacheStrategy, int cacheSize, boolean stopStartServer);
 
     /**
      * Randomly choose <numberOfNodes> servers from the available machines and start
@@ -52,7 +52,7 @@ public interface IECSClient {
      * 
      * @return set of strings containing the names of the nodes
      */
-    public Collection<ECSNode> addNodes(int count, String cacheStrategy, int cacheSize);
+    public Collection<ECSNode> addNodes(int count, String cacheStrategy, int cacheSize, boolean stopStartServer);
 
     /**
      * Sets up `count` servers with the ECS (in this case Zookeeper)

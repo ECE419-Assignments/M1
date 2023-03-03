@@ -35,7 +35,7 @@ public class ECSNode extends KVServer implements IECSNode {
         this.hash_range = hash_range;
     }
 
-    public void moveValuesToCorrectServer() {
+    public void moveValuesToCorrectServer() { // TODO: Navid
         this.setWriteLock(true);
 
         // cache_key_values = all_cache_key_values
@@ -51,7 +51,7 @@ public class ECSNode extends KVServer implements IECSNode {
         this.setWriteLock(false);
     }
 
-    public void moveKVsToServer(ECSNode targetServer) {
+    public void moveKVsToServer(ECSNode targetServer) { // TODO: Navid
         this.setWriteLock(true);
 
         // cache_key_values = all_cache_key_values
