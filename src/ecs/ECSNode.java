@@ -51,4 +51,20 @@ public class ECSNode extends KVServer implements IECSNode {
         this.setWriteLock(false);
     }
 
+    public void moveKVsToServer(ECSNode targetServer) {
+        this.setWriteLock(true);
+
+        // cache_key_values = all_cache_key_values
+
+        // for ( String key, String value) in cache_key_values {
+        // targetServer.putKV(key, value);
+        // this.deleteKV(key);
+        // }
+
+        this.setWriteLock(false);
+    }
+
+    public void killServer() {
+        this.kill();
+    }
 }

@@ -15,18 +15,28 @@ class Cache extends Thread {
 
     LinkedHashMap<String, String> cache;
     private boolean is_locked = false;
+    String dir;
 
-    public Cache(final int cacheSize) {
+    public Cache(final int cacheSize, String hostname, int port) {
         cache = new LinkedHashMap<String, String>() {
             @Override
             protected boolean removeEldestEntry(final Map.Entry eldest) {
                 return size() > cacheSize;
             }
         };
+        dir = String.format("./.cache/%s:%s", hostname, port);
+        createFolderIfNotExist(dir);
+    }
+
+    private void createFolderIfNotExist(String path) {
+        File directory = new File(path);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
     }
 
     private String getFilepath(String key) {
-        return String.format("./.cache/%s", key);
+        return String.format("%s/%s", dir, key);
     }
 
     // TODO MAKE THIS SYNCHRONIZED??

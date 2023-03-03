@@ -10,6 +10,7 @@ import java.util.Collection;
 import ecs.ECSNode;
 import ecs.ECSNode;
 
+// TODO: Navid - Update metadata on server delete, add and so on
 public class ECSClient implements IECSClient {
 
     TreeMap<String, ECSNode> server_tree = new TreeMap();
@@ -61,7 +62,6 @@ public class ECSClient implements IECSClient {
         server_tree.put(address, new ECSNode(this, "localhost", current_port, cacheSize, CacheStrategy.FIFO));
         current_port += 1;
 
-        // TODO: Noramlize data between servers
         return null;
     }
 
@@ -71,47 +71,73 @@ public class ECSClient implements IECSClient {
             addNode(cacheStrategy, cacheSize);
         }
 
-        // TODO: Noramlize data between servers
         return null;
     }
 
-    @Override
-    public Collection<ECSNode> setupNodes(int count, String cacheStrategy, int cacheSize) {
-        addNodes(count, cacheStrategy, cacheSize);
-
+    public void moveValuesToCorrectServers() {
         for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
             ECSNode server = server_entry.getValue();
             server.moveValuesToCorrectServer();
         }
+    }
+
+    @Override
+    public Collection<ECSNode> setupNodes(int count, String cacheStrategy, int cacheSize) {
+
+        addNodes(count, cacheStrategy, cacheSize);
+        moveValuesToCorrectServers();
+        start();
 
         return null;
     }
 
     @Override
-    public boolean awaitNodes(int count, int timeout) throws Exception {
+    public boolean awaitNodes(int count, int timeout) throws Exception { // Navid
         // TODO
         return false;
     }
 
     @Override
-    public boolean removeNodes(Collection<String> nodeNames) {
-        // TODO
+    public boolean removeNodes(Collection<String> nodeNames) { // Navid
+        // ECSNode targetServer;
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // if (server.getName() not in nodeNames) {
+        // targetServer = server;
+        // break;
+        // }
+        // }
+
+        // if (targetServer == null) {
+        // return false;
+        // }
+
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // if (server.getName() in nodeNames) {
+        // server.moveKVsToServer(targetServer);
+        // server.killServer();
+        // }
+        // }
+
+        // moveValuesToCorrectServers();
+        // return true;
         return false;
     }
 
     @Override
-    public Map<String, ECSNode> getNodes() {
+    public Map<String, ECSNode> getNodes() { // Navid
         // TODO
         return null;
     }
 
     @Override
-    public ECSNode getNodeByKey(String Key) {
+    public ECSNode getNodeByKey(String Key) { // Zeni
         // TODO
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { // Zeni
         // TODO
     }
 }

@@ -74,7 +74,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.port = port;
 		this.cacheSize = cacheSize;
 		this.strategy = strategy;
-		this.cache = new Cache(cacheSize);
+		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.start();
 	}
