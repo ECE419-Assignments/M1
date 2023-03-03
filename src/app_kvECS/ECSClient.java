@@ -1,47 +1,89 @@
 package app_kvECS;
 
 import java.util.Map;
+import java.util.TreeMap;
+
+import app_kvServer.IKVServer.CacheStrategy;
+
 import java.util.Collection;
 
-import ecs.IECSNode;
+import ecs.ECSNode;
+import ecs.ECSNode;
 
 public class ECSClient implements IECSClient {
 
-    TreeMap<String, IECSNode> server_tree = new TreeMap();
+    TreeMap<String, ECSNode> server_tree = new TreeMap();
+
+    private int current_port = 50000;
 
     @Override
     public boolean start() {
-        // TODO
-        return false;
+        try {
+            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+                ECSNode server = server_entry.getValue();
+                server.startServer();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean stop() {
-        // TODO
-        return false;
+        try {
+            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+                ECSNode server = server_entry.getValue();
+                server.stopServer();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean shutdown() {
-        // TODO
-        return false;
+        try {
+            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+                ECSNode server = server_entry.getValue();
+                server.close();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public IECSNode addNode(String cacheStrategy, int cacheSize) {
-        // TODO
+    public ECSNode addNode(String cacheStrategy, int cacheSize) {
+        String address = String.format("localhost:%o", current_port);
+        server_tree.put(address, new ECSNode(this, "localhost", current_port, cacheSize, CacheStrategy.FIFO));
+        current_port += 1;
+
+        // TODO: Noramlize data between servers
         return null;
     }
 
     @Override
-    public Collection<IECSNode> addNodes(int count, String cacheStrategy, int cacheSize) {
-        // TODO
+    public Collection<ECSNode> addNodes(int count, String cacheStrategy, int cacheSize) {
+        for (int i = 0; i < count; i++) {
+            addNode(cacheStrategy, cacheSize);
+        }
+
+        // TODO: Noramlize data between servers
         return null;
     }
 
     @Override
-    public Collection<IECSNode> setupNodes(int count, String cacheStrategy, int cacheSize) {
-        // TODO
+    public Collection<ECSNode> setupNodes(int count, String cacheStrategy, int cacheSize) {
+        addNodes(count, cacheStrategy, cacheSize);
+
+        for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+            ECSNode server = server_entry.getValue();
+            server.moveValuesToCorrectServer();
+        }
+
         return null;
     }
 
@@ -58,13 +100,13 @@ public class ECSClient implements IECSClient {
     }
 
     @Override
-    public Map<String, IECSNode> getNodes() {
+    public Map<String, ECSNode> getNodes() {
         // TODO
         return null;
     }
 
     @Override
-    public IECSNode getNodeByKey(String Key) {
+    public ECSNode getNodeByKey(String Key) {
         // TODO
         return null;
     }

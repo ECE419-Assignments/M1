@@ -217,6 +217,12 @@ public class KVStore extends Thread implements KVCommInterface {
 		return getNextMsg();
 	}
 
+	@Override
+	public KVM getKeyrange() throws IOException {
+		sendMessage(new KVM(StatusType.KEYRANGE, "", ""));
+		return getNextMsg();
+	}
+
 	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
 	public KVM get(String key) throws IOException {

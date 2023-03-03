@@ -8,6 +8,11 @@ import java.net.Socket;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import app_kvServer.exceptions.FailedException;
+import app_kvServer.exceptions.KeyNotFoundException;
+import app_kvServer.exceptions.ServerNotResponsibleException;
+import app_kvServer.exceptions.ServerStoppedException;
+import app_kvServer.exceptions.WriteLockException;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 
@@ -61,69 +66,59 @@ public class ClientConnection implements Runnable {
 				try {
 					KVM latestMsg = receiveMessage();
 					StatusType status = latestMsg.getStatus();
+					String key = latestMsg.getKey();
+					String value = latestMsg.getValue();
 					logger.info(status);
 
-					if (status.equals(StatusType.PUT)) {
-						String key = latestMsg.getKey();
-						String value = latestMsg.getValue();
-						status = StatusType.PUT_ERROR;
+					StatusType responseStatus = StatusType.FAILED;
+					String responseKey = key;
+					String responseValue = value;
 
-						try {
-							boolean alreadyExists = false;
-							if (this.kvServer.inCache(key)) {
-								alreadyExists = true;
-							}
+					try {
+						if (status.equals(StatusType.PUT)) {
+							responseStatus = StatusType.PUT_ERROR;
+
+							boolean alreadyExists = this.kvServer.inCache(key);
 
 							this.kvServer.putKV(key, value);
 							logger.info(key + value);
+
 							if (!alreadyExists) {
-								status = StatusType.PUT_SUCCESS;
+								responseStatus = StatusType.PUT_SUCCESS;
 							} else {
-								status = StatusType.PUT_UPDATE;
+								responseStatus = StatusType.PUT_UPDATE;
 							}
-						} catch (Exception e) {
-							// Log message
-						}
-
-						sendMessage(new KVM(status, key, value));
-
-					} else if (status.equals(StatusType.GET)) {
-						String key = latestMsg.getKey();
-						status = StatusType.GET_ERROR;
-						String value = " "; // TODO Change from empty string
-
-						try {
+						} else if (status.equals(StatusType.GET)) {
 							value = this.kvServer.getKV(latestMsg.getKey());
 							status = StatusType.GET_SUCCESS;
 							logger.info(value);
-						} catch (Exception e) {
-							// Log Message
-						}
-
-						sendMessage(new KVM(status, key, value));
-
-					} else if (status.equals(StatusType.DELETE)) {
-						String key = latestMsg.getKey();
-						String value = latestMsg.getValue();
-						status = StatusType.DELETE_ERROR;
-
-						try {
+						} else if (status.equals(StatusType.DELETE)) {
 							this.kvServer.deleteKV(key);
-							status = StatusType.DELETE_SUCCESS;
+							responseStatus = StatusType.DELETE_SUCCESS;
 							logger.info(key + value);
-						} catch (Exception e) {
-							// Log message
+						} else if (status.equals(StatusType.KEYRANGE)) {
+							responseValue = String.join(";", this.kvServer.getNodeHashRange());
+							// TODO: M2 - Turn into a string that we can pass back to client
 						}
-
-						sendMessage(new KVM(status, key, value));
-
-						// } else if (msgParts[0].equals("kill")) {
-						// this.kvServer.kill();
-						// sendMessage(new TextMessage("success"));
-						// } else if (msgParts[0].equals("close")) {
-						// this.kvServer.close();
-						// sendMessage(new TextMessage("success"));
+					} catch (ServerStoppedException e) {
+						responseStatus = StatusType.SERVER_STOPPED;
+					} catch (ServerNotResponsibleException e) {
+						responseStatus = StatusType.SERVER_NOT_RESPONSIBLE;
+					} catch (WriteLockException e) {
+						responseStatus = StatusType.SERVER_WRITE_LOCK;
+					} catch (KeyNotFoundException e) {
+						responseStatus = StatusType.FAILED;
+						if (status.equals(StatusType.DELETE)) {
+							responseStatus = StatusType.DELETE_ERROR;
+						} else if (status.equals(StatusType.GET)) {
+							responseStatus = StatusType.GET_ERROR;
+						}
+					} catch (Exception e) {
+						responseStatus = StatusType.FAILED;
+						responseValue = e.getMessage();
 					}
+
+					sendMessage(new KVM(responseStatus, responseKey, responseValue));
 				} catch (IOException ioe) {
 					System.out.println(ioe);
 					logger.error("Error! Connection lost!", ioe);

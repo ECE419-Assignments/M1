@@ -1,15 +1,20 @@
 package app_kvServer;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+
+import app_kvServer.exceptions.FailedException;
+import app_kvServer.exceptions.KeyNotFoundException;
+import app_kvServer.exceptions.WriteLockException;
+
 import java.io.*;
 
 import shared.messages.KVMessage.StatusType;
 
-//TODO real delete functionality
-//TODO move into KVServer
 class Cache extends Thread {
 
     LinkedHashMap<String, String> cache;
+    private boolean is_locked = false;
 
     public Cache(final int cacheSize) {
         cache = new LinkedHashMap<String, String>() {
@@ -25,7 +30,10 @@ class Cache extends Thread {
     }
 
     // TODO MAKE THIS SYNCHRONIZED??
-    private void saveToDisk(String key, String value) {
+    private void saveToDisk(String key, String value) throws WriteLockException {
+        if (is_locked) {
+            throw new WriteLockException();
+        }
         String filepath = getFilepath(key);
         File file = new File(filepath);
         file.delete();
@@ -44,7 +52,7 @@ class Cache extends Thread {
     }
 
     // TODO MAKE THIS SYNCHRONIZED??
-    private String findFromDisk(String key) {
+    private String findFromDisk(String key) throws FailedException {
         String filepath = getFilepath(key);
         File file = new File(filepath);
         try {
@@ -53,16 +61,23 @@ class Cache extends Thread {
             reader.close();
             return value;
         } catch (FileNotFoundException e) {
-            return " "; // TODO Change this to something better
+            throw new FailedException();
         }
     }
 
-    public StatusType save(String key, String value) {
+    public void setWriteLock(boolean locked) {
+        this.is_locked = locked;
+    }
+
+    public StatusType save(String key, String value) throws WriteLockException {
+        if (this.is_locked) {
+            throw new WriteLockException();
+        }
+
         StatusType status = StatusType.PUT;
         if (cache.containsKey(key)) {
             cache.remove(key);
             status = StatusType.PUT_UPDATE;
-
         }
         cache.put(key, value);
         saveToDisk(key, value);
@@ -70,7 +85,7 @@ class Cache extends Thread {
         return status;
     }
 
-    public String find(String key) throws Exception {
+    public String find(String key) throws KeyNotFoundException, FailedException {
         if (cache.containsKey(key)) {
             System.out.println("Found in cache");
             return cache.get(key);
@@ -78,13 +93,18 @@ class Cache extends Thread {
         if (onDisk(key)) {
             return findFromDisk(key);
         }
-        throw new Exception("Could not find key");
+        throw new KeyNotFoundException();
     }
 
-    public void delete(String key) throws Exception {
-        if (!containsKey(key)) {
-            throw new Exception("Could not find key");
+    public void delete(String key) throws KeyNotFoundException, WriteLockException {
+        if (this.is_locked) {
+            throw new WriteLockException();
         }
+
+        if (!containsKey(key)) {
+            throw new KeyNotFoundException();
+        }
+
         if (cache.containsKey(key)) {
             cache.remove(key);
         }
@@ -101,11 +121,17 @@ class Cache extends Thread {
         return cache.containsKey(key) || onDisk(key);
     }
 
-    public void clearCache() {
+    public void clearCache() throws WriteLockException {
+        if (this.is_locked) {
+            throw new WriteLockException();
+        }
         cache.clear();
     }
 
-    public void clearDisk() {
+    public void clearDisk() throws WriteLockException {
+        if (this.is_locked) {
+            throw new WriteLockException();
+        }
         File dir = new File(".cache");
         for (File file : dir.listFiles())
             if (!file.isDirectory())
@@ -115,20 +141,4 @@ class Cache extends Thread {
     public void printCache() {
         System.out.println(cache);
     }
-
-    // TODO: THIS IS TEST CODE?
-    // public void run() {
-    // save("1", "A");
-    // save("2", "B");
-    // save("3", "C");
-    // save("1", "D");
-    // save("4", "E");
-    // printCache();
-    // System.out.println(find("2"));
-    // }
-
-    // public static void main(String[] args) {
-    // new Cache(3).start();
-    // System.out.println("hello world");
-    // }
 }

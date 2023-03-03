@@ -1,18 +1,23 @@
 package ecs;
 
-public class ECSNode implements IECSNode {
+import app_kvECS.ECSClient;
+import app_kvServer.KVServer;
+
+public class ECSNode extends KVServer implements IECSNode {
 
     String host;
     int port;
-    String[] hash_range;
+    ECSClient ECSMaster;
 
-    public ECSNode(String host, int port){
+    public ECSNode(ECSClient ECSMaster, String host, int port, int cacheSize, CacheStrategy cacheStrategy) {
+        super(port, cacheSize, cacheStrategy);
         this.host = host;
         this.port = port;
+        this.ECSMaster = ECSMaster;
     }
 
     @Override
-    public String getNodeName(){
+    public String getNodeName() {
         return null;
     }
 
@@ -22,17 +27,28 @@ public class ECSNode implements IECSNode {
     }
 
     @Override
-    public int getNodePort(){
+    public int getNodePort() {
         return port;
     }
 
-    @Override
-    public String[] getNodeHashRange(){
-        return hash_range;
+    public void updateNodeHashRanges(String[] hash_range) {
+        this.hash_range = hash_range;
     }
 
-    public void updateNodeHashRanges(String[] hash_range){
-        this.hash_range = hash_range;
+    public void moveValuesToCorrectServer() {
+        this.setWriteLock(true);
+
+        // cache_key_values = all_cache_key_values
+
+        // for ( String key, String value) in cache_key_values {
+        // ECSNode targetServer = ECSMaster.getNodeByKey(key);
+        // if (this.getName() != targetServer.getName()) {
+        // targetServer.putKV(key, value);
+        // this.deleteKV(key);
+        // }
+        // }
+
+        this.setWriteLock(false);
     }
 
 }

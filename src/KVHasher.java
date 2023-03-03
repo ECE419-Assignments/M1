@@ -7,20 +7,21 @@ import java.nio.charset.StandardCharsets;
 import ecs.ECSNode;
 
 public class KVHasher {
-  
+
     private static String hasher_type = "MD5";
     private static MessageDigest hasher;
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
     // Constructor
-    public KVHasher(){
+    public KVHasher() {
         try {
             this.hasher = MessageDigest.getInstance(this.hasher_type);
-        } catch (NoSuchAlgorithmException e){}
+        } catch (NoSuchAlgorithmException e) {
+        }
     }
 
     // Delete a server from the given binary tree
-    public TreeMap<String, ECSNode> deleteServer(TreeMap<String, ECSNode> server_tree, String server_info){
+    public TreeMap<String, ECSNode> deleteServer(TreeMap<String, ECSNode> server_tree, String server_info) {
         String hex_string = this.hashValue(server_info);
         ECSNode rvalue = server_tree.remove(hex_string);
 
@@ -30,7 +31,7 @@ public class KVHasher {
     }
 
     // Add server to the given binary tree
-    public TreeMap<String, ECSNode> addServer(TreeMap<String, ECSNode> server_tree, String server_info, ECSNode node){
+    public TreeMap<String, ECSNode> addServer(TreeMap<String, ECSNode> server_tree, String server_info, ECSNode node) {
         String hex_string = this.hashValue(server_info);
         server_tree.put(hex_string, node);
 
@@ -39,9 +40,9 @@ public class KVHasher {
         return server_tree;
     }
 
-    private TreeMap<String, ECSNode> updateNodeHashRanges(TreeMap<String, ECSNode> server_tree){
+    private TreeMap<String, ECSNode> updateNodeHashRanges(TreeMap<String, ECSNode> server_tree) {
 
-        for (Map.Entry<String, ECSNode> entry: server_tree.entrySet()){
+        for (Map.Entry<String, ECSNode> entry : server_tree.entrySet()) {
             String key = entry.getKey();
             ECSNode server_node = entry.getValue();
 
@@ -52,21 +53,21 @@ public class KVHasher {
 
     }
 
-    // Returns the node ascoiated with the server info from the server tree
-    public ECSNode getServerNode(TreeMap<String, ECSNode> server_tree, String server_info){
+    // Returns the node associated with the server info from the server tree
+    public ECSNode getServerNode(TreeMap<String, ECSNode> server_tree, String server_info) {
         String hex_string = this.hashValue(server_info);
         ECSNode node = server_tree.get(hex_string);
 
         return node;
     }
 
-    // Determines which server the Key is handeled by
-    public ECSNode getKeysServer(TreeMap<String, ECSNode> server_tree, String key){
+    // Determines which server the Key is handled by
+    public ECSNode getKeysServer(TreeMap<String, ECSNode> server_tree, String key) {
         String hex_string = this.hashValue(key);
 
         String server_key = server_tree.lowerKey(key);
         // If there is no hash lower get the greatest (loop around)
-        if (server_key == null){
+        if (server_key == null) {
             server_key = server_tree.lastKey();
         }
 
@@ -75,14 +76,15 @@ public class KVHasher {
     }
 
     // Hashes a value
-    public String hashValue (String msg){
+    public String hashValue(String msg) {
         this.hasher.update(msg.getBytes());
         byte[] digest = this.hasher.digest();
         String hex_number = this.bytesToHex(digest);
         return hex_number;
     }
 
-    // Sourced from https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
+    // Sourced from
+    // https://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
     // Converts the bytes to a string of Hex Values
     public String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
@@ -94,16 +96,16 @@ public class KVHasher {
         return new String(hexChars);
     }
 
-    public String[] getServerHashRange(TreeMap<String, ECSNode> server_tree, String key){
+    public String[] getServerHashRange(TreeMap<String, ECSNode> server_tree, String key) {
         String[] hash_range = new String[2];
 
         hash_range[0] = key;
 
         hash_range[1] = server_tree.higherKey(hash_range[0]);
 
-        if (server_tree.size() == 0){
+        if (server_tree.size() == 0) {
             hash_range[1] = hash_range[0];
-        } else if (hash_range[1] == null){
+        } else if (hash_range[1] == null) {
             hash_range[1] = server_tree.firstKey();
         }
 
@@ -112,15 +114,15 @@ public class KVHasher {
     }
 
     // Used for parsing strings received from key range request
-    public TreeMap<String,ECSNode> createServerTree(String key_range){
-        TreeMap<String,ECSNode> server_tree = new TreeMap<String, ECSNode>();
+    public TreeMap<String, ECSNode> createServerTree(String key_range) {
+        TreeMap<String, ECSNode> server_tree = new TreeMap<String, ECSNode>();
 
         String[] tokens = key_range.split(";");
 
-        for (String entry: tokens){
+        for (String entry : tokens) {
             String[] server_def = entry.split(",");
             String[] server_info = server_def[2].split(":");
-            String[] hash_range = {server_def[0], server_def[1]};
+            String[] hash_range = { server_def[0], server_def[1] };
             ECSNode server_node = new ECSNode(server_info[0], Integer.valueOf(server_info[1]));
             server_node.updateNodeHashRanges(hash_range);
 
@@ -131,11 +133,11 @@ public class KVHasher {
     }
 
     // Used for creating strings for key range requests
-    public String getKeyRange(TreeMap<String,ECSNode> server_tree){
+    public String getKeyRange(TreeMap<String, ECSNode> server_tree) {
 
         StringBuilder key_range = new StringBuilder();
-        
-        for (Map.Entry<String, ECSNode> entry: server_tree.entrySet()){
+
+        for (Map.Entry<String, ECSNode> entry : server_tree.entrySet()) {
             String key = entry.getKey();
             ECSNode value = entry.getValue();
 
@@ -143,26 +145,26 @@ public class KVHasher {
             String host = value.getNodeHost();
             Integer port = value.getNodePort();
             key_range.append(hash_range[0]).append(",").append(hash_range[1]).append(",");
-            key_range.append(host).append(":").append(port.toString()).append(";");         
+            key_range.append(host).append(":").append(port.toString()).append(";");
         }
 
-        return key_range.toString(); 
+        return key_range.toString();
     }
 
     // testing
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         KVHasher hasher = new KVHasher();
         ECSNode node;
         TreeMap<String, ECSNode> server_tree = new TreeMap<String, ECSNode>();
 
-        for (int i=0; i<5; i++){
-            node = new ECSNode("localhost", 3000+i);
-            server_tree = hasher.addServer(server_tree, "localhost:"+3000+i, node);
+        for (int i = 0; i < 5; i++) {
+            node = new ECSNode("localhost", 3000 + i);
+            server_tree = hasher.addServer(server_tree, "localhost:" + 3000 + i, node);
         }
 
-        for (int i=0; i<10; i++){
-            ECSNode that = hasher.getKeysServer(server_tree, Integer.toString(i*2000));
+        for (int i = 0; i < 10; i++) {
+            ECSNode that = hasher.getKeysServer(server_tree, Integer.toString(i * 2000));
         }
 
         String key_range = hasher.getKeyRange(server_tree);
