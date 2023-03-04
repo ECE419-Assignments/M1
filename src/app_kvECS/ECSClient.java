@@ -87,7 +87,7 @@ public class ECSClient implements IECSClient {
         String address = String.format("localhost:%o", current_port);
 
         ECSNode node = new ECSNode(this, "localhost", current_port, cacheSize, CacheStrategy.FIFO);
-        // TODO: Zeni - Get server_info
+        // TODO: Zeni - Get server_info from ip and port
         server_tree = kvHasher.addServer(server_tree, server_info, node);
         updateNodeHashRanges();
 
@@ -166,5 +166,10 @@ public class ECSClient implements IECSClient {
 
     public static void main(String[] args) { // Zeni
         // TODO
+        // Add
+        // Delete
+        // Start
+        // Stop
+        // Shutdown
     }
 }
