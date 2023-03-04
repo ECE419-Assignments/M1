@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
 import logger.LogSetup;
+import shared.KVHasher;
 
 // import java.util.logging.Logger;
 // import java.util.logging.Level;
@@ -77,6 +78,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.start();
+		hasher = new KVHasher();
 	}
 
 	@Override
@@ -264,5 +266,38 @@ public class KVServer extends Thread implements IKVServer {
 			System.out.println("Usage: Server <port>!");
 			System.exit(1);
 		}
+	}
+
+	///////////////////// Milestone /////////////////////
+
+	private KVHasher hasher;
+	private ServerConnection serverConnection;
+
+	public boolean getAllData() { // TODO: Zeni
+		return false;
+	}
+
+	public boolean getDataFromHashrange(String hashrange) { // TODO: Zeni
+		return false;
+	}
+
+	public void shutdown() {
+
+	}
+
+	public void deleteAllData() { // TODO: Zeni
+
+	}
+
+	public void sendAllDataToServer(ECSNode node) {
+		this.serverConnection.connect(node).sendData(this.getAllData()).disconnect();
+	}
+
+	public void sendDataToServer(ECSNode node, String hashrange) {
+		this.serverConnection.connect(node).sendData(this.getDataFromHashrange(hashrange)).disconnect();
+	}
+
+	public void updateMetadata(String key_range) {
+		this.hasher.updateServerTree(key_range);
 	}
 }

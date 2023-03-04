@@ -31,7 +31,7 @@ public class ECSNode extends KVServer implements IECSNode {
         return port;
     }
 
-    public void updateNodeHashRanges(String[] hash_range) {
+    public void updateMetadata(String[] metadata) { // Send over the
         this.hash_range = hash_range;
     }
 

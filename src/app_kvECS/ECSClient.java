@@ -172,4 +172,11 @@ public class ECSClient implements IECSClient {
         // Stop
         // Shutdown
     }
+
+    // Extra for add node
+    public addNode() {
+        host = "localhost"
+        port = 50051
+
+    }
 }
