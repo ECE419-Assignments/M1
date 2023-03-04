@@ -7,8 +7,6 @@ import ecs.IECSNode;
 
 public class ECSClient implements IECSClient {
 
-    TreeMap<String, IECSNode> server_tree = new TreeMap();
-
     @Override
     public boolean start() {
         // TODO
