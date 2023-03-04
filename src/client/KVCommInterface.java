@@ -1,5 +1,7 @@
 package client;
 
+import java.io.IOException;
+
 import shared.messages.KVMessage;
 
 public interface KVCommInterface {
@@ -44,4 +46,6 @@ public interface KVCommInterface {
 	 *                   KV server).
 	 */
 	public KVMessage get(String key) throws Exception;
+
+	public KVMessage getKeyrange() throws IOException;
 }

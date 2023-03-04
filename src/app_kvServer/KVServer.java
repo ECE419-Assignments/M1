@@ -3,17 +3,47 @@ package app_kvServer;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
 import logger.LogSetup;
+import shared.KVHasher;
 
 // import java.util.logging.Logger;
 // import java.util.logging.Level;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import app_kvServer.exceptions.FailedException;
+import app_kvServer.exceptions.KeyNotFoundException;
+import app_kvServer.exceptions.ServerNotResponsibleException;
+import app_kvServer.exceptions.ServerStoppedException;
+import app_kvServer.exceptions.WriteLockException;
+import ecs.ECSNode;
+
 public class KVServer extends Thread implements IKVServer {
+	public enum KVServerResponseCode {
+		SERVER_NOT_RESPONSIBLE("::SERVER_NOT_RESPONSIBLE");
+
+		private final String text;
+
+		/**
+		 * @param text
+		 */
+		KVServerResponseCode(final String text) {
+			this.text = text;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Enum#toString()
+		 */
+		@Override
+		public String toString() {
+			return text;
+		}
+	};
 
 	private static Logger logger = Logger.getLogger("KV Server");
 	/**
@@ -37,14 +67,26 @@ public class KVServer extends Thread implements IKVServer {
 	private int cacheSize;
 	private ServerSocket serverSocket;
 	private Cache cache;
+	protected String[] hash_range;
+
+	protected boolean serverStopped = true;
 
 	public KVServer(int port, int cacheSize, CacheStrategy strategy) {
 		this.port = port;
 		this.cacheSize = cacheSize;
 		this.strategy = strategy;
-		this.running = false;
-		this.cache = new Cache(cacheSize);
+		this.cache = new Cache(cacheSize, "localhost", port);
+		this.serverStopped = true;
 		this.start();
+		hasher = new KVHasher();
+	}
+
+	@Override
+	public String[] getNodeHashRange() throws ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		return hash_range;
 	}
 
 	public int getPort() {
@@ -55,40 +97,86 @@ public class KVServer extends Thread implements IKVServer {
 		return "127.0.0.1";
 	}
 
-	public CacheStrategy getCacheStrategy() {
+	public CacheStrategy getCacheStrategy() throws ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
 		return strategy;
 	}
 
-	public int getCacheSize() {
+	public int getCacheSize() throws ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
 		return cacheSize;
 	}
 
-	public boolean inStorage(String key) {
+	public boolean inStorage(String key) throws ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		// kvHasher = KVHasher();
+		// if (/* Server is responsible */) {
+		// throw new ServerNotResponsibleException();
+		// }
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+
 		return cache.onDisk(key);
 	}
 
-	public boolean inCache(String key) {
-		return cache.cache.containsKey(key) || cache.onDisk(key);
+	public boolean inCache(String key) throws ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		return cache.containsKey(key);
 	}
 
-	public String getKV(String key) throws Exception {
+	public String getKV(String key)
+			throws ServerNotResponsibleException, FailedException, KeyNotFoundException, ServerStoppedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		// kvHasher = KVHasher();
+		// if (/* Server is responsible */) {
+		// throw new ServerNotResponsibleException();
+		// }
+
 		return cache.find(key);
 	}
 
-	public void deleteKV(String key) throws Exception {
+	public void deleteKV(String key) throws ServerStoppedException, WriteLockException, KeyNotFoundException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
 		cache.delete(key);
 	}
 
-	public void putKV(String key, String value) throws Exception {
-		logger.info("putting value");
+	public void putKV(String key, String value)
+			throws ServerNotResponsibleException, ServerStoppedException, WriteLockException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		// kvHasher = KVHasher();
+		// if (/* Server is responsible */) {
+		// throw new ServerNotResponsibleException();
+		// }
+
 		cache.save(key, value);
 	}
 
-	public void clearCache() {
+	public void clearCache() throws ServerStoppedException, WriteLockException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
 		cache.clearCache();
 	}
 
-	public void clearStorage() {
+	public void clearStorage() throws ServerStoppedException, WriteLockException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
 		cache.clearDisk();
 	}
 
@@ -120,6 +208,14 @@ public class KVServer extends Thread implements IKVServer {
 		System.exit(0);
 	}
 
+	public void stopServer() {
+		this.serverStopped = true;
+	}
+
+	public void startServer() {
+		this.serverStopped = false;
+	}
+
 	public void close() {
 		logger.info("Closing server!");
 		this.running = false;
@@ -128,6 +224,10 @@ public class KVServer extends Thread implements IKVServer {
 
 	private boolean isRunning() {
 		return this.running;
+	}
+
+	protected void setWriteLock(boolean locked) {
+		cache.setWriteLock(locked);
 	}
 
 	private boolean initializeServer() {
@@ -166,5 +266,38 @@ public class KVServer extends Thread implements IKVServer {
 			System.out.println("Usage: Server <port>!");
 			System.exit(1);
 		}
+	}
+
+	///////////////////// Milestone /////////////////////
+
+	private KVHasher hasher;
+	private ServerConnection serverConnection;
+
+	public boolean getAllData() { // TODO: Zeni
+		return false;
+	}
+
+	public boolean getDataFromHashrange(String hashrange) { // TODO: Zeni
+		return false;
+	}
+
+	public void shutdown() {
+
+	}
+
+	public void deleteAllData() { // TODO: Zeni
+
+	}
+
+	public void sendAllDataToServer(ECSNode node) {
+		this.serverConnection.connect(node).sendData(this.getAllData()).disconnect();
+	}
+
+	public void sendDataToServer(ECSNode node, String hashrange) {
+		this.serverConnection.connect(node).sendData(this.getDataFromHashrange(hashrange)).disconnect();
+	}
+
+	public void updateMetadata(String key_range) {
+		this.hasher.updateServerTree(key_range);
 	}
 }
