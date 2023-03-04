@@ -1,3 +1,5 @@
+package shared;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.TreeMap;
