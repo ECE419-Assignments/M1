@@ -61,6 +61,13 @@ class Cache extends Thread {
         return file.exists();
     }
 
+    public void getAllKeyValues() {
+        files= getAllFilesInDir()
+
+        for file in files:
+            values.append(files.name, findFromDisk(files.name))
+    }
+
     // TODO MAKE THIS SYNCHRONIZED??
     private String findFromDisk(String key) throws FailedException {
         String filepath = getFilepath(key);

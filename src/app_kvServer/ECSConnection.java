@@ -42,14 +42,28 @@ public class ECSConnection extends BaseConnection {
                 sendResponse = true;
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
-            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) { // Delete Server
-                // this.server.sendAllDataToServer(node);
-                // this.sendDataMovedConfirmation();
-                // this.server.deleteAllData();
-                // this.server.shutdown();
-            } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) { // New Server
-                // Send data to server on value address
-                sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
+            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) { 
+                String server_address = value;
+
+                Socket socket = new Socket(String.split(":", server_address)); // TODO: Navid
+                ClientConnection connection = new ClientConnection(this.kvServer, socket);
+                new Thread(connection).start();
+
+                keys, values = this.kvServer.getAllKeyValues();
+
+                foreach key, value {
+                    connection.sendMessage(new KVM(StatusType.PUT, key, value));
+                }
+
+                connection.close();
+                Thread.sleep(100);
+                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
+
+                foreach key, value {
+                    this.kvServer.deleteKV(key);
+                }
+                this.kvServer.close();
+                this.close();
             } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
                 String server_address = value, keyrange = key;
 
@@ -60,7 +74,7 @@ public class ECSConnection extends BaseConnection {
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
 
-                keys, values = get_all_keys_values();
+                keys, values = this.kvServer.getAllKeyValues();
 
                 foreach key, value {
                     shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(key);
@@ -69,6 +83,10 @@ public class ECSConnection extends BaseConnection {
                     }
 
                 }
+
+                connection.close();
+                Thread.sleep(100);
+                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, "", ""));
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;
