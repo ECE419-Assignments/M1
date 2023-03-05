@@ -79,6 +79,10 @@ class Cache extends Thread {
         this.is_locked = locked;
     }
 
+    public boolean getWriteLock() {
+        return this.is_locked;
+    }
+
     public StatusType save(String key, String value) throws WriteLockException {
         if (this.is_locked) {
             throw new WriteLockException();

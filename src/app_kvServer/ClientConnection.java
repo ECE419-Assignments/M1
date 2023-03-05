@@ -1,14 +1,7 @@
 package app_kvServer;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import app_kvServer.exceptions.FailedException;
 import app_kvServer.exceptions.KeyNotFoundException;
 import app_kvServer.exceptions.ServerNotResponsibleException;
 import app_kvServer.exceptions.ServerStoppedException;

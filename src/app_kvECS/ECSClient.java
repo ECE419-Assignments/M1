@@ -177,6 +177,17 @@ public class ECSClient implements IECSClient {
     public addNode() {
         host = "localhost"
         port = 50051
+        server_address = "localhost:50051"
+        KVMetadataNode node = KVMetadata.add_server(host, port);
+            // Add a new attribute for prevNode, nextNode
+        if (node == node.prevNode) {
+            return;
+        }
+
+        node.updateMetadata();
+        
+
+
 
     }
 }
