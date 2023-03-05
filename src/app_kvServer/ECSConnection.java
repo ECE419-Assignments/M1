@@ -2,9 +2,12 @@ package app_kvServer;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import ecs.ECSNode;
+import shared.ecs.ECSNode;
 import shared.BaseConnection;
+import shared.misc;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 import shared.metadata.KVMetadata;
@@ -42,25 +45,31 @@ public class ECSConnection extends BaseConnection {
                 sendResponse = true;
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
-            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) { 
+            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
                 String server_address = value;
 
-                Socket socket = new Socket(String.split(":", server_address)); // TODO: Navid
+                String host = misc.getHostFromAddress(server_address);
+                int port = misc.getPortFromAddress(server_address);
+
+                Socket socket = new Socket(host, port); // TODO: Navid
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
 
-                keys, values = this.kvServer.getAllKeyValues();
+                LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
 
-                foreach key, value {
-                    connection.sendMessage(new KVM(StatusType.PUT, key, value));
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    String cur_key = entry.getKey();
+                    String cur_val = entry.getValue();
+                    connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                 }
 
                 connection.close();
                 Thread.sleep(100);
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
 
-                foreach key, value {
-                    this.kvServer.deleteKV(key);
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    String cur_key = entry.getKey();
+                    this.kvServer.deleteKV(cur_key);
                 }
                 this.kvServer.close();
                 this.close();
@@ -70,18 +79,22 @@ public class ECSConnection extends BaseConnection {
                 KVMetadata kvMetadata = new KVMetadata();
                 kvMetadata.createServerTree(keyrange);
 
-                Socket socket = new Socket(String.split(":", server_address)); // TODO: Navid
+                String host = misc.getHostFromAddress(server_address);
+                int port = misc.getPortFromAddress(server_address);
+                Socket socket = new Socket(host, port);
+
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
 
-                keys, values = this.kvServer.getAllKeyValues();
+                LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
 
-                foreach key, value {
-                    shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(key);
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    String cur_key = entry.getKey();
+                    String cur_val = entry.getValue();
+                    shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(cur_key);
                     if (server_address == correctServerNode.getNodeAddress()) {
-                        connection.sendMessage(new KVM(StatusType.PUT, key, value));
+                        connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                     }
-
                 }
 
                 connection.close();

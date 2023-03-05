@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import shared.ecs.ECSNode;
 import shared.messages.KVM;
@@ -190,13 +191,13 @@ public class ECSClient implements IECSClient {
     }
 
     public void updateAllServerMetadatas() {
-        serverConnections.forEach((connection) -> {
+        for (ServerConnection connection : serverConnections) {
             try {
                 connection.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", kvMetadata.getKeyRange()));
             } catch (Exception e) {
-
+                System.out.println("Error in update all server metadatas");
             }
-        });
+        }
     }
 
     public void run() {
@@ -246,10 +247,10 @@ public class ECSClient implements IECSClient {
         }
     }
 
-    public ServerConnection getServerConnectionWithAddress(String address) {
-        for (int i = 0; i < this.serverConnections.size(); i++) {
-            if (this.serverConnections[i].address == address) {
-                return this.serverConnections[i];
+    public ServerConnection getServerConnectionWithAddress(String address) throws NameNotFoundException {
+        for (ServerConnection serverConnection : serverConnections) {
+            if (serverConnection.address == address) {
+                return serverConnection;
             }
         }
 

@@ -3,6 +3,7 @@ package app_kvServer;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
@@ -180,6 +181,10 @@ public class KVServer extends Thread implements IKVServer {
 			throw new ServerStoppedException();
 		}
 		cache.clearDisk();
+	}
+
+	public LinkedHashMap<String, String> getAllKeyValues() {
+		return this.cache.getAllKeyValues();
 	}
 
 	public void run() {
