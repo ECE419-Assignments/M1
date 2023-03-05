@@ -15,9 +15,13 @@ public class ServerConnection extends BaseConnection {
 
     private ECSClient ecsClient;
 
+    public String address;
+
     public ServerConnection(ECSClient ecsClient, Socket socket) {
         super(socket);
         this.ecsClient = ecsClient;
+        address = socket.getRemoteSocketAddress().toString();
+        System.out.println(address);
     }
 
     @Override()
