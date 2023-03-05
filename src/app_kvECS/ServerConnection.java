@@ -35,13 +35,24 @@ public class ServerConnection extends BaseConnection {
         try {
             if (status.equals(StatusType.NEW_SERVER)) {
                 this.ecsClient.kvMetadata.addServer(value);
-                responseStatus = StatusType.TOGGLE_WRITE_LOCK;
+                this.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
+                ServerConnection prevConnection = this.ecsClient
+                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
 
-                ServerConnection connection = this.ecsClient
-                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode());
-                connection
+                prevConnection
+                        .sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
+                Thread.sleep(10);
+                prevConnection
+                        .sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT, "", filter_range)); // TODO: Zeni
+            } else if (status.equals(StatusType.SERVER_SHUTDOWN)) {
+                this.ecsClient.kvMetadata.deleteServer(value);
+                this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
+                ServerConnection prevConnection = this.ecsClient
+                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
+                prevConnection
                         .sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
-                sendResponse = true;
+                Thread.sleep(10);
+                this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, "", prevConnection.address));
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION)) {
                 this.ecsClient.updateAllServerMetadatas();
                 sendResponse = false;
