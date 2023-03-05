@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.net.Socket;
 
 import ecs.ECSNode;
+import shared.BaseConnection;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 
 public class ECSConnection extends BaseConnection {
 
+    protected KVServer kvServer;
+
     public ECSConnection(KVServer kvServer, String host, int port) throws IOException {
-        super(kvServer, host, port);
+        super(host, port);
+        this.kvServer = kvServer;
         sendMessage(new KVM(StatusType.SERVER_STARTED, "", ""));
     }
 

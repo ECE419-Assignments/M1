@@ -5,21 +5,34 @@ import java.util.TreeMap;
 
 import app_kvServer.IKVServer.CacheStrategy;
 
+import java.io.IOException;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
 
 import ecs.ECSNode;
 import shared.KVHasher;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 // TODO: Zeni - Double check and make sure all the KVHasher stuff here is correct. I'm not sure what format
 // you used for the server_info so you might need to change the places where I pass server_info
 public class ECSClient implements IECSClient {
 
+    private static Logger logger = Logger.getLogger("ECS Client");
     TreeMap<String, ECSNode> server_tree = new TreeMap();
 
     KVHasher kvHasher = new KVHasher();
 
-    private int current_port = 50000;
+    private boolean running;
+    private ServerSocket serverSocket;
+    private int port;
+
+    public ECSClient(int port) {
+        this.port = port;
+    }
 
     @Override
     public boolean start() {
@@ -72,7 +85,8 @@ public class ECSClient implements IECSClient {
             String key = entry.getKey();
             ECSNode server_node = entry.getValue();
 
-            server_node.updateNodeHashRanges(kvHasher.getServerHashRange(server_tree, key));
+            // server_node.updateNodeHashRanges(kvHasher.getServerHashRange(server_tree,
+            // key));
             server_tree.put(key, server_node);
         }
         moveValuesToCorrectServers();
@@ -80,22 +94,24 @@ public class ECSClient implements IECSClient {
 
     @Override
     public ECSNode addNode(String cacheStrategy, int cacheSize, boolean stopStartServer) {
-        if (stopStartServer) {
-            stop();
-        }
+        // if (stopStartServer) {
+        // stop();
+        // }
 
-        String address = String.format("localhost:%o", current_port);
+        // String address = String.format("localhost:%o", current_port);
 
-        ECSNode node = new ECSNode(this, "localhost", current_port, cacheSize, CacheStrategy.FIFO);
-        // TODO: Zeni - Get server_info from ip and port
-        server_tree = kvHasher.addServer(server_tree, server_info, node);
-        updateNodeHashRanges();
+        // ECSNode node = new ECSNode(this, "localhost", current_port, cacheSize,
+        // CacheStrategy.FIFO);
+        // // TODO: Zeni - Get server_info from ip and port
+        // server_tree = kvHasher.addServer(server_tree, server_info, node);
+        // updateNodeHashRanges();
 
-        current_port += 1;
-        if (stopStartServer) {
-            start();
-        }
-        return node;
+        // current_port += 1;
+        // if (stopStartServer) {
+        // start();
+        // }
+        // return node;
+        return null;
     }
 
     @Override
@@ -131,7 +147,7 @@ public class ECSClient implements IECSClient {
             ECSNode server = server_entry.getValue();
             if (server.getName() == nodeName) {
                 // TODO: Zeni - Get server info here
-                server_tree = kvHasher.deleteServer(server_tree, server_info);
+                // server_tree = kvHasher.deleteServer(server_tree, server_info);
                 updateNodeHashRanges();
                 server.killServer();
 
@@ -164,7 +180,57 @@ public class ECSClient implements IECSClient {
         return null;
     }
 
-    public static void main(String[] args) { // Zeni
+    public void run() {
+        running = initializeECSClient();
+
+        if (serverSocket != null) {
+            while (isRunning()) {
+                try {
+                    logger.info("opening connection");
+                    Socket server = serverSocket.accept();
+                    ServerConnection connection = new ServerConnection(this, server);
+                    new Thread(connection).start();
+
+                    logger.info("Connected to "
+                            + server.getInetAddress().getHostName()
+                            + " on port " + server.getPort());
+                } catch (IOException e) {
+                    logger.info("Error! " +
+                            "Unable to establish connection. \n");
+                }
+            }
+            logger.info("done with while");
+        }
+    }
+
+    private boolean isRunning() {
+        return this.running;
+    }
+
+    public boolean initializeECSClient() {
+
+        logger.info("Initialize server ...");
+        try {
+            serverSocket = new ServerSocket(port);
+
+            logger.info("ECS Client listening on port: "
+                    + serverSocket.getLocalPort());
+            return true;
+
+        } catch (IOException e) {
+            logger.error("Error! Cannot open server socket:");
+            if (e instanceof BindException) {
+                logger.error("Port " + port + " is already bound!");
+            }
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        ECSClient ecsClient = new ECSClient(51000);
+        ecsClient.initializeECSClient();
+
+        // Zeni
         // TODO
         // Add
         // Delete
@@ -174,20 +240,17 @@ public class ECSClient implements IECSClient {
     }
 
     // Extra for add node
-    public addNode() {
-        host = "localhost"
-        port = 50051
-        server_address = "localhost:50051"
-        KVMetadataNode node = KVMetadata.add_server(host, port);
-            // Add a new attribute for prevNode, nextNode
-        if (node == node.prevNode) {
-            return;
-        }
+    // public addNode() {
+    // host = "localhost"
+    // port = 50051
+    // server_address = "localhost:50051"
+    // KVMetadataNode node = KVMetadata.add_server(host, port);
+    // // Add a new attribute for prevNode, nextNode
+    // if (node == node.prevNode) {
+    // return;
+    // }
 
-        node.updateMetadata();
-        
+    // node.updateMetadata();
 
-
-
-    }
+    // }
 }
