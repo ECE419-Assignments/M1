@@ -9,8 +9,6 @@ import java.io.IOException;
 import logger.LogSetup;
 import shared.metadata.KVMetadata;
 
-// import java.util.logging.Logger;
-// import java.util.logging.Level;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -69,6 +67,7 @@ public class KVServer extends Thread implements IKVServer {
 	protected String[] hash_range;
 	private int ecsPort;
 	public volatile KVMetadata metadata;
+	private ECSConnection connectionECS;
 
 	protected boolean serverStopped = true;
 
@@ -79,8 +78,9 @@ public class KVServer extends Thread implements IKVServer {
 		this.ecsPort = ecsPort;
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
-		this.start();
 		this.metadata = new KVMetadata();
+		this.start();
+		
 	}
 
 	@Override
@@ -185,6 +185,8 @@ public class KVServer extends Thread implements IKVServer {
 	public void run() {
 		running = initializeServer();
 
+		Runtime.getRuntime().addShutdownHook(new KVServerHook(this.connectionECS));
+
 		if (serverSocket != null) {
 			while (isRunning()) {
 				try {
@@ -242,8 +244,8 @@ public class KVServer extends Thread implements IKVServer {
 			serverSocket = new ServerSocket(port);
 
 			// Start ECS Socket
-			ECSConnection connection = new ECSConnection(this, "localhost", ecsPort);
-			new Thread(connection).start();
+			this.connectionECS = new ECSConnection(this, "localhost", ecsPort);
+			new Thread(this.connectionECS).start();
 
 			logger.info("Server listening on port: "
 					+ serverSocket.getLocalPort());
