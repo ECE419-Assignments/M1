@@ -47,8 +47,7 @@ public class BaseConnection implements Runnable {
         this.isOpen = false;
     }
 
-    public KVM processMessage(KVM message) {
-        return message;
+    public void processMessage(KVM message) throws IOException {
     }
 
     /**
@@ -70,7 +69,7 @@ public class BaseConnection implements Runnable {
             while (isOpen) {
                 try {
                     KVM latestMsg = receiveMessage();
-                    sendMessage(this.processMessage(latestMsg));
+                    this.processMessage(latestMsg);
                 } catch (IOException ioe) {
                     System.out.println(ioe);
                     logger.error("Error! Connection lost!", ioe);

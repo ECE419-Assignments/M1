@@ -1,5 +1,6 @@
 package app_kvServer;
 
+import java.io.IOException;
 import java.net.Socket;
 
 import app_kvServer.exceptions.KeyNotFoundException;
@@ -20,7 +21,7 @@ public class ClientConnection extends BaseConnection {
 	}
 
 	@Override()
-	public KVM processMessage(KVM message) {
+	public void processMessage(KVM message) throws IOException {
 		StatusType status = message.getStatus();
 		String key = message.getKey();
 		String value = message.getValue();
@@ -29,6 +30,7 @@ public class ClientConnection extends BaseConnection {
 		StatusType responseStatus = StatusType.FAILED;
 		String responseKey = key;
 		String responseValue = value;
+		boolean sendResponse = false;
 
 		try {
 			if (status.equals(StatusType.PUT)) {
@@ -44,16 +46,20 @@ public class ClientConnection extends BaseConnection {
 				} else {
 					responseStatus = StatusType.PUT_UPDATE;
 				}
+				sendResponse = true;
 			} else if (status.equals(StatusType.GET)) {
 				value = this.kvServer.getKV(message.getKey());
 				status = StatusType.GET_SUCCESS;
 				logger.info(value);
+				sendResponse = true;
 			} else if (status.equals(StatusType.DELETE)) {
 				this.kvServer.deleteKV(key);
 				responseStatus = StatusType.DELETE_SUCCESS;
 				logger.info(key + value);
+				sendResponse = true;
 			} else if (status.equals(StatusType.KEYRANGE)) {
 				responseValue = String.join(";", this.kvServer.getNodeHashRange());
+				sendResponse = true;
 				// TODO: M2 - Turn into a string that we can pass back to client
 			}
 		} catch (ServerStoppedException e) {
@@ -73,7 +79,10 @@ public class ClientConnection extends BaseConnection {
 			responseStatus = StatusType.FAILED;
 			responseValue = e.getMessage();
 		}
-		return new KVM(responseStatus, responseKey, responseValue);
+
+		if (sendResponse) {
+			this.sendMessage(new KVM(responseStatus, responseKey, responseValue));
+		}
 	}
 
 }
