@@ -61,11 +61,19 @@ class Cache extends Thread {
         return file.exists();
     }
 
-    public void getAllKeyValues() {
-        files= getAllFilesInDir()
+    public LinkedHashMap<String, String> getAllKeyValues() {
+        File folder = new File(dir);
+        File[] listOfFiles = folder.listFiles();
 
-        for file in files:
-            values.append(files.name, findFromDisk(files.name))
+        LinkedHashMap<String, String> values = new LinkedHashMap<String, String>();
+        for (File file : listOfFiles) {
+            try {
+                values.put(file.getName(), findFromDisk(file.getName()));
+            } catch (Exception e) {
+                System.out.println("Error getting all key values in Cache class");
+            }
+        }
+        return values;
     }
 
     // TODO MAKE THIS SYNCHRONIZED??

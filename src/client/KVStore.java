@@ -225,9 +225,9 @@ public class KVStore extends Thread implements KVCommInterface {
 
 		sendMessage(new KVM(status, key, value));
 		KVM message = getNextMsg();
-		StatusType status = message.getStatus();
+		status = message.getStatus();
 
-		if(status == StatusType.SERVER_NOT_RESPONSIBLE){
+		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
 			this.getKeyrange();
 			this.put(key, value);
 		}
@@ -254,7 +254,7 @@ public class KVStore extends Thread implements KVCommInterface {
 		KVM message = getNextMsg();
 		StatusType status = message.getStatus();
 
-		if(status == StatusType.SERVER_NOT_RESPONSIBLE){
+		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
 			this.getKeyrange();
 			this.get(key);
 		}
