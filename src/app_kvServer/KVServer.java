@@ -155,17 +155,21 @@ public class KVServer extends Thread implements IKVServer {
 
 	}
 
-	public void deleteKV(String key) throws ServerStoppedException, WriteLockException, KeyNotFoundException,
+	public void deleteKV(String key, boolean forceDelete)
+			throws ServerStoppedException, WriteLockException, KeyNotFoundException,
 			ServerNotResponsibleException {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
 
+		logger.debug(String.format("Deleting key value for key", key));
+
 		ECSNode keys_server = this.metadata.getKeysServer(key);
 		String address = String.format("%s:%s", this.getHostname(), this.getPort());
 
-		if ((keys_server.getNodeAddress()).equals(address)) {
-			cache.delete(key);
+		if ((keys_server.getNodeAddress()).equals(address) || forceDelete) {
+			logger.debug(String.format("Trying to delete", key));
+			cache.delete(key, forceDelete);
 		} else {
 			throw new ServerNotResponsibleException();
 		}

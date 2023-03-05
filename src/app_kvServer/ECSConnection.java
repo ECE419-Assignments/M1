@@ -30,7 +30,8 @@ public class ECSConnection extends BaseConnection {
     }
 
     public void serverShuttingDown() throws IOException {
-        sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, " ", " "));
+        sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, " ",
+                String.format("%s:%s", kvServer.getHostname(), kvServer.getPort())));
     }
 
     @Override()
@@ -87,7 +88,7 @@ public class ECSConnection extends BaseConnection {
 
                 for (Map.Entry<String, String> entry : values.entrySet()) {
                     String cur_key = entry.getKey();
-                    this.kvServer.deleteKV(cur_key);
+                    this.kvServer.deleteKV(cur_key, true);
                 }
                 this.kvServer.close();
                 this.close();
@@ -132,7 +133,7 @@ public class ECSConnection extends BaseConnection {
                     String cur_val = entry.getValue();
                     shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(cur_key);
                     if (server_address.equals(correctServerNode.getNodeAddress())) {
-                        this.kvServer.deleteKV(cur_key);
+                        this.kvServer.deleteKV(cur_key, true);
                     }
                 }
                 Thread.sleep(100);

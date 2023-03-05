@@ -103,8 +103,12 @@ public class KVMetadata {
     }
 
     public ECSNode getSuccesorNode(String server_address) {
-        ECSNode succesor_node = getKeysServer(server_address);
-        return succesor_node;
+        ECSNode successor_node = getKeysServer(server_address);
+        System.out.println(String.format("Get Successor Node Values: %s, %s, %s, %s", server_address, successor_node.getNodeAddress(), server_tree.firstKey(), server_tree.lastKey()));
+        if (server_address.equals(successor_node.getNodeAddress())) {
+            successor_node = server_tree.get(server_tree.firstKey());
+        }
+        return successor_node;
     }
 
     // Hashes a value

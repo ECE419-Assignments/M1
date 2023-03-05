@@ -48,6 +48,8 @@ public class ServerConnection extends BaseConnection {
 
                 logger.info("Hello 2");
                 ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
+                logger.info(String.format("Updating prev metadata for %s. The node being added is %s",
+                        prevNode.getNodeAddress(), value));
 
                 logger.info("Hello 3");
                 if (this.ecsClient.kvMetadata.getCountServers() != 1) {
@@ -64,11 +66,14 @@ public class ServerConnection extends BaseConnection {
                     logger.info("Hello 6");
                 }
             } else if (status.equals(StatusType.SERVER_SHUTDOWN)) {
+                logger.info(String.format("Deleting server with address %s", value));
                 this.ecsClient.kvMetadata.deleteServer(value);
                 this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
+                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
+                logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
+                        prevNode.getNodeAddress(), value));
                 ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(
-                                this.ecsClient.kvMetadata.getSuccesorNode(value).getNodeAddress());
+                        .getServerConnectionWithAddress(prevNode.getNodeAddress());
                 prevConnection
                         .sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
                 Thread.sleep(10);

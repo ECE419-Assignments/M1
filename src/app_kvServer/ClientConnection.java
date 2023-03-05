@@ -57,7 +57,7 @@ public class ClientConnection extends BaseConnection {
 				logger.info("But 4");
 				sendResponse = true;
 			} else if (status.equals(StatusType.DELETE)) {
-				this.kvServer.deleteKV(key);
+				this.kvServer.deleteKV(key, false);
 				responseStatus = StatusType.DELETE_SUCCESS;
 				logger.info(key + value);
 				sendResponse = true;

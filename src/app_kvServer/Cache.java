@@ -125,8 +125,8 @@ class Cache extends Thread {
         throw new KeyNotFoundException();
     }
 
-    public void delete(String key) throws KeyNotFoundException, WriteLockException {
-        if (this.is_locked) {
+    public void delete(String key, boolean forceDelete) throws KeyNotFoundException, WriteLockException {
+        if (this.is_locked && !forceDelete) {
             throw new WriteLockException();
         }
 
