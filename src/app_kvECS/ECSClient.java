@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import shared.ecs.ECSNode;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
 import shared.metadata.KVMetadata;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -29,6 +31,8 @@ public class ECSClient implements IECSClient {
     private boolean running;
     private ServerSocket serverSocket;
     private int port;
+
+    public Collection<ServerConnection> serverConnections;
 
     public ECSClient(int port) {
         this.port = port;
@@ -183,6 +187,16 @@ public class ECSClient implements IECSClient {
         return null;
     }
 
+    public void updateAllServerMetadatas() {
+        serverConnections.forEach((connection) -> {
+            try {
+                connection.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", kvMetadata.getKeyRange()));
+            } catch (Exception e) {
+
+            }
+        });
+    }
+
     public void run() {
         running = initializeECSClient();
 
@@ -192,6 +206,7 @@ public class ECSClient implements IECSClient {
                     logger.info("opening connection");
                     Socket server = serverSocket.accept();
                     ServerConnection connection = new ServerConnection(this, server);
+                    serverConnections.add(connection);
                     new Thread(connection).start();
 
                     logger.info("Connected to "

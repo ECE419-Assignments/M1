@@ -13,7 +13,7 @@ public class ECSConnection extends BaseConnection {
     public ECSConnection(KVServer kvServer, String host, int port) throws IOException {
         super(host, port);
         this.kvServer = kvServer;
-        sendMessage(new KVM(StatusType.SERVER_STARTED, "", ""));
+        sendMessage(new KVM(StatusType.NEW_SERVER, "", ""));
     }
 
     public void serverShuttingDown() throws IOException {

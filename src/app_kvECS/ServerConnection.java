@@ -32,15 +32,18 @@ public class ServerConnection extends BaseConnection {
         boolean sendResponse = true;
 
         try {
-            if (status.equals(StatusType.PUT)) {
-
-            } else if (status.equals(StatusType.GET)) {
-
+            if (status.equals(StatusType.NEW_SERVER)) {
+                this.ecsClient.kvMetadata.addServer(value);
+                responseStatus = StatusType.UPDATE_METADATA;
+                responseValue = this.ecsClient.kvMetadata.getKeyRange();
+            } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION)) {
+                this.ecsClient.updateAllServerMetadatas();
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;
             responseValue = e.getMessage();
         }
+
         return new KVM(responseStatus, responseKey, responseValue);
     }
 
