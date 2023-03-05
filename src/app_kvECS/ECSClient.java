@@ -12,8 +12,8 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
 
-import ecs.ECSNode;
-import shared.KVHasher;
+import shared.ecs.ECSNode;
+import shared.metadata.KVMetadata;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -24,7 +24,7 @@ public class ECSClient implements IECSClient {
     private static Logger logger = Logger.getLogger("ECS Client");
     TreeMap<String, ECSNode> server_tree = new TreeMap();
 
-    KVHasher kvHasher = new KVHasher();
+    KVMetadata kvMetadata = new KVMetadata();
 
     private boolean running;
     private ServerSocket serverSocket;
@@ -36,48 +36,51 @@ public class ECSClient implements IECSClient {
 
     @Override
     public boolean start() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.startServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.startServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     @Override
     public boolean stop() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.stopServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.stopServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     @Override
     public boolean shutdown() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.killServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.killServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     private void moveValuesToCorrectServers() {
-        for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-            ECSNode server = server_entry.getValue();
-            server.moveValuesToCorrectServer();
-        }
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.moveValuesToCorrectServer();
+        // }
     }
 
     private void updateNodeHashRanges() {
@@ -143,18 +146,18 @@ public class ECSClient implements IECSClient {
         stop();
 
         boolean removeSuccessful = false;
-        for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-            ECSNode server = server_entry.getValue();
-            if (server.getName() == nodeName) {
-                // TODO: Zeni - Get server info here
-                // server_tree = kvHasher.deleteServer(server_tree, server_info);
-                updateNodeHashRanges();
-                server.killServer();
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // if (server.getName() == nodeName) {
+        // // TODO: Zeni - Get server info here
+        // // server_tree = kvHasher.deleteServer(server_tree, server_info);
+        // updateNodeHashRanges();
+        // server.killServer();
 
-                removeSuccessful = true;
-                break;
-            }
-        }
+        // removeSuccessful = true;
+        // break;
+        // }
+        // }
         start();
         return removeSuccessful;
     }

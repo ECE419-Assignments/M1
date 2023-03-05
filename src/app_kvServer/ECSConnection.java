@@ -1,9 +1,7 @@
 package app_kvServer;
 
 import java.io.IOException;
-import java.net.Socket;
 
-import ecs.ECSNode;
 import shared.BaseConnection;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
@@ -43,7 +41,7 @@ public class ECSConnection extends BaseConnection {
                 responseStatus = StatusType.TOGGLE_WRITE_LOCK_SUCCESS;
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
-                
+
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
 
             } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
