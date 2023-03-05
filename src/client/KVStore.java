@@ -15,6 +15,8 @@ import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 import app_kvClient.KVClient;
 import app_kvClient.KVClient.SocketStatus;
+import shared.metadata.KVMetadata;
+import shared.ecs.ECSNode;
 
 public class KVStore extends Thread implements KVCommInterface {
 	/**
@@ -38,6 +40,8 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	private static final int BUFFER_SIZE = 1024;
 	private static final int DROP_SIZE = 1024 * BUFFER_SIZE;
+
+	private KVMetadata metadata = new KVMetadata();
 
 	public void run() {
 		logger.info("starting the KVStore");
@@ -209,25 +213,53 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	@Override
 	public KVM put(String key, String value) throws IOException {
+		ECSNode server_node = metadata.getKeysServer(key);
+		this.address = server_node.getNodeHost();
+		this.port = server_node.getNodePort();
+		connect();
+
 		StatusType status = StatusType.PUT;
 		if (value.equals("null")) {
 			status = StatusType.DELETE;
 		}
+
 		sendMessage(new KVM(status, key, value));
-		return getNextMsg();
+		KVM message = getNextMsg();
+		StatusType status = message.getStatus();
+
+		if(status == StatusType.SERVER_NOT_RESPONSIBLE){
+			this.getKeyrange();
+			this.put(key, value);
+		}
+
+		return message;
 	}
 
 	@Override
 	public KVM getKeyrange() throws IOException {
 		sendMessage(new KVM(StatusType.KEYRANGE, "", ""));
-		return getNextMsg();
+		KVM message = getNextMsg();
+		metadata.createServerTree(message.getValue());
+		return message;
 	}
 
 	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
 	public KVM get(String key) throws IOException {
+		ECSNode server_node = metadata.getKeysServer(key);
+		this.address = server_node.getNodeHost();
+		this.port = server_node.getNodePort();
+		connect();
 		sendMessage(new KVM(StatusType.GET, key, " "));
-		return getNextMsg();
+		KVM message = getNextMsg();
+		StatusType status = message.getStatus();
+
+		if(status == StatusType.SERVER_NOT_RESPONSIBLE){
+			this.getKeyrange();
+			this.get(key);
+		}
+
+		return message;
 	}
 
 	private void tearDownConnection() throws IOException {
