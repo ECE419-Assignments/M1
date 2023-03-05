@@ -22,6 +22,12 @@ public class KVM implements KVMessage {
     }
 
     public KVM(StatusType status, String key, String value) throws IllegalArgumentException {
+        if (key.equals("")) {
+            key = " ";
+        }
+        if (value.equals("")) {
+            value = " ";
+        }
         if (this.validInputs(status, key, value)) {
             this.key = key;
             this.value = value;

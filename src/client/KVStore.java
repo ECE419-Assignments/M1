@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ObjectInputFilter.Status;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashSet;
@@ -48,10 +49,17 @@ public class KVStore extends Thread implements KVCommInterface {
 		try {
 			this.output = this.clientSocket.getOutputStream();
 			this.input = this.clientSocket.getInputStream();
+			sendMessage(new KVM(StatusType.GET_KEYRANGE, "", ""));
 
 			while (isRunning()) {
 				try {
+					System.out.println("trying to get message");
 					latestMsg = receiveMessage();
+					System.out.println("received message");
+
+					if (latestMsg.getStatus().equals(StatusType.GET_KEYRANGE_SUCCESS)) {
+						metadata.createServerTree(latestMsg.getValue());
+					}
 					msgCount++;
 					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
@@ -88,6 +96,24 @@ public class KVStore extends Thread implements KVCommInterface {
 	public KVStore(String address, int port) {
 		this.address = address;
 		this.port = port;
+	}
+
+	public void connectToNewServer() {
+		try {
+			this.clientSocket = new Socket(address, port);
+			// this.listeners = new HashSet<KVClient>();
+
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+
+			}
+			this.input = this.clientSocket.getInputStream();
+			System.out.println("updated input");
+			this.output = this.clientSocket.getOutputStream();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -140,6 +166,8 @@ public class KVStore extends Thread implements KVCommInterface {
 		byte read = (byte) input.read();
 		boolean reading = true;
 
+		System.out.println("trying to read");
+
 		while (read != 13 && reading) {/* carriage return */
 			/* if buffer filled, copy to msg array */
 			if (index == BUFFER_SIZE) {
@@ -172,6 +200,7 @@ public class KVStore extends Thread implements KVCommInterface {
 			/* read next char from stream */
 			read = (byte) input.read();
 		}
+		System.out.println("finished reading");
 
 		if (msgBytes == null) {
 			tmp = new byte[index];
@@ -213,23 +242,31 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	@Override
 	public KVM put(String key, String value) throws IOException {
-		ECSNode server_node = metadata.getKeysServer(key);
-		this.address = server_node.getNodeHost();
-		this.port = server_node.getNodePort();
-		connect();
-
 		StatusType status = StatusType.PUT;
 		if (value.equals("null")) {
 			status = StatusType.DELETE;
 		}
-
 		sendMessage(new KVM(status, key, value));
+
 		KVM message = getNextMsg();
 		status = message.getStatus();
 
 		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
 			this.getKeyrange();
-			this.put(key, value);
+			disconnect();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+
+			}
+			ECSNode server_node = metadata.getKeysServer(key);
+			logger.info("hi 2");
+			this.address = server_node.getNodeHost();
+			this.port = server_node.getNodePort();
+			connect();
+			return this.put(key, value);
+		} else if (status == StatusType.SERVER_STOPPED) {
+			logger.info("Response: Server is stopped");
 		}
 
 		return message;
@@ -237,25 +274,49 @@ public class KVStore extends Thread implements KVCommInterface {
 
 	@Override
 	public KVM getKeyrange() throws IOException {
-		sendMessage(new KVM(StatusType.KEYRANGE, "", ""));
+		sendMessage(new KVM(StatusType.GET_KEYRANGE, "", ""));
 		KVM message = getNextMsg();
+		logger.info("Got key range");
+		logger.info(message.getValue());
 		metadata.createServerTree(message.getValue());
 		return message;
 	}
 
 	@Override
 	public KVM get(String key) throws IOException {
-		ECSNode server_node = metadata.getKeysServer(key);
-		this.address = server_node.getNodeHost();
-		this.port = server_node.getNodePort();
-		connect();
+		logger.info("hi 1");
+		logger.info(key);
+
 		sendMessage(new KVM(StatusType.GET, key, " "));
+		logger.info("hi 1.3");
 		KVM message = getNextMsg();
+		logger.info("hi 1.4");
 		StatusType status = message.getStatus();
+		logger.info("hi 1.6");
 
 		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
 			this.getKeyrange();
-			this.get(key);
+			// disconnect();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+
+			}
+			ECSNode server_node = metadata.getKeysServer(key);
+			logger.info("hi 2");
+			this.address = server_node.getNodeHost();
+			this.port = server_node.getNodePort();
+			logger.info("hi 2.3");
+			connectToNewServer();
+			logger.info("hi 2.5");
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+			}
+			logger.info("hi 3");
+			return this.get(key);
+		} else if (status == StatusType.SERVER_STOPPED) {
+			logger.info("Response: Server is stopped");
 		}
 
 		return message;

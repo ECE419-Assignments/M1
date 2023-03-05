@@ -12,7 +12,7 @@ import shared.messages.KVMessage.StatusType;
 
 public class BaseConnection implements Runnable {
 
-    protected Logger logger = Logger.getLogger("Client Connection");
+    protected Logger logger = Logger.getLogger("Base Connection");
 
     private boolean isOpen;
     private static final int BUFFER_SIZE = 1024;

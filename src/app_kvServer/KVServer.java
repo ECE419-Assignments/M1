@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
 import logger.LogSetup;
+import shared.ecs.ECSNode;
 import shared.metadata.KVMetadata;
 
 import org.apache.log4j.Level;
@@ -81,7 +82,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.serverStopped = true;
 		this.metadata = new KVMetadata();
 		this.start();
-		
+
 	}
 
 	@Override
@@ -137,36 +138,54 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public String getKV(String key)
-			throws ServerNotResponsibleException, FailedException, KeyNotFoundException, ServerStoppedException {
+			throws ServerNotResponsibleException, FailedException, KeyNotFoundException, ServerStoppedException,
+			ServerNotResponsibleException {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		// kvHasher = KVHasher();
-		// if (/* Server is responsible */) {
-		// throw new ServerNotResponsibleException();
-		// }
 
-		return cache.find(key);
+		ECSNode keys_server = this.metadata.getKeysServer(key);
+		String address = String.format("%s:%s", this.getHostname(), this.getPort());
+
+		if ((keys_server.getNodeAddress()).equals(address)) {
+			return cache.find(key);
+		} else {
+			throw new ServerNotResponsibleException();
+		}
+
 	}
 
-	public void deleteKV(String key) throws ServerStoppedException, WriteLockException, KeyNotFoundException {
+	public void deleteKV(String key) throws ServerStoppedException, WriteLockException, KeyNotFoundException,
+			ServerNotResponsibleException {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		cache.delete(key);
+
+		ECSNode keys_server = this.metadata.getKeysServer(key);
+		String address = String.format("%s:%s", this.getHostname(), this.getPort());
+
+		if ((keys_server.getNodeAddress()).equals(address)) {
+			cache.delete(key);
+		} else {
+			throw new ServerNotResponsibleException();
+		}
+
 	}
 
 	public void putKV(String key, String value)
-			throws ServerNotResponsibleException, ServerStoppedException, WriteLockException {
+			throws ServerNotResponsibleException, ServerStoppedException, WriteLockException,
+			ServerNotResponsibleException {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		// kvHasher = KVHasher();
-		// if (/* Server is responsible */) {
-		// throw new ServerNotResponsibleException();
-		// }
+		ECSNode keys_server = this.metadata.getKeysServer(key);
+		String address = String.format("%s:%s", this.getHostname(), this.getPort());
 
-		cache.save(key, value);
+		if ((keys_server.getNodeAddress()).equals(address)) {
+			cache.save(key, value);
+		} else {
+			throw new ServerNotResponsibleException();
+		}
 	}
 
 	public void clearCache() throws ServerStoppedException, WriteLockException {

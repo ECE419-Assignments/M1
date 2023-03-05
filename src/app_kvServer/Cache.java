@@ -134,11 +134,16 @@ class Cache extends Thread {
             throw new KeyNotFoundException();
         }
 
+        System.out.println("deleting key");
+
         if (cache.containsKey(key)) {
             cache.remove(key);
         }
 
         String filepath = getFilepath(key);
+
+        System.out.println(filepath);
+
         File file = new File(filepath);
         if (file.exists()) {
             file.delete();

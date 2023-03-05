@@ -21,8 +21,6 @@ public class ServerConnection extends BaseConnection {
     public ServerConnection(ECSClient ecsClient, Socket socket) {
         super(socket);
         this.ecsClient = ecsClient;
-        address = socket.getRemoteSocketAddress().toString();
-        System.out.println(address);
     }
 
     @Override()
@@ -39,32 +37,48 @@ public class ServerConnection extends BaseConnection {
 
         try {
             if (status.equals(StatusType.NEW_SERVER)) {
+                address = value;
+                logger.info("Hello 0");
                 this.ecsClient.kvMetadata.addServer(value);
-                this.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
-                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
-                ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(prevNode.getNodeAddress());
 
-                prevConnection.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
-                Thread.sleep(10);
-                prevConnection.sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT,
-                        this.ecsClient.kvMetadata.getKeyRange(), this.address));
+                logger.info("Hello 1");
+                this.sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
+
+                this.sendMessage(new KVM(StatusType.START_SERVER, " ", ""));
+
+                logger.info("Hello 2");
+                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
+
+                logger.info("Hello 3");
+                if (this.ecsClient.kvMetadata.getCountServers() != 1) {
+                    logger.info("Hello 3.5");
+                    ServerConnection prevConnection = this.ecsClient
+                            .getServerConnectionWithAddress(prevNode.getNodeAddress());
+                    logger.info("Hello 4");
+
+                    prevConnection.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
+                    logger.info("Hello 5");
+                    Thread.sleep(500);
+                    prevConnection.sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT,
+                            this.ecsClient.kvMetadata.getKeyRange(), this.address));
+                    logger.info("Hello 6");
+                }
             } else if (status.equals(StatusType.SERVER_SHUTDOWN)) {
                 this.ecsClient.kvMetadata.deleteServer(value);
-                this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
+                this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
                 ServerConnection prevConnection = this.ecsClient
                         .getServerConnectionWithAddress(
                                 this.ecsClient.kvMetadata.getSuccesorNode(value).getNodeAddress());
                 prevConnection
-                        .sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
+                        .sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
                 Thread.sleep(10);
-                this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, "", prevConnection.address));
+                this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, " ", prevConnection.address));
 
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();
                 sendResponse = false;
                 Thread.sleep(10);
-                this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
+                this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN)) {
                 this.ecsClient.updateAllServerMetadatas();
                 sendResponse = false;
@@ -73,6 +87,7 @@ public class ServerConnection extends BaseConnection {
                 this.ecsClient.serverConnections.remove(this);
             }
         } catch (Exception e) {
+            System.out.println(e);
             responseStatus = StatusType.FAILED;
             responseValue = e.getMessage();
         }

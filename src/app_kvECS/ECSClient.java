@@ -1,6 +1,7 @@
 package app_kvECS;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.NameNotFoundException;
@@ -13,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import shared.ecs.ECSNode;
@@ -21,53 +23,55 @@ import shared.messages.KVMessage.StatusType;
 import shared.metadata.KVMetadata;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import logger.LogSetup;
 
 // TODO: Zeni - Double check and make sure all the KVHasher stuff here is correct. I'm not sure what format
 // you used for the server_info so you might need to change the places where I pass server_info
-public class ECSClient implements IECSClient {
+public class ECSClient extends Thread implements IECSClient {
 
     private static Logger logger = Logger.getLogger("ECS Client");
     TreeMap<String, ECSNode> server_tree = new TreeMap();
 
-    KVMetadata kvMetadata = new KVMetadata();
+    public volatile KVMetadata kvMetadata = new KVMetadata();
 
     private boolean running;
     private ServerSocket serverSocket;
     private int port;
 
-    public Collection<ServerConnection> serverConnections;
+    public Set<ServerConnection> serverConnections;
 
     public ECSClient(int port) {
         this.port = port;
+        serverConnections = new HashSet<ServerConnection>();
     }
 
-    @Override
-    public boolean start() {
-        // try {
-        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-        // ECSNode server = server_entry.getValue();
-        // server.startServer();
-        // }
-        // } catch (Exception e) {
-        // return false;
-        // }
-        // return true;
-        return false;
-    }
+    // @Override
+    // public boolean start() {
+    // // try {
+    // // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+    // // ECSNode server = server_entry.getValue();
+    // // server.startServer();
+    // // }
+    // // } catch (Exception e) {
+    // // return false;
+    // // }
+    // // return true;
+    // return false;
+    // }
 
-    @Override
-    public boolean stop() {
-        // try {
-        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-        // ECSNode server = server_entry.getValue();
-        // server.stopServer();
-        // }
-        // } catch (Exception e) {
-        // return false;
-        // }
-        // return true;
-        return false;
-    }
+    // @Override
+    // public boolean stop() {
+    // // try {
+    // // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+    // // ECSNode server = server_entry.getValue();
+    // // server.stopServer();
+    // // }
+    // // } catch (Exception e) {
+    // // return false;
+    // // }
+    // // return true;
+    // return false;
+    // }
 
     @Override
     public boolean shutdown() {
@@ -137,8 +141,8 @@ public class ECSClient implements IECSClient {
 
     @Override
     public Collection<ECSNode> setupNodes(int count, String cacheStrategy, int cacheSize) {
-        addNodes(count, cacheStrategy, cacheSize, false);
-        start();
+        // addNodes(count, cacheStrategy, cacheSize, false);
+        // run();
 
         return null;
     }
@@ -165,7 +169,7 @@ public class ECSClient implements IECSClient {
         // break;
         // }
         // }
-        start();
+        // start();
         return removeSuccessful;
     }
 
@@ -248,8 +252,11 @@ public class ECSClient implements IECSClient {
     }
 
     public ServerConnection getServerConnectionWithAddress(String address) throws NameNotFoundException {
+        System.out.println(address);
         for (ServerConnection serverConnection : serverConnections) {
-            if (serverConnection.address == address) {
+            System.out.println(serverConnection.address);
+            System.out.print(serverConnection.address.equals(address));
+            if (serverConnection.address.equals(address)) {
                 return serverConnection;
             }
         }
@@ -258,8 +265,15 @@ public class ECSClient implements IECSClient {
     }
 
     public static void main(String[] args) {
-        ECSClient ecsClient = new ECSClient(51000);
-        ecsClient.run();
+        try {
+            new LogSetup("logs/server.log", Level.ALL);
+            ECSClient ecsClient = new ECSClient(51000);
+            ecsClient.start();
+        } catch (IOException e) {
+            System.out.println("Error! Unable to initialize logger!");
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         // Zeni
         // TODO

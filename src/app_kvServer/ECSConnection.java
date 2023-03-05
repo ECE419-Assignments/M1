@@ -25,11 +25,12 @@ public class ECSConnection extends BaseConnection {
 
     @Override()
     public void postStart() throws IOException {
-        sendMessage(new KVM(StatusType.NEW_SERVER, "", ""));
+        sendMessage(new KVM(StatusType.NEW_SERVER, " ",
+                String.format("%s:%s", kvServer.getHostname(), kvServer.getPort())));
     }
 
     public void serverShuttingDown() throws IOException {
-        sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, "", ""));
+        sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, " ", " "));
     }
 
     @Override()
@@ -49,29 +50,40 @@ public class ECSConnection extends BaseConnection {
                 this.kvServer.setWriteLock(!this.kvServer.getWriteLock());
                 responseStatus = StatusType.TOGGLE_WRITE_LOCK_SUCCESS;
                 sendResponse = true;
+            } else if (status.equals(StatusType.START_SERVER)) {
+                this.kvServer.startServer();
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
                 String server_address = value;
 
+                System.out.println("zeni 1");
                 String host = misc.getHostFromAddress(server_address);
+                System.out.println("zeni 2");
                 int port = misc.getPortFromAddress(server_address);
+                System.out.println("zeni 3");
 
+                System.out.println(host);
+                System.out.println("zeni 4");
+                System.out.println(port);
                 Socket socket = new Socket(host, port); // TODO: Navid
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
+                System.out.println("zeni 5");
 
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
 
+                System.out.println("zeni 6");
                 for (Map.Entry<String, String> entry : values.entrySet()) {
                     String cur_key = entry.getKey();
+                    System.out.println("zeni 7");
                     String cur_val = entry.getValue();
                     connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                 }
 
                 connection.close();
                 Thread.sleep(100);
-                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
+                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, " ", " "));
 
                 for (Map.Entry<String, String> entry : values.entrySet()) {
                     String cur_key = entry.getKey();
@@ -82,32 +94,52 @@ public class ECSConnection extends BaseConnection {
             } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
                 String server_address = value, keyrange = key;
 
+                System.out.println("band 1");
                 KVMetadata kvMetadata = new KVMetadata();
+                System.out.println("band 2");
                 kvMetadata.createServerTree(keyrange);
+                System.out.println("band 3");
 
                 String host = misc.getHostFromAddress(server_address);
                 int port = misc.getPortFromAddress(server_address);
+                System.out.println(host);
+                System.out.print(port);
                 Socket socket = new Socket(host, port);
 
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
+                System.out.println("band 4");
+                Thread.sleep(500);
 
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
 
+                System.out.println("band 5");
                 for (Map.Entry<String, String> entry : values.entrySet()) {
+                    System.out.println("band 6");
                     String cur_key = entry.getKey();
                     String cur_val = entry.getValue();
                     shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(cur_key);
-                    if (server_address == correctServerNode.getNodeAddress()) {
+                    if (server_address.equals(correctServerNode.getNodeAddress())) {
+                        logger.info("sending key value to new server");
                         connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                     }
                 }
-
                 connection.close();
+
+                for (Map.Entry<String, String> entry : values.entrySet()) {
+                    System.out.println("band 6");
+                    String cur_key = entry.getKey();
+                    String cur_val = entry.getValue();
+                    shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(cur_key);
+                    if (server_address.equals(correctServerNode.getNodeAddress())) {
+                        this.kvServer.deleteKV(cur_key);
+                    }
+                }
                 Thread.sleep(100);
-                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, "", ""));
+                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, " ", " "));
             }
         } catch (Exception e) {
+            System.out.println(e);
             responseStatus = StatusType.FAILED;
             responseValue = e.getMessage();
         }
