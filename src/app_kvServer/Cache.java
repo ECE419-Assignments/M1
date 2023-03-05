@@ -65,7 +65,13 @@ class Cache extends Thread {
         File folder = new File(dir);
         File[] listOfFiles = folder.listFiles();
 
-        LinkedHashMap<String, String> values = new LinkedHashMap<String, String>();
+        if(listOfFiles == null){
+            System.out.println("band 12");
+            return null;
+        }
+        System.out.println("why me");
+
+        LinkedHashMap<String, String> values =  new LinkedHashMap<String, String>();
         for (File file : listOfFiles) {
             try {
                 values.put(file.getName(), findFromDisk(file.getName()));
