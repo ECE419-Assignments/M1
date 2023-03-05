@@ -6,13 +6,17 @@ public class ECSNode implements IECSNode {
     int port;
     String[] hash_range;
 
-    public ECSNode(String host, int port){
+    public ECSNode(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
+    public String getNodeAddress() {
+        return String.format("%s:%s", host, port);
+    }
+
     @Override
-    public String getNodeName(){
+    public String getNodeName() {
         return null;
     }
 
@@ -22,16 +26,16 @@ public class ECSNode implements IECSNode {
     }
 
     @Override
-    public int getNodePort(){
+    public int getNodePort() {
         return port;
     }
 
     @Override
-    public String[] getNodeHashRange(){
+    public String[] getNodeHashRange() {
         return hash_range;
     }
 
-    public void updateNodeHashRanges(String[] hash_range){
+    public void updateNodeHashRanges(String[] hash_range) {
         this.hash_range = hash_range;
     }
 

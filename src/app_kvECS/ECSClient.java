@@ -3,6 +3,8 @@ package app_kvECS;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.naming.NameNotFoundException;
+
 import app_kvServer.IKVServer.CacheStrategy;
 
 import java.io.IOException;
@@ -242,6 +244,16 @@ public class ECSClient implements IECSClient {
             }
             return false;
         }
+    }
+
+    public ServerConnection getServerConnectionWithAddress(String address) {
+        for (int i = 0; i < this.serverConnections.size(); i++) {
+            if (this.serverConnections[i].address == address) {
+                return this.serverConnections[i];
+            }
+        }
+
+        throw new NameNotFoundException();
     }
 
     public static void main(String[] args) {

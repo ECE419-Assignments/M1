@@ -3,9 +3,11 @@ package app_kvServer;
 import java.io.IOException;
 import java.net.Socket;
 
+import ecs.ECSNode;
 import shared.BaseConnection;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
+import shared.metadata.KVMetadata;
 
 public class ECSConnection extends BaseConnection {
 
@@ -48,6 +50,25 @@ public class ECSConnection extends BaseConnection {
             } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) { // New Server
                 // Send data to server on value address
                 sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
+            } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
+                String server_address = value, keyrange = key;
+
+                KVMetadata kvMetadata = new KVMetadata();
+                kvMetadata.createServerTree(keyrange);
+
+                Socket socket = new Socket(String.split(":", server_address)); // TODO: Navid
+                ClientConnection connection = new ClientConnection(this.kvServer, socket);
+                new Thread(connection).start();
+
+                keys, values = get_all_keys_values();
+
+                foreach key, value {
+                    shared.ecs.ECSNode correctServerNode = kvMetadata.getKeysServer(key);
+                    if (server_address == correctServerNode.getNodeAddress()) {
+                        connection.sendMessage(new KVM(StatusType.PUT, key, value));
+                    }
+
+                }
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;

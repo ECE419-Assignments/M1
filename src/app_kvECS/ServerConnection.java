@@ -7,6 +7,7 @@ import app_kvServer.exceptions.KeyNotFoundException;
 import app_kvServer.exceptions.ServerNotResponsibleException;
 import app_kvServer.exceptions.ServerStoppedException;
 import app_kvServer.exceptions.WriteLockException;
+import shared.ecs.ECSNode;
 import shared.BaseConnection;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
@@ -40,19 +41,20 @@ public class ServerConnection extends BaseConnection {
             if (status.equals(StatusType.NEW_SERVER)) {
                 this.ecsClient.kvMetadata.addServer(value);
                 this.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
+                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
                 ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
+                        .getServerConnectionWithAddress(prevNode.getNodeAddress());
 
-                prevConnection
-                        .sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
+                prevConnection.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
                 Thread.sleep(10);
-                prevConnection
-                        .sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT, "", filter_range)); // TODO: Zeni
+                prevConnection.sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT,
+                        this.ecsClient.kvMetadata.getKeyRange(), this.address));
             } else if (status.equals(StatusType.SERVER_SHUTDOWN)) {
                 this.ecsClient.kvMetadata.deleteServer(value);
                 this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
                 ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
+                        .getServerConnectionWithAddress(
+                                this.ecsClient.kvMetadata.getSuccesorNode(value).getNodeAddress());
                 prevConnection
                         .sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
                 Thread.sleep(10);
@@ -64,7 +66,8 @@ public class ServerConnection extends BaseConnection {
                 this.ecsClient.updateAllServerMetadatas();
                 sendResponse = false;
                 ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
+                        .getServerConnectionWithAddress(
+                                this.ecsClient.kvMetadata.getSuccesorNode(value).getNodeAddress());
                 Thread.sleep(10);
                 prevConnection.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
             }
