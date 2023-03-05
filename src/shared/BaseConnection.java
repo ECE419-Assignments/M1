@@ -29,6 +29,9 @@ public class BaseConnection implements Runnable {
      * @param socket the Socket object for the client connection.
      */
 
+    public void postStart() throws IOException {
+    }
+
     public BaseConnection(String host, int port) {
         try {
             this.socket = new Socket(host, port);
@@ -61,9 +64,11 @@ public class BaseConnection implements Runnable {
 
             // TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
             sendMessage(new KVM(StatusType.MESSAGE, " ",
-                    "Connection to KV server established "
+                    "Connection to process established "
                             + socket.getLocalAddress() + " "
                             + socket.getLocalPort()));
+
+            postStart();
 
             // TODO: More informative logs on server side.
             while (isOpen) {

@@ -256,7 +256,7 @@ public class KVServer extends Thread implements IKVServer {
 					+ serverSocket.getLocalPort());
 			return true;
 
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			logger.error("Error! Cannot open server socket:");
 			if (e instanceof BindException) {
 				logger.error("Port " + port + " is already bound!");
@@ -273,7 +273,8 @@ public class KVServer extends Thread implements IKVServer {
 				System.out.println("Usage: Server <port> <ecs port>!");
 			} else {
 				int port = Integer.parseInt(args[0]);
-				int ecsPort = Integer.parseInt(args[0]);
+				int ecsPort = Integer.parseInt(args[1]);
+				System.out.println(ecsPort);
 				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO, ecsPort);
 			}
 		} catch (IOException e) {

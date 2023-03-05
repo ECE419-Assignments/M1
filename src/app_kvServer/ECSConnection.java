@@ -16,9 +16,15 @@ public class ECSConnection extends BaseConnection {
 
     protected KVServer kvServer;
 
-    public ECSConnection(KVServer kvServer, String host, int port) throws IOException {
+    public ECSConnection(KVServer kvServer, String host, int port) throws IOException, InterruptedException {
         super(host, port);
         this.kvServer = kvServer;
+
+        Thread.sleep(100);
+    }
+
+    @Override()
+    public void postStart() throws IOException {
         sendMessage(new KVM(StatusType.NEW_SERVER, "", ""));
     }
 

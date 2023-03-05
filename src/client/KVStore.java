@@ -243,7 +243,6 @@ public class KVStore extends Thread implements KVCommInterface {
 		return message;
 	}
 
-	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
 	public KVM get(String key) throws IOException {
 		ECSNode server_node = metadata.getKeysServer(key);
