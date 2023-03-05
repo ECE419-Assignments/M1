@@ -1,6 +1,7 @@
 package app_kvServer;
 
 import java.io.IOException;
+import java.net.Socket;
 
 import shared.BaseConnection;
 import shared.messages.KVM;
@@ -18,10 +19,6 @@ public class ECSConnection extends BaseConnection {
 
     public void serverShuttingDown() throws IOException {
         sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, "", ""));
-    }
-
-    public void sendDataMovedConfirmation() throws IOException {
-        sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION, "", ""));
     }
 
     @Override()
@@ -43,13 +40,14 @@ public class ECSConnection extends BaseConnection {
                 sendResponse = true;
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
-            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
-
-            } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
+            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) { // Delete Server
                 // this.server.sendAllDataToServer(node);
                 // this.sendDataMovedConfirmation();
                 // this.server.deleteAllData();
                 // this.server.shutdown();
+            } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) { // New Server
+                // Send data to server on value address
+                sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, "", ""));
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;

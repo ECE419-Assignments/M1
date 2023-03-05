@@ -53,9 +53,16 @@ public class ServerConnection extends BaseConnection {
                         .sendMessage(new KVM(StatusType.UPDATE_METADATA, "", this.ecsClient.kvMetadata.getKeyRange()));
                 Thread.sleep(10);
                 this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, "", prevConnection.address));
-            } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION)) {
+            } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();
                 sendResponse = false;
+            } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN)) {
+                this.ecsClient.updateAllServerMetadatas();
+                sendResponse = false;
+                ServerConnection prevConnection = this.ecsClient
+                        .getServerConnectionWithAddress(this.ecsClient.kvMetadata.prevNode(value));
+                Thread.sleep(10);
+                prevConnection.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, "", ""));
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;
