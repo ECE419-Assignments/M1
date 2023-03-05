@@ -233,6 +233,10 @@ public class KVServer extends Thread implements IKVServer {
 		cache.setWriteLock(locked);
 	}
 
+	protected boolean getWriteLock() {
+		return cache.getWriteLock();
+	}
+
 	private boolean initializeServer() {
 		logger.info("Initialize server ...");
 		try {
@@ -298,15 +302,15 @@ public class KVServer extends Thread implements IKVServer {
 
 	}
 
-	public void sendAllDataToServer(ECSNode node) {
-		this.serverConnection.connect(node).sendData(this.getAllData()).disconnect();
-	}
+	// public void sendAllDataToServer(ECSNode node) {
+	// this.serverConnection.connect(node).sendData(this.getAllData()).disconnect();
+	// }
 
-	public void sendDataToServer(ECSNode node, String hashrange) {
-		this.serverConnection.connect(node).sendData(this.getDataFromHashrange(hashrange)).disconnect();
-	}
+	// public void sendDataToServer(ECSNode node, String hashrange) {
+	// this.serverConnection.connect(node).sendData(this.getDataFromHashrange(hashrange)).disconnect();
+	// }
 
-	public void updateMetadata(String key_range) {
-		this.hasher.updateServerTree(key_range);
-	}
+	// public void updateMetadata(String key_range) {
+	// this.hasher.updateServerTree(key_range);
+	// }
 }

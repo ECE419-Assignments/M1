@@ -52,16 +52,6 @@ public class ClientConnection extends BaseConnection {
 				responseValue = String.join(";", this.kvServer.getNodeHashRange());
 				// TODO: M2 - Turn into a string that we can pass back to client
 			}
-
-			////// Done with Client requests //////
-			////// ECS requests //////
-			if (status.equals(StatusType.UPDATE_METADATA)) {
-				// this.kvServer.updateMetadata(metadata);
-			} else if (status.equals(StatusType.SEND_ALL_DATA)) {
-				//
-			} else if (status.equals(StatusType.SEND_FILTERED_DATA)) {
-				//
-			}
 		} catch (ServerStoppedException e) {
 			responseStatus = StatusType.SERVER_STOPPED;
 		} catch (ServerNotResponsibleException e) {

@@ -1,5 +1,6 @@
 package app_kvServer;
 
+import java.io.IOException;
 import java.net.Socket;
 
 import ecs.ECSNode;
@@ -8,16 +9,16 @@ import shared.messages.KVMessage.StatusType;
 
 public class ECSConnection extends BaseConnection {
 
-    public ECSConnection(KVServer kvServer, String host, int port) {
+    public ECSConnection(KVServer kvServer, String host, int port) throws IOException {
         super(kvServer, host, port);
         sendMessage(new KVM(StatusType.SERVER_STARTED, "", ""));
     }
 
-    public void serverShuttingDown() {
+    public void serverShuttingDown() throws IOException {
         sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, "", ""));
     }
 
-    public void sendDataMovedConfirmation() {
+    public void sendDataMovedConfirmation() throws IOException {
         sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION, "", ""));
     }
 
