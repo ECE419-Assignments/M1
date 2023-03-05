@@ -68,13 +68,16 @@ public class KVServer extends Thread implements IKVServer {
 	private ServerSocket serverSocket;
 	private Cache cache;
 	protected String[] hash_range;
+	private Socket ecsSocket;
+	private int ecsPort;
 
 	protected boolean serverStopped = true;
 
-	public KVServer(int port, int cacheSize, CacheStrategy strategy) {
+	public KVServer(int port, int cacheSize, CacheStrategy strategy, int ecsPort) {
 		this.port = port;
 		this.cacheSize = cacheSize;
 		this.strategy = strategy;
+		this.ecsPort = ecsPort;
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.start();
@@ -234,6 +237,11 @@ public class KVServer extends Thread implements IKVServer {
 		logger.info("Initialize server ...");
 		try {
 			serverSocket = new ServerSocket(port);
+
+			// Start ECS Socket
+			ECSConnection connection = new ECSConnection(this, "localhost", ecsPort);
+			new Thread(connection).start();
+
 			logger.info("Server listening on port: "
 					+ serverSocket.getLocalPort());
 			return true;
@@ -250,12 +258,13 @@ public class KVServer extends Thread implements IKVServer {
 	public static void main(String[] args) {
 		try {
 			new LogSetup("logs/server.log", Level.ALL);
-			if (args.length != 1) {
+			if (args.length != 2) {
 				System.out.println("Error! Invalid number of arguments!");
-				System.out.println("Usage: Server <port>!");
+				System.out.println("Usage: Server <port> <ecs port>!");
 			} else {
 				int port = Integer.parseInt(args[0]);
-				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO);
+				int ecsPort = Integer.parseInt(args[0]);
+				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO, ecsPort);
 			}
 		} catch (IOException e) {
 			System.out.println("Error! Unable to initialize logger!");

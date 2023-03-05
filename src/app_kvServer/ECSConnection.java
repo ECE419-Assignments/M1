@@ -1,25 +1,24 @@
 package app_kvServer;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import app_kvServer.exceptions.FailedException;
-import app_kvServer.exceptions.KeyNotFoundException;
-import app_kvServer.exceptions.ServerNotResponsibleException;
-import app_kvServer.exceptions.ServerStoppedException;
-import app_kvServer.exceptions.WriteLockException;
+import ecs.ECSNode;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 
 public class ECSConnection extends BaseConnection {
 
-    public ECSConnection(KVServer kvServer, Socket socket) {
-        super(kvServer, socket);
+    public ECSConnection(KVServer kvServer, String host, int port) {
+        super(kvServer, host, port);
+        sendMessage(new KVM(StatusType.SERVER_STARTED, "", ""));
+    }
+
+    public void serverShuttingDown() {
+        sendMessage(new KVM(StatusType.SERVER_SHUTDOWN, "", ""));
+    }
+
+    public void sendDataMovedConfirmation() {
+        sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION, "", ""));
     }
 
     @Override()
@@ -34,47 +33,24 @@ public class ECSConnection extends BaseConnection {
         String responseValue = value;
 
         try {
-            if (status.equals(StatusType.PUT)) {
-                responseStatus = StatusType.PUT_ERROR;
+            if (status.equals(StatusType.TOGGLE_WRITE_LOCK)) {
+                this.kvServer.setWriteLock(!this.kvServer.getWriteLock());
+                responseStatus = StatusType.TOGGLE_WRITE_LOCK_SUCCESS;
+            } else if (status.equals(StatusType.UPDATE_METADATA)) {
 
-                boolean alreadyExists = this.kvServer.inCache(key);
+            } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
 
-                this.kvServer.putKV(key, value);
-                logger.info(key + value);
-
-                if (!alreadyExists) {
-                    responseStatus = StatusType.PUT_SUCCESS;
-                } else {
-                    responseStatus = StatusType.PUT_UPDATE;
-                }
-            } else if (status.equals(StatusType.GET)) {
-                value = this.kvServer.getKV(message.getKey());
-                status = StatusType.GET_SUCCESS;
-                logger.info(value);
-            } else if (status.equals(StatusType.DELETE)) {
-                this.kvServer.deleteKV(key);
-                responseStatus = StatusType.DELETE_SUCCESS;
-                logger.info(key + value);
-            } else if (status.equals(StatusType.KEYRANGE)) {
-                responseValue = String.join(";", this.kvServer.getNodeHashRange());
-            }
-        } catch (ServerStoppedException e) {
-            responseStatus = StatusType.SERVER_STOPPED;
-        } catch (ServerNotResponsibleException e) {
-            responseStatus = StatusType.SERVER_NOT_RESPONSIBLE;
-        } catch (WriteLockException e) {
-            responseStatus = StatusType.SERVER_WRITE_LOCK;
-        } catch (KeyNotFoundException e) {
-            responseStatus = StatusType.FAILED;
-            if (status.equals(StatusType.DELETE)) {
-                responseStatus = StatusType.DELETE_ERROR;
-            } else if (status.equals(StatusType.GET)) {
-                responseStatus = StatusType.GET_ERROR;
+            } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {
+                // this.server.sendAllDataToServer(node);
+                // this.sendDataMovedConfirmation();
+                // this.server.deleteAllData();
+                // this.server.shutdown();
             }
         } catch (Exception e) {
             responseStatus = StatusType.FAILED;
             responseValue = e.getMessage();
         }
+
         return new KVM(responseStatus, responseKey, responseValue);
     }
 

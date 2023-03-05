@@ -5,14 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import app_kvServer.exceptions.FailedException;
-import app_kvServer.exceptions.KeyNotFoundException;
-import app_kvServer.exceptions.ServerNotResponsibleException;
-import app_kvServer.exceptions.ServerStoppedException;
-import app_kvServer.exceptions.WriteLockException;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 
@@ -36,6 +30,17 @@ public class BaseConnection implements Runnable {
      * 
      * @param socket the Socket object for the client connection.
      */
+
+    public BaseConnection(KVServer kvServer, String host, int port) {
+        try {
+            this.socket = new Socket(host, port);
+            this.isOpen = true;
+            this.kvServer = kvServer;
+        } catch (Exception e) {
+            System.out.println("error connecting to other host and port");
+        }
+    }
+
     public BaseConnection(KVServer kvServer, Socket socket) {
         this.socket = socket;
         this.isOpen = true;

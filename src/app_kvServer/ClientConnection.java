@@ -1,14 +1,7 @@
 package app_kvServer;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import app_kvServer.exceptions.FailedException;
 import app_kvServer.exceptions.KeyNotFoundException;
 import app_kvServer.exceptions.ServerNotResponsibleException;
 import app_kvServer.exceptions.ServerStoppedException;
@@ -58,6 +51,16 @@ public class ClientConnection extends BaseConnection {
 			} else if (status.equals(StatusType.KEYRANGE)) {
 				responseValue = String.join(";", this.kvServer.getNodeHashRange());
 				// TODO: M2 - Turn into a string that we can pass back to client
+			}
+
+			////// Done with Client requests //////
+			////// ECS requests //////
+			if (status.equals(StatusType.UPDATE_METADATA)) {
+				// this.kvServer.updateMetadata(metadata);
+			} else if (status.equals(StatusType.SEND_ALL_DATA)) {
+				//
+			} else if (status.equals(StatusType.SEND_FILTERED_DATA)) {
+				//
 			}
 		} catch (ServerStoppedException e) {
 			responseStatus = StatusType.SERVER_STOPPED;
