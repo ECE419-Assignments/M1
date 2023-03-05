@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
 import logger.LogSetup;
-import shared.KVHasher;
+import shared.metadata.KVMetadata;
 
 // import java.util.logging.Logger;
 // import java.util.logging.Level;
@@ -70,6 +70,7 @@ public class KVServer extends Thread implements IKVServer {
 	protected String[] hash_range;
 	private Socket ecsSocket;
 	private int ecsPort;
+	public volatile KVMetadata metadata;
 
 	protected boolean serverStopped = true;
 
@@ -81,7 +82,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.start();
-		hasher = new KVHasher();
+		this.metadata = new KVMetadata();
 	}
 
 	@Override

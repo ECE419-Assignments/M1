@@ -38,7 +38,8 @@ public class ECSConnection extends BaseConnection {
                 this.kvServer.setWriteLock(!this.kvServer.getWriteLock());
                 responseStatus = StatusType.TOGGLE_WRITE_LOCK_SUCCESS;
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
-
+                this.kvServer.metadata.createServerTree(value);
+                
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
 
             } else if (status.equals(StatusType.SEND_FILTERED_DATA_TO_NEXT)) {

@@ -23,11 +23,6 @@ public class KVMetadata {
         } catch (NoSuchAlgorithmException e){}
     }
 
-    public KVMetadata(String key_range){
-        this.server_tree = new TreeMap<String, ECSNode>();
-
-    }
-
     // Delete a server from the given binary tree
     public ECSNode deleteServer(String server_address){
         String hex_string = this.hashValue(server_address);
