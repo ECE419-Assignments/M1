@@ -12,8 +12,10 @@ import java.net.Socket;
 import java.util.Collection;
 import java.util.Collections;
 
-import ecs.ECSNode;
-import shared.KVHasher;
+import shared.ecs.ECSNode;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
+import shared.metadata.KVMetadata;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -24,11 +26,13 @@ public class ECSClient implements IECSClient {
     private static Logger logger = Logger.getLogger("ECS Client");
     TreeMap<String, ECSNode> server_tree = new TreeMap();
 
-    KVHasher kvHasher = new KVHasher();
+    KVMetadata kvMetadata = new KVMetadata();
 
     private boolean running;
     private ServerSocket serverSocket;
     private int port;
+
+    public Collection<ServerConnection> serverConnections;
 
     public ECSClient(int port) {
         this.port = port;
@@ -36,48 +40,51 @@ public class ECSClient implements IECSClient {
 
     @Override
     public boolean start() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.startServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.startServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     @Override
     public boolean stop() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.stopServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.stopServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     @Override
     public boolean shutdown() {
-        try {
-            for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-                ECSNode server = server_entry.getValue();
-                server.killServer();
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        // try {
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.killServer();
+        // }
+        // } catch (Exception e) {
+        // return false;
+        // }
+        // return true;
+        return false;
     }
 
     private void moveValuesToCorrectServers() {
-        for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-            ECSNode server = server_entry.getValue();
-            server.moveValuesToCorrectServer();
-        }
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // server.moveValuesToCorrectServer();
+        // }
     }
 
     private void updateNodeHashRanges() {
@@ -143,18 +150,18 @@ public class ECSClient implements IECSClient {
         stop();
 
         boolean removeSuccessful = false;
-        for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-            ECSNode server = server_entry.getValue();
-            if (server.getName() == nodeName) {
-                // TODO: Zeni - Get server info here
-                // server_tree = kvHasher.deleteServer(server_tree, server_info);
-                updateNodeHashRanges();
-                server.killServer();
+        // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
+        // ECSNode server = server_entry.getValue();
+        // if (server.getName() == nodeName) {
+        // // TODO: Zeni - Get server info here
+        // // server_tree = kvHasher.deleteServer(server_tree, server_info);
+        // updateNodeHashRanges();
+        // server.killServer();
 
-                removeSuccessful = true;
-                break;
-            }
-        }
+        // removeSuccessful = true;
+        // break;
+        // }
+        // }
         start();
         return removeSuccessful;
     }
@@ -180,6 +187,16 @@ public class ECSClient implements IECSClient {
         return null;
     }
 
+    public void updateAllServerMetadatas() {
+        serverConnections.forEach((connection) -> {
+            try {
+                connection.sendMessage(new KVM(StatusType.UPDATE_METADATA, "", kvMetadata.getKeyRange()));
+            } catch (Exception e) {
+
+            }
+        });
+    }
+
     public void run() {
         running = initializeECSClient();
 
@@ -189,6 +206,7 @@ public class ECSClient implements IECSClient {
                     logger.info("opening connection");
                     Socket server = serverSocket.accept();
                     ServerConnection connection = new ServerConnection(this, server);
+                    serverConnections.add(connection);
                     new Thread(connection).start();
 
                     logger.info("Connected to "
@@ -228,7 +246,7 @@ public class ECSClient implements IECSClient {
 
     public static void main(String[] args) {
         ECSClient ecsClient = new ECSClient(51000);
-        ecsClient.initializeECSClient();
+        ecsClient.run();
 
         // Zeni
         // TODO
