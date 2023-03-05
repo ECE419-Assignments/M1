@@ -231,7 +231,7 @@ public class ECSClient implements IECSClient {
 
     public static void main(String[] args) {
         ECSClient ecsClient = new ECSClient(51000);
-        ecsClient.initializeECSClient();
+        ecsClient.run();
 
         // Zeni
         // TODO
