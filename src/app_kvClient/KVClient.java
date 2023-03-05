@@ -146,7 +146,7 @@ public class KVClient implements IKVClient {
 			}
 
 		} else if (tokens[0].equals("keyrange")) {
-			if (tokens.length >= 3) {
+			if (tokens.length >= 1) {
 				if (kvStore != null && kvStore.isRunning()) {
 					try {
 						kvStore.getKeyrange();

@@ -82,8 +82,8 @@ public class ECSConnection extends BaseConnection {
                     connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                 }
 
-                connection.close();
                 Thread.sleep(100);
+                connection.close();
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, " ", " "));
 
                 for (Map.Entry<String, String> entry : values.entrySet()) {
@@ -125,6 +125,8 @@ public class ECSConnection extends BaseConnection {
                         connection.sendMessage(new KVM(StatusType.PUT, cur_key, cur_val));
                     }
                 }
+
+                Thread.sleep(100);
                 connection.close();
 
                 for (Map.Entry<String, String> entry : values.entrySet()) {
