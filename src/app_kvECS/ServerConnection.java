@@ -1,4 +1,4 @@
-package app_kvServer;
+package app_kvECS;
 
 import java.net.Socket;
 
@@ -33,6 +33,7 @@ public class ServerConnection extends BaseConnection {
 
         try {
             if (status.equals(StatusType.PUT)) {
+
             } else if (status.equals(StatusType.GET)) {
 
             }
