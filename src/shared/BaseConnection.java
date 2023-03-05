@@ -1,4 +1,4 @@
-package app_kvServer;
+package shared;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -23,28 +23,24 @@ public class BaseConnection implements Runnable {
     private OutputStream output;
     private KVM latestMsg;
 
-    protected KVServer kvServer;
-
     /**
      * Constructs a new CientConnection object for a given TCP socket.
      * 
      * @param socket the Socket object for the client connection.
      */
 
-    public BaseConnection(KVServer kvServer, String host, int port) {
+    public BaseConnection(String host, int port) {
         try {
             this.socket = new Socket(host, port);
             this.isOpen = true;
-            this.kvServer = kvServer;
         } catch (Exception e) {
             System.out.println("error connecting to other host and port");
         }
     }
 
-    public BaseConnection(KVServer kvServer, Socket socket) {
+    public BaseConnection(Socket socket) {
         this.socket = socket;
         this.isOpen = true;
-        this.kvServer = kvServer;
     }
 
     public void close() {

@@ -19,7 +19,6 @@ import app_kvServer.exceptions.KeyNotFoundException;
 import app_kvServer.exceptions.ServerNotResponsibleException;
 import app_kvServer.exceptions.ServerStoppedException;
 import app_kvServer.exceptions.WriteLockException;
-import ecs.ECSNode;
 
 public class KVServer extends Thread implements IKVServer {
 	public enum KVServerResponseCode {
@@ -68,7 +67,6 @@ public class KVServer extends Thread implements IKVServer {
 	private ServerSocket serverSocket;
 	private Cache cache;
 	protected String[] hash_range;
-	private Socket ecsSocket;
 	private int ecsPort;
 
 	protected boolean serverStopped = true;
@@ -81,7 +79,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.start();
-		hasher = new KVHasher();
+		// hasher = new KVHasher();
 	}
 
 	@Override
@@ -283,24 +281,23 @@ public class KVServer extends Thread implements IKVServer {
 
 	///////////////////// Milestone /////////////////////
 
-	private KVHasher hasher;
-	private ServerConnection serverConnection;
+	// private KVHasher hasher;
 
-	public boolean getAllData() { // TODO: Zeni
-		return false;
-	}
+	// public boolean getAllData() { // TODO: Zeni
+	// return false;
+	// }
 
-	public boolean getDataFromHashrange(String hashrange) { // TODO: Zeni
-		return false;
-	}
+	// public boolean getDataFromHashrange(String hashrange) { // TODO: Zeni
+	// return false;
+	// }
 
-	public void shutdown() {
+	// public void shutdown() {
 
-	}
+	// }
 
-	public void deleteAllData() { // TODO: Zeni
+	// public void deleteAllData() { // TODO: Zeni
 
-	}
+	// }
 
 	// public void sendAllDataToServer(ECSNode node) {
 	// this.serverConnection.connect(node).sendData(this.getAllData()).disconnect();
