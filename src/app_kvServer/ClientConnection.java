@@ -48,13 +48,8 @@ public class ClientConnection extends BaseConnection {
 				}
 				sendResponse = true;
 			} else if (status.equals(StatusType.GET)) {
-				logger.info("But 1");
 				responseValue = this.kvServer.getKV(message.getKey());
-				logger.info("But 2");
 				responseStatus = StatusType.GET_SUCCESS;
-				logger.info("But 3");
-				logger.info(value);
-				logger.info("But 4");
 				sendResponse = true;
 			} else if (status.equals(StatusType.DELETE)) {
 				this.kvServer.deleteKV(key, false);
@@ -62,12 +57,9 @@ public class ClientConnection extends BaseConnection {
 				logger.info(key + value);
 				sendResponse = true;
 			} else if (status.equals(StatusType.GET_KEYRANGE)) {
-				System.out.println("bye 1");
 				responseValue = this.kvServer.metadata.getKeyRange();
 				responseStatus = StatusType.GET_KEYRANGE_SUCCESS;
-				System.out.println("bye 2");
 				sendResponse = true;
-				System.out.println("bye 3");
 				// TODO: M2 - Turn into a string that we can pass back to client
 			}
 		} catch (ServerStoppedException e) {

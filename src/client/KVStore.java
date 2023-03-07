@@ -16,6 +16,7 @@ import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 import app_kvClient.KVClient;
 import app_kvClient.KVClient.SocketStatus;
+import app_kvServer.exceptions.ServerNotResponsibleException;
 import shared.metadata.KVMetadata;
 import shared.ecs.ECSNode;
 
@@ -42,7 +43,7 @@ public class KVStore extends Thread implements KVCommInterface {
 	private static final int BUFFER_SIZE = 1024;
 	private static final int DROP_SIZE = 1024 * BUFFER_SIZE;
 
-	private KVMetadata metadata = new KVMetadata();
+	public KVMetadata metadata = new KVMetadata();
 
 	public void run() {
 		logger.info("starting the KVStore");
@@ -53,9 +54,7 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			while (isRunning()) {
 				try {
-					System.out.println("trying to get message");
 					latestMsg = receiveMessage();
-					System.out.println("received message");
 
 					if (latestMsg.getStatus().equals(StatusType.GET_KEYRANGE_SUCCESS)) {
 						metadata.createServerTree(latestMsg.getValue());
@@ -166,8 +165,6 @@ public class KVStore extends Thread implements KVCommInterface {
 		byte read = (byte) input.read();
 		boolean reading = true;
 
-		System.out.println("trying to read");
-
 		while (read != 13 && reading) {/* carriage return */
 			/* if buffer filled, copy to msg array */
 			if (index == BUFFER_SIZE) {
@@ -200,7 +197,6 @@ public class KVStore extends Thread implements KVCommInterface {
 			/* read next char from stream */
 			read = (byte) input.read();
 		}
-		System.out.println("finished reading");
 
 		if (msgBytes == null) {
 			tmp = new byte[index];
@@ -241,7 +237,7 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVM put(String key, String value) throws IOException {
+	public KVM put(String key, String value) throws IOException, ServerNotResponsibleException {
 		StatusType status = StatusType.PUT;
 		if (value.equals("null")) {
 			status = StatusType.DELETE;
@@ -252,21 +248,7 @@ public class KVStore extends Thread implements KVCommInterface {
 		status = message.getStatus();
 
 		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
-			this.getKeyrange();
-			disconnect();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-
-			}
-			ECSNode server_node = metadata.getKeysServer(key);
-			logger.info("hi 2");
-			this.address = server_node.getNodeHost();
-			this.port = server_node.getNodePort();
-			connect();
-			return this.put(key, value);
-		} else if (status == StatusType.SERVER_STOPPED) {
-			logger.info("Response: Server is stopped");
+			throw new ServerNotResponsibleException();
 		}
 
 		return message;
@@ -283,38 +265,13 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVM get(String key) throws IOException {
-		logger.info("hi 1");
-		logger.info(key);
-
+	public KVM get(String key) throws IOException, ServerNotResponsibleException {
 		sendMessage(new KVM(StatusType.GET, key, " "));
-		logger.info("hi 1.3");
 		KVM message = getNextMsg();
-		logger.info("hi 1.4");
 		StatusType status = message.getStatus();
-		logger.info("hi 1.6");
 
 		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
-			this.getKeyrange();
-			// disconnect();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-
-			}
-			ECSNode server_node = metadata.getKeysServer(key);
-			logger.info("hi 2");
-			this.address = server_node.getNodeHost();
-			this.port = server_node.getNodePort();
-			logger.info("hi 2.3");
-			connectToNewServer();
-			logger.info("hi 2.5");
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-			}
-			logger.info("hi 3");
-			return this.get(key);
+			throw new ServerNotResponsibleException();
 		} else if (status == StatusType.SERVER_STOPPED) {
 			logger.info("Response: Server is stopped");
 		}

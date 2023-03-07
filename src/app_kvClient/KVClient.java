@@ -8,9 +8,11 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import app_kvServer.exceptions.ServerNotResponsibleException;
 import logger.LogSetup;
 import client.KVCommInterface;
 import client.KVStore;
+import shared.ecs.ECSNode;
 import shared.messages.KVM;
 
 public class KVClient implements IKVClient {
@@ -32,6 +34,9 @@ public class KVClient implements IKVClient {
 		this.hostname = hostname;
 		this.port = port;
 		this.getStore();
+		if (this.kvStore != null) {
+			this.kvStore.disconnect();
+		}
 		try {
 			this.kvStore.connect();
 			this.kvStore.addListener(this);
@@ -77,6 +82,7 @@ public class KVClient implements IKVClient {
 					hostname = tokens[1];
 					port = Integer.parseInt(tokens[2]);
 					this.newConnection(hostname, port);
+
 				} catch (NumberFormatException nfe) {
 					printError("No valid address. Port must be a number!");
 					logger.info("Unable to parse argument <port>", nfe);
@@ -106,6 +112,24 @@ public class KVClient implements IKVClient {
 					} catch (IOException e) {
 						printError("Unable to send message!");
 						disconnect();
+					} catch (ServerNotResponsibleException e) {
+						try {
+							printError("server not responsible. Changing to new server");
+							kvStore.getKeyrange();
+							try {
+								Thread.sleep(50);
+							} catch (Exception ex) {
+							}
+							ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
+							String address = server_node.getNodeHost();
+							int port = server_node.getNodePort();
+							this.newConnection(address, port);
+							Thread.sleep(50);
+							this.kvStore.put(key, value.toString());
+
+						} catch (Exception ex) {
+							printError("Error trying to connect to new server");
+						}
 					}
 				} else {
 					printError("Connection has not been established or was lost.");
@@ -123,6 +147,24 @@ public class KVClient implements IKVClient {
 					} catch (IOException e) {
 						printError("Unable to send message!");
 						disconnect();
+					} catch (ServerNotResponsibleException e) {
+						try {
+							printError("server not responsible. Changing to new server");
+							kvStore.getKeyrange();
+							try {
+								Thread.sleep(50);
+							} catch (Exception ex) {
+							}
+							ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
+							String address = server_node.getNodeHost();
+							int port = server_node.getNodePort();
+							this.newConnection(address, port);
+							Thread.sleep(50);
+							this.kvStore.get(key);
+
+						} catch (Exception ex) {
+							printError("Error trying to connect to new server");
+						}
 					}
 				} else {
 					printError("Connection has not been established or was lost.");
