@@ -41,28 +41,18 @@ public class KVMetadata {
 
     // Add server to the given binary tree
     public ECSNode addServer(String server_address) {
-        System.out.println("Not racist comment 0");
         String hex_string = this.hashValue(server_address);
-        System.out.println("Not racist comment 1");
         String[] server_info = server_address.split(":");
-        System.out.println("Not racist comment 2");
         System.out.println(server_address);
         System.out.println(server_info[0]);
         System.out.println(server_info[1]);
         System.out.println(Integer.parseInt(server_info[1]));
         ECSNode server_node = new ECSNode(server_info[0], Integer.valueOf(server_info[1]));
-        System.out.println("Not racist comment 3");
         this.server_tree.put(hex_string, server_node);
-
-        System.out.println("Not racist comment 4");
 
         updateNodeHashRanges();
 
-        System.out.println("Not racist comment 5");
-
         ECSNode added_node = this.getServerNode(server_address);
-
-        System.out.println("Not racist comment 6");
 
         return added_node;
     }
