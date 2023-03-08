@@ -40,6 +40,12 @@ public class ECSClient extends Thread implements IECSClient {
 
     public Set<ServerConnection> serverConnections;
 
+    public void close() {
+        logger.info("Closing ECS Server!");
+        this.running = false;
+        System.exit(0);
+    }
+
     public ECSClient(int port) {
         this.port = port;
         try {

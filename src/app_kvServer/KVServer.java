@@ -240,6 +240,10 @@ public class KVServer extends Thread implements IKVServer {
 		this.serverStopped = true;
 	}
 
+	public boolean isServerStopped() {
+		return this.serverStopped;
+	}
+
 	public void startServer() {
 		this.serverStopped = false;
 	}
