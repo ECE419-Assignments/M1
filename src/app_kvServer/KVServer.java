@@ -98,7 +98,7 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public String getHostname() {
-		return "127.0.0.1";
+		return "localhost";
 	}
 
 	public CacheStrategy getCacheStrategy() throws ServerStoppedException {
@@ -119,10 +119,6 @@ public class KVServer extends Thread implements IKVServer {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		// kvHasher = KVHasher();
-		// if (/* Server is responsible */) {
-		// throw new ServerNotResponsibleException();
-		// }
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
@@ -297,7 +293,6 @@ public class KVServer extends Thread implements IKVServer {
 			} else {
 				int port = Integer.parseInt(args[0]);
 				int ecsPort = Integer.parseInt(args[1]);
-				System.out.println(ecsPort);
 				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO, ecsPort);
 			}
 		} catch (IOException e) {

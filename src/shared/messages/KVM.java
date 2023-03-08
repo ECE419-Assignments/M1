@@ -17,7 +17,6 @@ public class KVM implements KVMessage {
     public KVM(byte[] msgBytes) throws Exception {
         this.msgBytes = addCtrChars(msgBytes);
         this.msg = new String(msgBytes, StandardCharsets.US_ASCII);
-        System.out.println(this.msg);
         this.splitString(this.msg);
     }
 

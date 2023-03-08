@@ -108,7 +108,6 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			}
 			this.input = this.clientSocket.getInputStream();
-			System.out.println("updated input");
 			this.output = this.clientSocket.getOutputStream();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -225,7 +224,6 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			}
 		}
-		System.out.println(getLatestMsg().getStatus());
 		return getLatestMsg();
 	}
 

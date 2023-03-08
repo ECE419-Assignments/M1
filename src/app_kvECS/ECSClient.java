@@ -252,10 +252,7 @@ public class ECSClient extends Thread implements IECSClient {
     }
 
     public ServerConnection getServerConnectionWithAddress(String address) throws NameNotFoundException {
-        System.out.println(address);
         for (ServerConnection serverConnection : serverConnections) {
-            System.out.println(serverConnection.address);
-            System.out.print(serverConnection.address.equals(address));
             if (serverConnection.address.equals(address)) {
                 return serverConnection;
             }

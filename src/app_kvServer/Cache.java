@@ -66,10 +66,8 @@ class Cache extends Thread {
         File[] listOfFiles = folder.listFiles();
 
         if(listOfFiles == null){
-            System.out.println("band 12");
             return null;
         }
-        System.out.println("why me");
 
         LinkedHashMap<String, String> values =  new LinkedHashMap<String, String>();
         for (File file : listOfFiles) {
@@ -122,7 +120,6 @@ class Cache extends Thread {
 
     public String find(String key) throws KeyNotFoundException, FailedException {
         if (cache.containsKey(key)) {
-            System.out.println("Found in cache");
             return cache.get(key);
         }
         if (onDisk(key)) {
@@ -140,15 +137,11 @@ class Cache extends Thread {
             throw new KeyNotFoundException();
         }
 
-        System.out.println("deleting key");
-
         if (cache.containsKey(key)) {
             cache.remove(key);
         }
 
         String filepath = getFilepath(key);
-
-        System.out.println(filepath);
 
         File file = new File(filepath);
         if (file.exists()) {

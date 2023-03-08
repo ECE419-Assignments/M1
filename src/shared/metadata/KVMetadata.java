@@ -35,7 +35,6 @@ public class KVMetadata {
     }
 
     public int getCountServers() {
-        System.out.println(this.server_tree.size());
         return this.server_tree.size();
     }
 
@@ -43,10 +42,6 @@ public class KVMetadata {
     public ECSNode addServer(String server_address) {
         String hex_string = this.hashValue(server_address);
         String[] server_info = server_address.split(":");
-        System.out.println(server_address);
-        System.out.println(server_info[0]);
-        System.out.println(server_info[1]);
-        System.out.println(Integer.parseInt(server_info[1]));
         ECSNode server_node = new ECSNode(server_info[0], Integer.valueOf(server_info[1]));
         this.server_tree.put(hex_string, server_node);
 
@@ -176,35 +171,35 @@ public class KVMetadata {
         return key_range.toString();
     }
 
-    // testing
-    public static void main(String[] args) {
+    // // testing
+    // public static void main(String[] args) {
 
-        KVMetadata hasher = new KVMetadata();
-        KVMetadata hasher_2 = new KVMetadata();
+    //     KVMetadata hasher = new KVMetadata();
+    //     KVMetadata hasher_2 = new KVMetadata();
 
-        for (int i = 0; i < 5; i++) {
-            hasher.addServer("localhost:" + 3000 + i);
-        }
+    //     for (int i = 0; i < 5; i++) {
+    //         hasher.addServer("localhost:" + 3000 + i);
+    //     }
 
-        for (int i = 0; i < 10; i++) {
-            ECSNode that = hasher.getKeysServer(Integer.toString(i * 2000));
-            System.out.println(that);
-        }
+    //     for (int i = 0; i < 10; i++) {
+    //         ECSNode that = hasher.getKeysServer(Integer.toString(i * 2000));
+    //         System.out.println(that);
+    //     }
 
-        String key_range = hasher.getKeyRange();
-        System.out.println(key_range);
+    //     String key_range = hasher.getKeyRange();
+    //     System.out.println(key_range);
 
-        hasher_2.createServerTree(key_range);
-        key_range = hasher_2.getKeyRange();
-        System.out.println(key_range);
+    //     hasher_2.createServerTree(key_range);
+    //     key_range = hasher_2.getKeyRange();
+    //     System.out.println(key_range);
 
-        for (int i = 0; i < 5; i++) {
-            ECSNode node = hasher_2.getServerNode("localhost:" + 3000 + i);
-            ECSNode succesor_node = hasher_2.getSuccesorNode("localhost:" + 3000 + i);
-            System.out.println(succesor_node);
-            System.out.println(node);
-        }
+    //     for (int i = 0; i < 5; i++) {
+    //         ECSNode node = hasher_2.getServerNode("localhost:" + 3000 + i);
+    //         ECSNode succesor_node = hasher_2.getSuccesorNode("localhost:" + 3000 + i);
+    //         System.out.println(succesor_node);
+    //         System.out.println(node);
+    //     }
 
-    }
+    // }
 
 }

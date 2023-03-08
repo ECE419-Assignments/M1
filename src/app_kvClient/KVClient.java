@@ -69,8 +69,6 @@ public class KVClient implements IKVClient {
 	private void handleCommand(String cmdLine) {
 		String[] tokens = cmdLine.split("\\s+");
 
-		System.out.println(tokens);
-
 		if (tokens[0].equals("quit")) {
 			stop = true;
 			disconnect();

@@ -76,7 +76,6 @@ public class BaseConnection implements Runnable {
                     KVM latestMsg = receiveMessage();
                     this.processMessage(latestMsg);
                 } catch (IOException ioe) {
-                    System.out.println(ioe);
                     logger.error("Error! Connection lost!", ioe);
                     isOpen = false;
                 } catch (NumberFormatException e) {
