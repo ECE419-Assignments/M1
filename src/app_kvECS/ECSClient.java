@@ -42,7 +42,13 @@ public class ECSClient extends Thread implements IECSClient {
 
     public ECSClient(int port) {
         this.port = port;
-        serverConnections = new HashSet<ServerConnection>();
+        try {
+            serverConnections = new HashSet<ServerConnection>();
+            new LogSetup("logs/ecs.log", Level.ALL);
+        } catch (IOException e) {
+            System.out.println("error setting sup ecs logger");
+        }
+        this.start();
     }
 
     // @Override
@@ -262,23 +268,12 @@ public class ECSClient extends Thread implements IECSClient {
     }
 
     public static void main(String[] args) {
-        try {
-            new LogSetup("logs/server.log", Level.ALL);
-            ECSClient ecsClient = new ECSClient(51000);
-            ecsClient.start();
-        } catch (IOException e) {
-            System.out.println("Error! Unable to initialize logger!");
-            e.printStackTrace();
-            System.exit(1);
+        if (args.length != 1) {
+            System.out.println("Error! Invalid number of arguments!");
+            System.out.println("Usage: ECS <port>!");
         }
-
-        // Zeni
-        // TODO
-        // Add
-        // Delete
-        // Start
-        // Stop
-        // Shutdown
+        int port = Integer.parseInt(args[0]);
+        new ECSClient(port);
     }
 
     // Extra for add node
