@@ -61,19 +61,25 @@ public class ServerConnection extends BaseConnection {
                 logger.info(String.format("Deleting server with address %s", value));
                 this.ecsClient.kvMetadata.deleteServer(value);
                 this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
-                // if statement here for only one server remaning, send special message that just closes the server
+
+                if (this.ecsClient.kvMetadata.getCountServers() != 0) {
+                    ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
+                    logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
+                            prevNode.getNodeAddress(), value));
+                    ServerConnection prevConnection = this.ecsClient
+                            .getServerConnectionWithAddress(prevNode.getNodeAddress());
+                    prevConnection
+                            .sendMessage(
+                                    new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
+                    Thread.sleep(10);
+                    this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, " ", prevConnection.address));
+                } else {
+                    Thread.sleep(100);
+                    this.sendMessage(new KVM(StatusType.CLOSE_LAST_SERVER, "", ""));
+                }
+                // if statement here for only one server remaning, send special message that
+                // just closes the server
                 // then remove this thread close it etc
-
-
-                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
-                logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
-                        prevNode.getNodeAddress(), value));
-                ServerConnection prevConnection = this.ecsClient
-                        .getServerConnectionWithAddress(prevNode.getNodeAddress());
-                prevConnection
-                        .sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
-                Thread.sleep(10);
-                this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, " ", prevConnection.address));
 
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();

@@ -53,9 +53,11 @@ public class ECSConnection extends BaseConnection {
                 sendResponse = true;
             } else if (status.equals(StatusType.START_SERVER)) {
                 this.kvServer.startServer();
+            } else if (status.equals(StatusType.CLOSE_LAST_SERVER)) {
+                this.kvServer.close();
+                this.close();
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
-            // else if status.equals.CLOSE_LAST_SERVER
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
                 System.out.println("deleting server");
                 String server_address = value;
@@ -67,8 +69,8 @@ public class ECSConnection extends BaseConnection {
 
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
                 System.out.println(values);
-                
-                if (!(values == null)){
+
+                if (!(values == null)) {
                     for (Map.Entry<String, String> entry : values.entrySet()) {
                         System.out.println("sending keys");
                         String cur_key = entry.getKey();
@@ -80,8 +82,8 @@ public class ECSConnection extends BaseConnection {
                 Thread.sleep(100);
                 connection.close();
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN, " ", " "));
-                
-                if (!(values == null)){
+
+                if (!(values == null)) {
                     for (Map.Entry<String, String> entry : values.entrySet()) {
                         String cur_key = entry.getKey();
                         this.kvServer.deleteKV(cur_key, true);
@@ -108,7 +110,7 @@ public class ECSConnection extends BaseConnection {
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
                 System.out.println(values);
 
-                if (!(values == null)){
+                if (!(values == null)) {
                     System.out.println("sending keys");
                     for (Map.Entry<String, String> entry : values.entrySet()) {
                         String cur_key = entry.getKey();
@@ -122,8 +124,8 @@ public class ECSConnection extends BaseConnection {
 
                 Thread.sleep(100);
                 connection.close();
-                
-                if (!(values == null)){
+
+                if (!(values == null)) {
                     for (Map.Entry<String, String> entry : values.entrySet()) {
                         String cur_key = entry.getKey();
                         String cur_val = entry.getValue();

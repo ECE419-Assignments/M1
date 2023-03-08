@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 import org.apache.log4j.Logger;
 
@@ -75,6 +76,9 @@ public class BaseConnection implements Runnable {
                 try {
                     KVM latestMsg = receiveMessage();
                     this.processMessage(latestMsg);
+                } catch (SocketException e) {
+                    logger.info("Server disconnected!");
+                    isOpen = false;
                 } catch (IOException ioe) {
                     logger.error("Error! Connection lost!", ioe);
                     isOpen = false;
