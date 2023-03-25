@@ -216,6 +216,16 @@ public class ECSClient extends Thread implements IECSClient {
         }
     }
 
+    public void updateAllServerReplicas() {
+        for (ServerConnection connection : serverConnections) {
+            try {
+                connection.sendMessage(new KVM(StatusType.UPDATE_REPLICAS, " S", " "));
+            } catch (Exception e) {
+                System.out.println("Error in update all server replicas");
+            }
+        }
+    }
+
     public void run() {
         running = initializeECSClient();
 

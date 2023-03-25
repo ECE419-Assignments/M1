@@ -83,13 +83,14 @@ public class ServerConnection extends BaseConnection {
 
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateAllServerReplicas();
                 sendResponse = false;
                 Thread.sleep(10);
                 this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN)) {
                 this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateAllServerReplicas();
                 sendResponse = false;
-                // TODO: Navid - Delete this connection
                 this.close();
                 this.ecsClient.serverConnections.remove(this);
             }
