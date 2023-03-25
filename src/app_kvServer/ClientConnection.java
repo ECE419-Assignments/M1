@@ -60,7 +60,10 @@ public class ClientConnection extends BaseConnection {
 				responseValue = this.kvServer.metadata.getKeyRange();
 				responseStatus = StatusType.GET_KEYRANGE_SUCCESS;
 				sendResponse = true;
-				// TODO: M2 - Turn into a string that we can pass back to client
+			} else if (status.equals(StatusType.PUT_REPLICA)){
+				// TODO: Navid - replica put this.kvServer.putKVReplica(key, value)
+				responseStatus = StatusType.PUT_REPLICA_SUCCESS;
+				sendResponse = true;
 			}
 		} catch (ServerStoppedException e) {
 			System.out.println("Server stopped exception");

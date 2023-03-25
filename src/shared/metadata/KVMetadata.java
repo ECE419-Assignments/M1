@@ -96,6 +96,32 @@ public class KVMetadata {
         return successor_node;
     }
 
+    public ECSNode[] getReplicaNodes(String server_address){
+        ECSNode [] replica_nodes = new ECSNode[2];
+        
+        ECSNode first_rep = this.getSuccesorNode(server_address);
+        // If no successor return null (single node)
+        if (server_address.equals(first_rep.getNodeAddress())) {
+            replica_nodes[0] = null;
+            replica_nodes[1] = null;
+            return replica_nodes;
+        }
+
+        replica_nodes[0] = first_rep;
+
+        
+        ECSNode second_rep = this.getSuccesorNode(first_rep.getNodeAddress());
+        // If there is only one replica (two nodes)
+        if (first_rep.getNodeAddress().equals(second_rep.getNodeAddress())){
+            replica_nodes[1] = null;
+            return replica_nodes;
+        }
+        
+        replica_nodes[1] = second_rep;
+
+        return replica_nodes;
+    }
+
     // Hashes a value
     public String hashValue(String msg) {
         this.hasher.update(msg.getBytes());

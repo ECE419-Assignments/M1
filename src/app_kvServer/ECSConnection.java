@@ -139,6 +139,10 @@ public class ECSConnection extends BaseConnection {
                 Thread.sleep(100);
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, " ", " "));
             }
+            // TODO add an update replicas
+            // deletes old replicas
+            // Creates a connection with replica servers
+            // Sends put replicas of all keys stored to the servers
         } catch (Exception e) {
             System.out.println(e);
             responseStatus = StatusType.FAILED;

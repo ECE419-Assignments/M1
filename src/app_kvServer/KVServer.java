@@ -10,6 +10,9 @@ import java.io.IOException;
 import logger.LogSetup;
 import shared.ecs.ECSNode;
 import shared.metadata.KVMetadata;
+import shared.misc;
+import shared.messages.KVM;
+import shared.messages.KVMessage.StatusType;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -174,7 +177,7 @@ public class KVServer extends Thread implements IKVServer {
 
 	public void putKV(String key, String value)
 			throws ServerNotResponsibleException, ServerStoppedException, WriteLockException,
-			ServerNotResponsibleException {
+			ServerNotResponsibleException, IOException {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
@@ -185,6 +188,31 @@ public class KVServer extends Thread implements IKVServer {
 			cache.save(key, value);
 		} else {
 			throw new ServerNotResponsibleException();
+		}
+
+		//TODO: send to replicas
+		ECSNode[] replicas = this.metadata.getReplicaNodes(address);
+		logger.info("updating replicas");
+		for(ECSNode node : replicas){
+			try {
+				if (node != null){
+					String server_address = node.getNodeAddress();
+					String host = misc.getHostFromAddress(server_address);
+					int port = misc.getPortFromAddress(server_address);
+					Socket socket = new Socket(host, port);
+
+					ClientConnection connection = new ClientConnection(this, socket);
+					new Thread(connection).start();
+					Thread.sleep(500);
+
+					connection.sendMessage(new KVM(StatusType.PUT_REPLICA, key, value));
+
+					Thread.sleep(100);
+                	connection.close();
+				}
+			} catch (InterruptedException e) {
+				logger.error(e);
+			}
 		}
 	}
 
