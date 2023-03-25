@@ -10,6 +10,8 @@ import app_kvServer.exceptions.WriteLockException;
 import shared.BaseConnection;
 import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
+import shared.ecs.ECSNode;
+import shared.misc;
 
 public class ClientConnection extends BaseConnection {
 
@@ -47,6 +49,27 @@ public class ClientConnection extends BaseConnection {
 					responseStatus = StatusType.PUT_UPDATE;
 				}
 				sendResponse = true;
+
+				//Update replicas
+				ECSNode[] replicas = this.kvServer.metadata.getReplicaNodes(this.kvServer.getAddress());
+				logger.info("updating replicas");
+				for(ECSNode node : replicas){
+					if (node != null){
+						String server_address = node.getNodeAddress();
+						String host = misc.getHostFromAddress(server_address);
+						int port = misc.getPortFromAddress(server_address);
+						Socket socket = new Socket(host, port);
+
+						ClientConnection connection = new ClientConnection(this.kvServer, socket);
+						new Thread(connection).start();
+						Thread.sleep(500);
+
+						connection.sendMessage(new KVM(StatusType.PUT_REPLICA, key, value));
+
+						Thread.sleep(100);
+						connection.close();
+					}
+				}
 			} else if (status.equals(StatusType.GET)) {
 				responseValue = this.kvServer.getKV(message.getKey());
 				responseStatus = StatusType.GET_SUCCESS;

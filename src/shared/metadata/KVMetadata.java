@@ -112,7 +112,7 @@ public class KVMetadata {
         
         ECSNode second_rep = this.getSuccesorNode(first_rep.getNodeAddress());
         // If there is only one replica (two nodes)
-        if (first_rep.getNodeAddress().equals(second_rep.getNodeAddress())){
+        if (server_address.equals(second_rep.getNodeAddress())){
             replica_nodes[1] = null;
             return replica_nodes;
         }
@@ -120,6 +120,18 @@ public class KVMetadata {
         replica_nodes[1] = second_rep;
 
         return replica_nodes;
+    }
+
+    public boolean isServerReplicaOf(String replica_address, String server_address){
+
+        ECSNode[] server_reps = this.getReplicaNodes(server_address);
+        for(ECSNode repNode : server_reps){
+            if(repNode.getNodeAddress().equals(replica_address)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Hashes a value

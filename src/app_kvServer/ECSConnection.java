@@ -63,7 +63,7 @@ public class ECSConnection extends BaseConnection {
                 String server_address = value;
                 String host = misc.getHostFromAddress(server_address);
                 int port = misc.getPortFromAddress(server_address);
-                Socket socket = new Socket(host, port); // TODO: Navid
+                Socket socket = new Socket(host, port);
                 ClientConnection connection = new ClientConnection(this.kvServer, socket);
                 new Thread(connection).start();
 
@@ -138,6 +138,10 @@ public class ECSConnection extends BaseConnection {
 
                 Thread.sleep(100);
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, " ", " "));
+            } else if (status.equals(StatusType.UPDATE_REPLICAS)) {
+                // TODO: Navid - delete old values
+
+
             }
             // TODO add an update replicas
             // deletes old replicas
