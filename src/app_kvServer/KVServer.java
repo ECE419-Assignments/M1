@@ -363,7 +363,7 @@ public class KVServer extends Thread implements IKVServer {
 			new LogSetup("logs/server.log", Level.ALL);
 			if (args.length == 2) {
 				int port = Integer.parseInt(args[0]);
-				String hostname = "127.0.0.1";
+				String hostname = "localhost";
 				int ecsPort = Integer.parseInt(args[2]);
 				new KVServer(port, 10, CacheStrategy.FIFO, hostname, ecsPort);
 			} else if (args.length == 3) {
