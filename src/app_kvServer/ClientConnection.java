@@ -64,7 +64,7 @@ public class ClientConnection extends BaseConnection {
 			if (status.equals(StatusType.PUT)) {
 				responseStatus = StatusType.PUT_ERROR;
 
-				boolean alreadyExists = this.kvServer.inCache(key);
+				boolean alreadyExists = this.kvServer.inMainCache(key);
 
 				this.kvServer.putKV(key, value);
 				logger.info(key + value);

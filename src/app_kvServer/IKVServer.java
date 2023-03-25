@@ -55,7 +55,7 @@ public interface IKVServer {
      * 
      * @return true if key in storage, false otherwise
      */
-    public boolean inCache(String key) throws ServerStoppedException;
+    public boolean inMainCache(String key) throws ServerStoppedException;
 
     /**
      * Get the value associated with the key
