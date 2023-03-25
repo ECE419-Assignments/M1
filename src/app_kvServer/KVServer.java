@@ -3,7 +3,9 @@ package app_kvServer;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.io.IOException;
 
@@ -248,11 +250,25 @@ public class KVServer extends Thread implements IKVServer {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		cache.clearDisk();
+		cache.clearDisk(false);
 	}
 
 	public LinkedHashMap<String, String> getAllKeyValues() {
 		return this.cache.getAllKeyValues();
+	}
+
+	public void deleteAllReplicaCaches() {
+		for (Map.Entry<String, Cache> entry : replicas_caches.entrySet()) {
+			Cache cache = entry.getValue();
+
+			try {
+				cache.clearDisk(true);
+			} catch (WriteLockException e) {
+				logger.error("write lock on replica cache deletion. This should not be happening!");
+			}
+		}
+
+		replicas_caches = new LinkedHashMap<String, Cache>();
 	}
 
 	public void run() {
