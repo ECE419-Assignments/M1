@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import client.Client;
 import shared.ecs.ECSNode;
 import shared.BaseConnection;
 import shared.misc;
@@ -70,6 +69,7 @@ public class ECSConnection extends BaseConnection {
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {
+                this.kvServer.deleteAllReplicaCaches();
                 System.out.println("deleting server");
                 String server_address = value;
 
@@ -98,6 +98,7 @@ public class ECSConnection extends BaseConnection {
                         this.kvServer.deleteKV(cur_key, true);
                     }
                 }
+                this.kvServer.clearStorage();
                 this.kvServer.close();
                 this.close();
 
@@ -181,7 +182,7 @@ public class ECSConnection extends BaseConnection {
                     rep_connection_1.close();
                 }
                 Thread.sleep(100);
-                if (rep_connection_1 != null) {
+                if (rep_connection_2 != null) {
                     rep_connection_2.close();
                 }
             }

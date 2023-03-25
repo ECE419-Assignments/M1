@@ -175,10 +175,11 @@ class Cache extends Thread {
         if (this.is_locked && !force_delete) {
             throw new WriteLockException();
         }
-        File dir = new File(".cache");
-        for (File file : dir.listFiles())
+        File directory = new File(dir);
+        for (File file : directory.listFiles())
             if (!file.isDirectory())
                 file.delete();
+        directory.delete();
     }
 
     public void printCache() {

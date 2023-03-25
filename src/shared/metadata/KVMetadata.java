@@ -89,16 +89,17 @@ public class KVMetadata {
 
     public ECSNode getSuccesorNode(String server_address) {
         ECSNode successor_node = getKeysServer(server_address);
-        System.out.println(String.format("Get Successor Node Values: %s, %s, %s, %s", server_address, successor_node.getNodeAddress(), server_tree.firstKey(), server_tree.lastKey()));
+        System.out.println(String.format("Get Successor Node Values: %s, %s, %s, %s", server_address,
+                successor_node.getNodeAddress(), server_tree.firstKey(), server_tree.lastKey()));
         if (server_address.equals(successor_node.getNodeAddress())) {
             successor_node = server_tree.get(server_tree.firstKey());
         }
         return successor_node;
     }
 
-    public ECSNode[] getReplicaNodes(String server_address){
-        ECSNode [] replica_nodes = new ECSNode[2];
-        
+    public ECSNode[] getReplicaNodes(String server_address) {
+        ECSNode[] replica_nodes = new ECSNode[2];
+
         ECSNode first_rep = this.getSuccesorNode(server_address);
         // If no successor return null (single node)
         if (server_address.equals(first_rep.getNodeAddress())) {
@@ -109,24 +110,26 @@ public class KVMetadata {
 
         replica_nodes[0] = first_rep;
 
-        
         ECSNode second_rep = this.getSuccesorNode(first_rep.getNodeAddress());
         // If there is only one replica (two nodes)
-        if (server_address.equals(second_rep.getNodeAddress())){
+        if (server_address.equals(second_rep.getNodeAddress())) {
             replica_nodes[1] = null;
             return replica_nodes;
         }
-        
+
         replica_nodes[1] = second_rep;
 
         return replica_nodes;
     }
 
-    public boolean isServerReplicaOf(String replica_address, String server_address){
+    public boolean isServerReplicaOf(String replica_address, String server_address) {
 
         ECSNode[] server_reps = this.getReplicaNodes(server_address);
-        for(ECSNode repNode : server_reps){
-            if(repNode.getNodeAddress().equals(replica_address)){
+        for (ECSNode repNode : server_reps) {
+            if (repNode == null) {
+                continue;
+            }
+            if (repNode.getNodeAddress().equals(replica_address)) {
                 return true;
             }
         }
@@ -212,31 +215,31 @@ public class KVMetadata {
     // // testing
     // public static void main(String[] args) {
 
-    //     KVMetadata hasher = new KVMetadata();
-    //     KVMetadata hasher_2 = new KVMetadata();
+    // KVMetadata hasher = new KVMetadata();
+    // KVMetadata hasher_2 = new KVMetadata();
 
-    //     for (int i = 0; i < 5; i++) {
-    //         hasher.addServer("localhost:" + 3000 + i);
-    //     }
+    // for (int i = 0; i < 5; i++) {
+    // hasher.addServer("localhost:" + 3000 + i);
+    // }
 
-    //     for (int i = 0; i < 10; i++) {
-    //         ECSNode that = hasher.getKeysServer(Integer.toString(i * 2000));
-    //         System.out.println(that);
-    //     }
+    // for (int i = 0; i < 10; i++) {
+    // ECSNode that = hasher.getKeysServer(Integer.toString(i * 2000));
+    // System.out.println(that);
+    // }
 
-    //     String key_range = hasher.getKeyRange();
-    //     System.out.println(key_range);
+    // String key_range = hasher.getKeyRange();
+    // System.out.println(key_range);
 
-    //     hasher_2.createServerTree(key_range);
-    //     key_range = hasher_2.getKeyRange();
-    //     System.out.println(key_range);
+    // hasher_2.createServerTree(key_range);
+    // key_range = hasher_2.getKeyRange();
+    // System.out.println(key_range);
 
-    //     for (int i = 0; i < 5; i++) {
-    //         ECSNode node = hasher_2.getServerNode("localhost:" + 3000 + i);
-    //         ECSNode succesor_node = hasher_2.getSuccesorNode("localhost:" + 3000 + i);
-    //         System.out.println(succesor_node);
-    //         System.out.println(node);
-    //     }
+    // for (int i = 0; i < 5; i++) {
+    // ECSNode node = hasher_2.getServerNode("localhost:" + 3000 + i);
+    // ECSNode succesor_node = hasher_2.getSuccesorNode("localhost:" + 3000 + i);
+    // System.out.println(succesor_node);
+    // System.out.println(node);
+    // }
 
     // }
 

@@ -40,7 +40,8 @@ public interface KVMessage {
 		CLOSE_LAST_SERVER,
 
 		UPDATE_REPLICAS,
-
+		PULSE_CHECK,
+		PULSE_CHECK_SUCCESS
 	}
 
 	/**

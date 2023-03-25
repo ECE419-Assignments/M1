@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+
+import javax.swing.plaf.TreeUI;
+
 import java.io.IOException;
 
 import logger.LogSetup;
@@ -87,6 +90,7 @@ public class KVServer extends Thread implements IKVServer {
 		this.cache = new Cache(cacheSize, "localhost", port);
 		this.serverStopped = true;
 		this.metadata = new KVMetadata();
+		this.replicas_caches = new LinkedHashMap<String, Cache>();
 		this.start();
 
 	}
@@ -194,7 +198,9 @@ public class KVServer extends Thread implements IKVServer {
 		String responsible_server_address = this.metadata.getKeysServer(key).getNodeAddress();
 		String current_server_address = this.getAddress();
 
-		if (this.metadata.isServerReplicaOf(current_server_address, responsible_server_address)) {
+		if (current_server_address.equals(responsible_server_address)) {
+			return this.cache;
+		} else if (this.metadata.isServerReplicaOf(current_server_address, responsible_server_address)) {
 			if (!replicas_caches.containsKey(responsible_server_address)) {
 				replicas_caches.put(responsible_server_address, new Cache(
 						cacheSize,
@@ -239,7 +245,7 @@ public class KVServer extends Thread implements IKVServer {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		cache.clearDisk(false);
+		cache.clearDisk(true);
 	}
 
 	public LinkedHashMap<String, String> getAllKeyValues() {
@@ -247,8 +253,10 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public void deleteAllReplicaCaches() {
+		logger.info("Deleting all replica caches");
 		for (Map.Entry<String, Cache> entry : replicas_caches.entrySet()) {
 			Cache cache = entry.getValue();
+			logger.info(String.format("Deleting all replica cache for server: %s", entry.getKey()));
 
 			try {
 				cache.clearDisk(true);
