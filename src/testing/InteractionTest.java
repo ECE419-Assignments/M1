@@ -21,6 +21,7 @@ public class InteractionTest extends TestCase {
 			// Thread.sleep(500);
 		} catch (Exception e) {
 			System.out.println("Error setting up");
+			System.out.print(e);
 		}
 	}
 
