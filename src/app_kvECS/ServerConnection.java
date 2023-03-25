@@ -24,6 +24,28 @@ public class ServerConnection extends BaseConnection {
     }
 
     @Override()
+    public void postClosed() {
+        logger.info(String.format("Deleting server with address %s", this.address));
+        this.ecsClient.kvMetadata.deleteServer(this.address);
+
+        if (this.ecsClient.kvMetadata.getCountServers() != 0) {
+            ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(this.address);
+            logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
+                    prevNode.getNodeAddress(), this.address));
+            ServerConnection prevConnection = this.ecsClient
+                    .getServerConnectionWithAddress(prevNode.getNodeAddress());
+            prevConnection
+                    .sendMessage(
+                            new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
+            Thread.sleep(10);
+            this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, " ", prevConnection.address));
+        } else {
+            Thread.sleep(100);
+            this.sendMessage(new KVM(StatusType.CLOSE_LAST_SERVER, "", ""));
+        }
+    }
+
+    @Override()
     public void processMessage(KVM message) throws IOException {
         StatusType status = message.getStatus();
         String key = message.getKey();

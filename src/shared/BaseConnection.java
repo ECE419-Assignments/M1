@@ -33,6 +33,10 @@ public class BaseConnection implements Runnable {
     public void postStart() throws IOException {
     }
 
+    public void postClosed() {
+
+    }
+
     public BaseConnection(String host, int port) {
         try {
             this.socket = new Socket(host, port);
@@ -97,9 +101,13 @@ public class BaseConnection implements Runnable {
 
             try {
                 if (socket != null) {
+                    logger.info("Socket is null. Closing connection");
+
                     input.close();
                     output.close();
                     socket.close();
+
+                    postClosed();
                 }
             } catch (IOException ioe) {
                 logger.error("Error! Unable to tear down connection!");
