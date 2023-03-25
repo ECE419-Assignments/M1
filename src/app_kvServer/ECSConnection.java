@@ -35,7 +35,7 @@ public class ECSConnection extends BaseConnection {
                 String.format("%s:%s", kvServer.getHostname(), kvServer.getPort())));
     }
 
-    private ClientConnection createServerConnection(String server_address) throws InterruptedException, IOException{
+    private ClientConnection createServerConnection(String server_address) throws InterruptedException, IOException {
         String host = misc.getHostFromAddress(server_address);
         int port = misc.getPortFromAddress(server_address);
         Socket socket = new Socket(host, port);
@@ -143,15 +143,21 @@ public class ECSConnection extends BaseConnection {
                 this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, " ", " "));
 
             } else if (status.equals(StatusType.UPDATE_REPLICAS)) {
-                // TODO: Navid - delete old values
+                this.kvServer.deleteAllReplicaCaches();
                 ECSNode[] replicas = this.kvServer.metadata.getReplicaNodes(this.kvServer.getAddress());
 
                 // Create connections to servers
-                if((replicas[0] == null) && (replicas[1] == null)){return;}
+                if ((replicas[0] == null) && (replicas[1] == null)) {
+                    return;
+                }
                 ClientConnection rep_connection_1 = null;
                 ClientConnection rep_connection_2 = null;
-                if(replicas[0] != null) {rep_connection_1 = createServerConnection(replicas[0].getNodeAddress());}
-                if(replicas[1] != null) {rep_connection_2 = createServerConnection(replicas[1].getNodeAddress());}
+                if (replicas[0] != null) {
+                    rep_connection_1 = createServerConnection(replicas[0].getNodeAddress());
+                }
+                if (replicas[1] != null) {
+                    rep_connection_2 = createServerConnection(replicas[1].getNodeAddress());
+                }
 
                 // Send key values to replicas
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
@@ -161,17 +167,25 @@ public class ECSConnection extends BaseConnection {
                     for (Map.Entry<String, String> entry : values.entrySet()) {
                         String cur_key = entry.getKey();
                         String cur_val = entry.getValue();
-                        if(rep_connection_1 != null){rep_connection_1.sendMessage(new KVM(StatusType.PUT_REPLICA, cur_key, cur_val));}
-                        if(rep_connection_2 != null){rep_connection_2.sendMessage(new KVM(StatusType.PUT_REPLICA, cur_key, cur_val));}
+                        if (rep_connection_1 != null) {
+                            rep_connection_1.sendMessage(new KVM(StatusType.PUT_REPLICA, cur_key, cur_val));
+                        }
+                        if (rep_connection_2 != null) {
+                            rep_connection_2.sendMessage(new KVM(StatusType.PUT_REPLICA, cur_key, cur_val));
+                        }
                     }
                 }
 
                 Thread.sleep(100);
-                if(rep_connection_1 != null){rep_connection_1.close();}
+                if (rep_connection_1 != null) {
+                    rep_connection_1.close();
+                }
                 Thread.sleep(100);
-                if(rep_connection_1 != null){rep_connection_2.close();}
+                if (rep_connection_1 != null) {
+                    rep_connection_2.close();
+                }
             }
-            
+
         } catch (Exception e) {
             System.out.println(e);
             responseStatus = StatusType.FAILED;
