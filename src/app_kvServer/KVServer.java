@@ -212,11 +212,15 @@ public class KVServer extends Thread implements IKVServer {
 		}
 		String responsible_server_address = this.metadata.getKeysServer(key).getNodeAddress();
 
-		if (replicas_caches.containsKey(responsible_server_address)) {
-			replicas_caches.get(responsible_server_address).save(key, value);
-		} else {
-			throw new FailedException();
+		if (!replicas_caches.containsKey(responsible_server_address)) {
+			replicas_caches.put(responsible_server_address, new Cache(
+					cacheSize,
+					this.getHostname(),
+					this.getPort(),
+					misc.getHostFromAddress(responsible_server_address),
+					misc.getPortFromAddress(responsible_server_address)));
 		}
+		replicas_caches.get(responsible_server_address).save(key, value);
 	}
 
 	public void deleteReplicaKV(String key, boolean forceDelete)
@@ -229,14 +233,16 @@ public class KVServer extends Thread implements IKVServer {
 		logger.debug(String.format("Deleting replica key value for key", key));
 
 		String responsible_server_address = this.metadata.getKeysServer(key).getNodeAddress();
-
-		if (replicas_caches.containsKey(responsible_server_address)) {
-			logger.debug(String.format("Trying to delete", key));
-			replicas_caches.get(responsible_server_address).delete(key, forceDelete);
-		} else {
-			throw new FailedException();
+		if (!replicas_caches.containsKey(responsible_server_address)) {
+			replicas_caches.put(responsible_server_address, new Cache(
+					cacheSize,
+					this.getHostname(),
+					this.getPort(),
+					misc.getHostFromAddress(responsible_server_address),
+					misc.getPortFromAddress(responsible_server_address)));
 		}
-
+		logger.debug(String.format("Trying to delete", key));
+		replicas_caches.get(responsible_server_address).delete(key, forceDelete);
 	}
 
 	public void clearCache() throws ServerStoppedException, WriteLockException {
