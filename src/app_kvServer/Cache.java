@@ -28,6 +28,17 @@ class Cache extends Thread {
         createFolderIfNotExist(dir);
     }
 
+    public Cache(final int cacheSize, String hostname, int port, String replica_hostname, int replicate_port) {
+        cache = new LinkedHashMap<String, String>() {
+            @Override
+            protected boolean removeEldestEntry(final Map.Entry eldest) {
+                return size() > cacheSize;
+            }
+        };
+        dir = String.format("./.cache/%s:%s/%s:%s", hostname, port, replica_hostname, replicate_port);
+        createFolderIfNotExist(dir);
+    }
+
     private void createFolderIfNotExist(String path) {
         File directory = new File(path);
         if (!directory.exists()) {
@@ -39,7 +50,6 @@ class Cache extends Thread {
         return String.format("%s/%s", dir, key);
     }
 
-    // TODO MAKE THIS SYNCHRONIZED??
     private void saveToDisk(String key, String value) throws WriteLockException {
         if (is_locked) {
             throw new WriteLockException();
@@ -65,11 +75,11 @@ class Cache extends Thread {
         File folder = new File(dir);
         File[] listOfFiles = folder.listFiles();
 
-        if(listOfFiles == null){
+        if (listOfFiles == null) {
             return null;
         }
 
-        LinkedHashMap<String, String> values =  new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> values = new LinkedHashMap<String, String>();
         for (File file : listOfFiles) {
             try {
                 values.put(file.getName(), findFromDisk(file.getName()));

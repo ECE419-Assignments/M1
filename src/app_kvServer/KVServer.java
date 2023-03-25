@@ -69,6 +69,7 @@ public class KVServer extends Thread implements IKVServer {
 	private int cacheSize;
 	private ServerSocket serverSocket;
 	private Cache cache;
+	private LinkedHashMap<String, Cache> replicas_caches;
 	protected String[] hash_range;
 	private int ecsPort;
 	public volatile KVMetadata metadata;
@@ -104,7 +105,7 @@ public class KVServer extends Thread implements IKVServer {
 		return "localhost";
 	}
 
-	public String getAddress(){
+	public String getAddress() {
 		return String.format("%s:%s", this.getHostname(), this.getPort());
 	}
 
@@ -147,11 +148,17 @@ public class KVServer extends Thread implements IKVServer {
 			throw new ServerStoppedException();
 		}
 
-		ECSNode keys_server = this.metadata.getKeysServer(key);
-		String address = String.format("%s:%s", this.getHostname(), this.getPort());
+		String responsibleServerAddress = this.metadata.getKeysServer(key).getNodeAddress();
+		String currentServerAddress = this.getAddress();
 
-		if ((keys_server.getNodeAddress()).equals(address)) {
+		if (responsibleServerAddress.equals(currentServerAddress)) {
 			return cache.find(key);
+		} else if (this.metadata.isServerReplicaOf(currentServerAddress, responsibleServerAddress)) {
+			if (replicas_caches.containsKey(key)) {
+				return replicas_caches.get(responsibleServerAddress).find(key);
+			} else {
+				throw new FailedException();
+			}
 		} else {
 			throw new ServerNotResponsibleException();
 		}
