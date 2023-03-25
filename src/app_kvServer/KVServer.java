@@ -175,7 +175,7 @@ public class KVServer extends Thread implements IKVServer {
 		logger.debug(String.format("Deleting key value for key", key));
 
 		ECSNode keys_server = this.metadata.getKeysServer(key);
-		String address = String.format("%s:%s", this.getHostname(), this.getPort());
+		String address = this.getAddress();
 
 		if ((keys_server.getNodeAddress()).equals(address) || forceDelete) {
 			logger.debug(String.format("Trying to delete", key));
@@ -193,13 +193,48 @@ public class KVServer extends Thread implements IKVServer {
 			throw new ServerStoppedException();
 		}
 		ECSNode keys_server = this.metadata.getKeysServer(key);
-		String address = String.format("%s:%s", this.getHostname(), this.getPort());
+		String address = this.getAddress();
 
 		if ((keys_server.getNodeAddress()).equals(address)) {
 			cache.save(key, value);
 		} else {
 			throw new ServerNotResponsibleException();
 		}
+	}
+
+	public void putReplicaKV(String key, String value)
+			throws ServerNotResponsibleException, ServerStoppedException, WriteLockException,
+			ServerNotResponsibleException, FailedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+		String responsible_server_address = this.metadata.getKeysServer(key).getNodeAddress();
+
+		if (replicas_caches.containsKey(responsible_server_address)) {
+			replicas_caches.get(responsible_server_address).save(key, value);
+		} else {
+			throw new FailedException();
+		}
+	}
+
+	public void deleteReplicaKV(String key, boolean forceDelete)
+			throws ServerStoppedException, WriteLockException, KeyNotFoundException,
+			ServerNotResponsibleException, FailedException {
+		if (this.serverStopped) {
+			throw new ServerStoppedException();
+		}
+
+		logger.debug(String.format("Deleting replica key value for key", key));
+
+		String responsible_server_address = this.metadata.getKeysServer(key).getNodeAddress();
+
+		if (replicas_caches.containsKey(responsible_server_address)) {
+			logger.debug(String.format("Trying to delete", key));
+			replicas_caches.get(responsible_server_address).delete(key, forceDelete);
+		} else {
+			throw new FailedException();
+		}
+
 	}
 
 	public void clearCache() throws ServerStoppedException, WriteLockException {

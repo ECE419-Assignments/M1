@@ -22,6 +22,32 @@ public class ClientConnection extends BaseConnection {
 		this.kvServer = kvServer;
 	}
 
+	private void sendMessageToAllReplicas(KVM message) {
+		try {
+			ECSNode[] replicas = this.kvServer.metadata.getReplicaNodes(this.kvServer.getAddress());
+			logger.info("updating replicas");
+			for (ECSNode node : replicas) {
+				if (node != null) {
+					String server_address = node.getNodeAddress();
+					String host = misc.getHostFromAddress(server_address);
+					int port = misc.getPortFromAddress(server_address);
+					Socket socket = new Socket(host, port);
+
+					ClientConnection connection = new ClientConnection(this.kvServer, socket);
+					new Thread(connection).start();
+					Thread.sleep(500);
+
+					connection.sendMessage(message);
+
+					Thread.sleep(100);
+					connection.close();
+				}
+			}
+		} catch (Exception e) {
+			logger.error("sending to replicas failed");
+		}
+	}
+
 	@Override()
 	public void processMessage(KVM message) throws IOException {
 		StatusType status = message.getStatus();
@@ -49,27 +75,7 @@ public class ClientConnection extends BaseConnection {
 					responseStatus = StatusType.PUT_UPDATE;
 				}
 				sendResponse = true;
-
-				//Update replicas
-				ECSNode[] replicas = this.kvServer.metadata.getReplicaNodes(this.kvServer.getAddress());
-				logger.info("updating replicas");
-				for(ECSNode node : replicas){
-					if (node != null){
-						String server_address = node.getNodeAddress();
-						String host = misc.getHostFromAddress(server_address);
-						int port = misc.getPortFromAddress(server_address);
-						Socket socket = new Socket(host, port);
-
-						ClientConnection connection = new ClientConnection(this.kvServer, socket);
-						new Thread(connection).start();
-						Thread.sleep(500);
-
-						connection.sendMessage(new KVM(StatusType.PUT_REPLICA, key, value));
-
-						Thread.sleep(100);
-						connection.close();
-					}
-				}
+				sendMessageToAllReplicas(new KVM(StatusType.PUT_REPLICA, key, value));
 			} else if (status.equals(StatusType.GET)) {
 				responseValue = this.kvServer.getKV(message.getKey());
 				responseStatus = StatusType.GET_SUCCESS;
@@ -79,13 +85,19 @@ public class ClientConnection extends BaseConnection {
 				responseStatus = StatusType.DELETE_SUCCESS;
 				logger.info(key + value);
 				sendResponse = true;
+				sendMessageToAllReplicas(new KVM(StatusType.DELETE_REPLICA, key, value));
 			} else if (status.equals(StatusType.GET_KEYRANGE)) {
 				responseValue = this.kvServer.metadata.getKeyRange();
 				responseStatus = StatusType.GET_KEYRANGE_SUCCESS;
 				sendResponse = true;
-			} else if (status.equals(StatusType.PUT_REPLICA)){
-				// TODO: Navid - replica put this.kvServer.putKVReplica(key, value)
+			} else if (status.equals(StatusType.PUT_REPLICA)) {
+				this.kvServer.putReplicaKV(key, value);
 				responseStatus = StatusType.PUT_REPLICA_SUCCESS;
+				sendResponse = true;
+			} else if (status.equals(StatusType.DELETE_REPLICA)) {
+				this.kvServer.deleteReplicaKV(key, true);
+				responseStatus = StatusType.DELETE_REPLICA_SUCCESS;
+				logger.info(key + value);
 				sendResponse = true;
 			}
 		} catch (ServerStoppedException e) {
