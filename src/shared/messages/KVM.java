@@ -12,16 +12,21 @@ public class KVM implements KVMessage {
     private byte[] msgBytes;
     private static final char LINE_FEED = 0x0A;
     private static final char RETURN = 0x0D;
-    private static final String PIPE = ":";
+    private static final String PIPE = "-";
 
     public KVM(byte[] msgBytes) throws Exception {
         this.msgBytes = addCtrChars(msgBytes);
         this.msg = new String(msgBytes, StandardCharsets.US_ASCII);
-        System.out.println(this.msg);
         this.splitString(this.msg);
     }
 
     public KVM(StatusType status, String key, String value) throws IllegalArgumentException {
+        if (key.equals("")) {
+            key = " ";
+        }
+        if (value.equals("")) {
+            value = " ";
+        }
         if (this.validInputs(status, key, value)) {
             this.key = key;
             this.value = value;
@@ -34,7 +39,7 @@ public class KVM implements KVMessage {
     }
 
     private void splitString(String msg) throws Exception {
-        String[] parts = msg.split(":");
+        String[] parts = msg.split("-");
         this.status = StatusType.values()[Integer.parseInt(parts[0].trim())];
         this.key = parts[1];
         this.value = parts[2];
@@ -69,9 +74,9 @@ public class KVM implements KVMessage {
     }
 
     private boolean validInputs(StatusType status, String key, String value) {
-        if (key.contains("\n\r") || key.contains(":")) {
+        if (key.contains("\n\r") || key.contains("-")) {
             return false;
-        } else if (value.contains("\n\r") || value.contains(":")) {
+        } else if (value.contains("\n\r") || value.contains("-")) {
             return false;
         } else {
             return true;
@@ -84,7 +89,7 @@ public class KVM implements KVMessage {
 
     public String getMsg() {
         StringBuilder formatedMsg = new StringBuilder();
-        formatedMsg.append(status.toString()).append("//").append(this.key).append(":").append(this.value);
+        formatedMsg.append(status.toString()).append("//").append(this.key).append("-").append(this.value);
         return formatedMsg.toString();
     }
 

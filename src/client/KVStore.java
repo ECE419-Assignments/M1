@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.ObjectInputFilter.Status;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashSet;
@@ -15,6 +16,9 @@ import shared.messages.KVM;
 import shared.messages.KVMessage.StatusType;
 import app_kvClient.KVClient;
 import app_kvClient.KVClient.SocketStatus;
+import app_kvServer.exceptions.ServerNotResponsibleException;
+import shared.metadata.KVMetadata;
+import shared.ecs.ECSNode;
 
 public class KVStore extends Thread implements KVCommInterface {
 	/**
@@ -39,15 +43,22 @@ public class KVStore extends Thread implements KVCommInterface {
 	private static final int BUFFER_SIZE = 1024;
 	private static final int DROP_SIZE = 1024 * BUFFER_SIZE;
 
+	public KVMetadata metadata = new KVMetadata();
+
 	public void run() {
 		logger.info("starting the KVStore");
 		try {
 			this.output = this.clientSocket.getOutputStream();
 			this.input = this.clientSocket.getInputStream();
+			sendMessage(new KVM(StatusType.GET_KEYRANGE, "", ""));
 
 			while (isRunning()) {
 				try {
 					latestMsg = receiveMessage();
+
+					if (latestMsg.getStatus().equals(StatusType.GET_KEYRANGE_SUCCESS)) {
+						metadata.createServerTree(latestMsg.getValue());
+					}
 					msgCount++;
 					for (KVClient listener : listeners) {
 						listener.handleNewMessage(latestMsg);
@@ -84,6 +95,23 @@ public class KVStore extends Thread implements KVCommInterface {
 	public KVStore(String address, int port) {
 		this.address = address;
 		this.port = port;
+	}
+
+	public void connectToNewServer() {
+		try {
+			this.clientSocket = new Socket(address, port);
+			// this.listeners = new HashSet<KVClient>();
+
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+
+			}
+			this.input = this.clientSocket.getInputStream();
+			this.output = this.clientSocket.getOutputStream();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override
@@ -196,7 +224,6 @@ public class KVStore extends Thread implements KVCommInterface {
 
 			}
 		}
-		System.out.println(getLatestMsg().getStatus());
 		return getLatestMsg();
 	}
 
@@ -208,20 +235,46 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	@Override
-	public KVM put(String key, String value) throws IOException {
+	public KVM put(String key, String value) throws IOException, ServerNotResponsibleException {
 		StatusType status = StatusType.PUT;
 		if (value.equals("null")) {
 			status = StatusType.DELETE;
 		}
 		sendMessage(new KVM(status, key, value));
-		return getNextMsg();
+
+		KVM message = getNextMsg();
+		status = message.getStatus();
+
+		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
+			throw new ServerNotResponsibleException();
+		}
+
+		return message;
 	}
 
-	// TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
 	@Override
-	public KVM get(String key) throws IOException {
+	public KVM getKeyrange() throws IOException {
+		sendMessage(new KVM(StatusType.GET_KEYRANGE, "", ""));
+		KVM message = getNextMsg();
+		logger.info("Got key range");
+		logger.info(message.getValue());
+		metadata.createServerTree(message.getValue());
+		return message;
+	}
+
+	@Override
+	public KVM get(String key) throws IOException, ServerNotResponsibleException {
 		sendMessage(new KVM(StatusType.GET, key, " "));
-		return getNextMsg();
+		KVM message = getNextMsg();
+		StatusType status = message.getStatus();
+
+		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
+			throw new ServerNotResponsibleException();
+		} else if (status == StatusType.SERVER_STOPPED) {
+			logger.info("Response: Server is stopped");
+		}
+
+		return message;
 	}
 
 	private void tearDownConnection() throws IOException {

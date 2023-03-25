@@ -6,17 +6,14 @@ import junit.framework.TestCase;
 import shared.metadata.KVMetadata;
 import shared.ecs.ECSNode;
 
-public class AdditionalTest extends TestCase {
-	
-	// TODO add your test cases, at least 3
-	
+public class HashTest extends TestCase {
+
 	@Test
 	public void testCorrectHash() {
 		KVMetadata metadata = new KVMetadata();
 		String key_hash = "3c6e0b8a9c15224a8228b9a98ca1531d";
 
 		String hash = metadata.hashValue("key");
-		System.out.println(hash);
 		assertTrue(key_hash.toUpperCase().equals(hash));
 	}
 
@@ -30,8 +27,7 @@ public class AdditionalTest extends TestCase {
 		metadata.addServer("localhost:6002");
 
 		String key_range = metadata.getKeyRange();
-		System.out.println(key_range);
-		
+
 		assertTrue(expected_key_range.equals(key_range));
 
 	}
@@ -44,14 +40,14 @@ public class AdditionalTest extends TestCase {
 		metadata.addServer("localhost:6000");
 		metadata.addServer("localhost:6001");
 		metadata.addServer("localhost:6002");
-		
+
 		String key_range = metadata.getKeyRange();
 
 		metadata_two.createServerTree(key_range);
 		String new_key_range = metadata_two.getKeyRange();
 
 		assertTrue(new_key_range.equals(key_range));
-		
+
 	}
 
 	@Test
