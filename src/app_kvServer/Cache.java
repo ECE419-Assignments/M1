@@ -112,8 +112,8 @@ class Cache extends Thread {
         return this.is_locked;
     }
 
-    public StatusType save(String key, String value) throws WriteLockException {
-        if (this.is_locked) {
+    public StatusType save(String key, String value, boolean forceSave) throws WriteLockException {
+        if (this.is_locked && !forceSave) {
             throw new WriteLockException();
         }
 
@@ -169,6 +169,18 @@ class Cache extends Thread {
             throw new WriteLockException();
         }
         cache.clear();
+    }
+
+    public void saveAllKeyValues(LinkedHashMap<String, String> items) {
+        for (Map.Entry<String, String> item : items.entrySet()) {
+            String key = item.getKey();
+            String value = item.getValue();
+            try {
+                this.save(key, value, true);
+            } catch (Exception e) {
+                System.out.println("Write lock on save all key values. This should not be happening...");
+            }
+        }
     }
 
     public void clearDisk(boolean force_delete) throws WriteLockException {

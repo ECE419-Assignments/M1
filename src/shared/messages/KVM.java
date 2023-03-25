@@ -38,6 +38,20 @@ public class KVM implements KVMessage {
         }
     }
 
+    public KVM(StatusType status) {
+        String key = " ";
+        String value = " ";
+        if (this.validInputs(status, key, value)) {
+            this.key = key;
+            this.value = value;
+            this.status = status;
+            this.msg = createMsgProtocol();
+            this.msgBytes = toByteArray(msg);
+        } else {
+            throw new IllegalArgumentException("Key and Value cannot include special characters.");
+        }
+    }
+
     private void splitString(String msg) throws Exception {
         String[] parts = msg.split("-");
         this.status = StatusType.values()[Integer.parseInt(parts[0].trim())];

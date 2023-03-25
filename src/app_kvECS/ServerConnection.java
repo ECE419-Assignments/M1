@@ -26,23 +26,23 @@ public class ServerConnection extends BaseConnection {
     @Override()
     public void postClosed() {
         logger.info(String.format("Deleting server with address %s", this.address));
-        this.ecsClient.kvMetadata.deleteServer(this.address);
 
-        if (this.ecsClient.kvMetadata.getCountServers() != 0) {
-            ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(this.address);
-            logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
-                    prevNode.getNodeAddress(), this.address));
+        ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(this.address);
+        logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
+                prevNode.getNodeAddress(), this.address));
+        try {
             ServerConnection prevConnection = this.ecsClient
                     .getServerConnectionWithAddress(prevNode.getNodeAddress());
-            prevConnection
-                    .sendMessage(
-                            new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
-            Thread.sleep(10);
-            this.sendMessage(new KVM(StatusType.SEND_ALL_DATA_TO_PREV, " ", prevConnection.address));
-        } else {
-            Thread.sleep(100);
-            this.sendMessage(new KVM(StatusType.CLOSE_LAST_SERVER, "", ""));
+            prevConnection.sendMessage(new KVM(StatusType.MOVE_REPLICA_TO_MAIN_CACHE, "", this.address));
+        } catch (Exception e) {
+            logger.error(
+                    "could not run post closed properly. Couldn't move replica data to main cache on the successor node.",
+                    e);
         }
+
+        this.ecsClient.kvMetadata.deleteServer(this.address);
+        this.close();
+        this.ecsClient.serverConnections.remove(this);
     }
 
     @Override()
@@ -105,6 +105,12 @@ public class ServerConnection extends BaseConnection {
                 sendResponse = false;
                 Thread.sleep(10);
                 this.sendMessage(new KVM(StatusType.TOGGLE_WRITE_LOCK, " ", " "));
+            } else if (status.equals(StatusType.MOVE_REPLICA_TO_MAIN_CACHE_SUCCESS)
+                    || status.equals(StatusType.MOVE_REPLICA_TO_MAIN_CACHE_FAIL)) {
+                Thread.sleep(50);
+                this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateAllServerReplicas();
+                Thread.sleep(50);
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN)) {
                 this.ecsClient.updateAllServerMetadatas();
                 this.ecsClient.updateAllServerReplicas();

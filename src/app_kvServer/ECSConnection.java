@@ -141,8 +141,11 @@ public class ECSConnection extends BaseConnection {
                 }
 
                 Thread.sleep(100);
-                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW, " ", " "));
+                this.sendMessage(new KVM(StatusType.DATA_MOVED_CONFIRMATION_NEW));
 
+            } else if (status.equals(StatusType.MOVE_REPLICA_TO_MAIN_CACHE)) {
+                this.kvServer.moveReplicaDataToMainCache(value);
+                this.sendMessage(new KVM(StatusType.MOVE_REPLICA_TO_MAIN_CACHE_SUCCESS));
             } else if (status.equals(StatusType.UPDATE_REPLICAS)) {
                 this.kvServer.deleteAllReplicaCaches();
                 ECSNode[] replicas = this.kvServer.metadata.getReplicaNodes(this.kvServer.getAddress());

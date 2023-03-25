@@ -188,7 +188,7 @@ public class KVServer extends Thread implements IKVServer {
 		String address = this.getAddress();
 
 		if ((keys_server.getNodeAddress()).equals(address)) {
-			cache.save(key, value);
+			cache.save(key, value, false);
 		} else {
 			throw new ServerNotResponsibleException();
 		}
@@ -221,7 +221,7 @@ public class KVServer extends Thread implements IKVServer {
 		if (this.serverStopped) {
 			throw new ServerStoppedException();
 		}
-		getResponsibleCache(key).save(key, value);
+		getResponsibleCache(key).save(key, value, false);
 	}
 
 	public void deleteReplicaKV(String key, boolean forceDelete)
@@ -266,6 +266,12 @@ public class KVServer extends Thread implements IKVServer {
 		}
 
 		replicas_caches = new LinkedHashMap<String, Cache>();
+	}
+
+	public void moveReplicaDataToMainCache(String replica_server_address) {
+		Cache replica_cache = this.replicas_caches.get(replica_server_address);
+		LinkedHashMap<String, String> items = replica_cache.getAllKeyValues();
+		cache.saveAllKeyValues(items);
 	}
 
 	public void run() {
