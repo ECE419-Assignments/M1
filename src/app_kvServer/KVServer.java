@@ -68,6 +68,7 @@ public class KVServer extends Thread implements IKVServer {
 
 	// private static Logger logger = Logger.getRootLogger();
 
+	private String hostname;
 	private int port;
 	private CacheStrategy strategy;
 	private boolean running;
@@ -82,12 +83,13 @@ public class KVServer extends Thread implements IKVServer {
 
 	protected boolean serverStopped = true;
 
-	public KVServer(int port, int cacheSize, CacheStrategy strategy, int ecsPort) {
+	public KVServer(int port, int cacheSize, CacheStrategy strategy, String hostname, int ecsPort) {
 		this.port = port;
 		this.cacheSize = cacheSize;
 		this.strategy = strategy;
 		this.ecsPort = ecsPort;
-		this.cache = new Cache(cacheSize, "localhost", port);
+		this.hostname = hostname;
+		this.cache = new Cache(cacheSize, this.getHostname(), port);
 		this.serverStopped = true;
 		this.metadata = new KVMetadata();
 		this.replicas_caches = new LinkedHashMap<String, Cache>();
@@ -108,7 +110,7 @@ public class KVServer extends Thread implements IKVServer {
 	}
 
 	public String getHostname() {
-		return "localhost";
+		return this.hostname;
 	}
 
 	public String getAddress() {
@@ -340,7 +342,7 @@ public class KVServer extends Thread implements IKVServer {
 			serverSocket = new ServerSocket(port);
 
 			// Start ECS Socket
-			this.connectionECS = new ECSConnection(this, "localhost", ecsPort);
+			this.connectionECS = new ECSConnection(this, this.getHostname(), ecsPort);
 			new Thread(this.connectionECS).start();
 
 			logger.info("Server listening on port: "
@@ -359,13 +361,19 @@ public class KVServer extends Thread implements IKVServer {
 	public static void main(String[] args) {
 		try {
 			new LogSetup("logs/server.log", Level.ALL);
-			if (args.length != 2) {
-				System.out.println("Error! Invalid number of arguments!");
-				System.out.println("Usage: Server <port> <ecs port>!");
-			} else {
+			if (args.length == 2) {
 				int port = Integer.parseInt(args[0]);
-				int ecsPort = Integer.parseInt(args[1]);
-				KVServer kvServer = new KVServer(port, 10, CacheStrategy.FIFO, ecsPort);
+				String hostname = "127.0.0.1";
+				int ecsPort = Integer.parseInt(args[2]);
+				new KVServer(port, 10, CacheStrategy.FIFO, hostname, ecsPort);
+			} else if (args.length == 3) {
+				int port = Integer.parseInt(args[0]);
+				String hostname = args[1];
+				int ecsPort = Integer.parseInt(args[2]);
+				new KVServer(port, 10, CacheStrategy.FIFO, hostname, ecsPort);
+			} else {
+				System.out.println("Error! Invalid number of arguments!");
+				System.out.println("Usage: Server <port> <host address> <ecs port>!");
 			}
 		} catch (IOException e) {
 			System.out.println("Error! Unable to initialize logger!");
