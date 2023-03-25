@@ -13,6 +13,8 @@ public interface KVMessage {
 		PUT_REPLICA_SUCCESS,
 		PUT_ERROR, /* Put - request not successful */
 		DELETE, /* Delete -request */
+		DELETE_REPLICA,
+		DELETE_REPLICA_SUCCESS,
 		DELETE_SUCCESS, /* Delete - request successful */
 		DELETE_ERROR, /* Delete - request successful */
 		MESSAGE, /* Sending a message back to client */
@@ -37,7 +39,7 @@ public interface KVMessage {
 		DATA_MOVED_CONFIRMATION_NEW,
 		CLOSE_LAST_SERVER,
 
-		UPDATE_REPLICAS
+		UPDATE_REPLICAS,
 
 	}
 

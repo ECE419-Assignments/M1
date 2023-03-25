@@ -171,8 +171,8 @@ class Cache extends Thread {
         cache.clear();
     }
 
-    public void clearDisk() throws WriteLockException {
-        if (this.is_locked) {
+    public void clearDisk(boolean force_delete) throws WriteLockException {
+        if (this.is_locked && !force_delete) {
             throw new WriteLockException();
         }
         File dir = new File(".cache");
