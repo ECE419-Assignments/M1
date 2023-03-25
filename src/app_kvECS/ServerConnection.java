@@ -77,10 +77,6 @@ public class ServerConnection extends BaseConnection {
                     Thread.sleep(100);
                     this.sendMessage(new KVM(StatusType.CLOSE_LAST_SERVER, "", ""));
                 }
-                // if statement here for only one server remaning, send special message that
-                // just closes the server
-                // then remove this thread close it etc
-
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();
                 this.ecsClient.updateAllServerReplicas();
