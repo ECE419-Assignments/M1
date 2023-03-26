@@ -98,4 +98,70 @@ public class HashTest extends TestCase {
 		ECSNode removed_server = metadata.deleteServer("localhost:6000");
 		assertTrue(removed_server.getNodeAddress().equals("localhost:6000"));
 	}
+
+	@Test
+	public void testReplicaOneServer() {
+		KVMetadata metadata = new KVMetadata();
+		metadata.addServer("localhost:6000");
+		ECSNode[] replicas = metadata.getReplicaNodes("localhost:6000");
+
+		assertNull(replicas[0]);
+		assertNull(replicas[1]);
+	}
+
+	@Test
+	public void testReplicaTwoServers() {
+		KVMetadata metadata = new KVMetadata();
+		metadata.addServer("localhost:6000");
+		metadata.addServer("localhost:6001");
+		ECSNode[] replicas = metadata.getReplicaNodes("localhost:6000");
+
+		
+		assertNull(replicas[1]);
+		assertTrue(replicas[0].getNodeAddress().equals("localhost:6001"));
+	}
+
+	@Test
+	public void testReplicaThreeServers() {
+		KVMetadata metadata = new KVMetadata();
+		metadata.addServer("localhost:6000");
+		metadata.addServer("localhost:6001");
+		metadata.addServer("localhost:6002");
+		ECSNode[] replicas = metadata.getReplicaNodes("localhost:6000");
+
+		assertTrue(replicas[0].getNodeAddress().equals("localhost:6001"));
+		assertNull(replicas[1].getNodeAddress().equals("localhost:6002"));
+	}
+
+	@Test
+	public void testReplicaFourServers() {
+		KVMetadata metadata = new KVMetadata();
+		metadata.addServer("localhost:6000");
+		metadata.addServer("localhost:6001");
+		metadata.addServer("localhost:6002");
+		metadata.addServer("localhost:6003");
+
+		ECSNode[] replicas_6000 = metadata.getReplicaNodes("localhost:6000");
+		ECSNode[] replicas_6001 = metadata.getReplicaNodes("localhost:6001");
+		ECSNode[] replicas_6002 = metadata.getReplicaNodes("localhost:6002");
+		ECSNode[] replicas_6003 = metadata.getReplicaNodes("localhost:6003");
+
+		assertTrue(replicas_6000[0].getNodeAddress().equals("localhost:6001"));
+		assertNull(replicas_6000[1].getNodeAddress().equals("localhost:6002"));
+		assertTrue(replicas_6001[0].getNodeAddress().equals("localhost:6002"));
+		assertNull(replicas_6001[1].getNodeAddress().equals("localhost:6003"));
+		assertTrue(replicas_6002[0].getNodeAddress().equals("localhost:6003"));
+		assertNull(replicas_6002[1].getNodeAddress().equals("localhost:6000"));
+		assertTrue(replicas_6003[0].getNodeAddress().equals("localhost:6000"));
+		assertNull(replicas_6003[1].getNodeAddress().equals("localhost:6001"));
+	}
+
+	@Test
+	public void testIsServerReplicaOf() {
+		KVMetadata metadata = new KVMetadata();
+		metadata.addServer("localhost:6000");
+		metadata.addServer("localhost:6001");
+
+		assertTrue(metadata.isServerReplicaOf("localhost:6000", "localhost6001"));
+	}
 }

@@ -20,14 +20,14 @@ public class ECSTest extends TestCase {
 
     @Test
     public void testServerAdd() {
-        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, 51000);
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "loclahost", 51000);
         assertTrue(true);
     }
 
     @Test
     public void testServerNotResponsible() {
         try {
-            KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, 51000);
+            KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "loclahost", 51000);
             Thread.sleep(2000);
             kvServer1.putKV("key", "value");
             Thread.sleep(200);
@@ -41,7 +41,7 @@ public class ECSTest extends TestCase {
 
     @Test
     public void testServerDelete() {
-        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, 51000);
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "loclahost", 51000);
         assertTrue(true);
     }
 
