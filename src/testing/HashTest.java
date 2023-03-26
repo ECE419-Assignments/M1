@@ -214,7 +214,7 @@ public class HashTest extends TestCase {
 			metadata.deleteServer("localhost:6001");
 		} catch (Exception e) {
 		}
-		assertFalse(metadata.isServerReplicaOf("localhost:6000", "localhost6001"));
+		assertFalse(metadata.isServerReplicaOf("localhost:6001", "localhost6000"));
 	}
 
 	@Test
