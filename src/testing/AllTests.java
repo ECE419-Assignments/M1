@@ -18,7 +18,7 @@ public class AllTests {
 			new LogSetup("logs/testing/test.log", Level.ERROR);
 			new ECSClient(51000);
 			Thread.sleep(1000);
-			new KVServer(50000, 10, CacheStrategy.FIFO, 51000);
+			new KVServer(50000, 10, CacheStrategy.FIFO, "localhost", 51000);
 			Thread.sleep(1000);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
