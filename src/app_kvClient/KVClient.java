@@ -110,24 +110,24 @@ public class KVClient implements IKVClient {
 					} catch (IOException e) {
 						printError("Unable to send message!");
 						disconnect();
-					} catch (ServerNotResponsibleException e) {
-						try {
-							printError("server not responsible. Changing to new server");
-							kvStore.getKeyrange();
-							try {
-								Thread.sleep(50);
-							} catch (Exception ex) {
-							}
-							ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
-							String address = server_node.getNodeHost();
-							int port = server_node.getNodePort();
-							this.newConnection(address, port);
-							Thread.sleep(50);
-							this.kvStore.put(key, value.toString());
+						// } catch (ServerNotResponsibleException e) {
+						// try {
+						// printError("server not responsible. Changing to new server");
+						// kvStore.getKeyrange();
+						// try {
+						// Thread.sleep(50);
+						// } catch (Exception ex) {
+						// }
+						// ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
+						// String address = server_node.getNodeHost();
+						// int port = server_node.getNodePort();
+						// this.newConnection(address, port);
+						// Thread.sleep(50);
+						// this.kvStore.put(key, value.toString());
 
-						} catch (Exception ex) {
-							printError("Error trying to connect to new server");
-						}
+						// } catch (Exception ex) {
+						// printError("Error trying to connect to new server");
+						// }
 					}
 				} else {
 					printError("Connection has not been established or was lost.");
@@ -145,24 +145,24 @@ public class KVClient implements IKVClient {
 					} catch (IOException e) {
 						printError("Unable to send message!");
 						disconnect();
-					} catch (ServerNotResponsibleException e) {
-						try {
-							printError("server not responsible. Changing to new server");
-							kvStore.getKeyrange();
-							try {
-								Thread.sleep(50);
-							} catch (Exception ex) {
-							}
-							ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
-							String address = server_node.getNodeHost();
-							int port = server_node.getNodePort();
-							this.newConnection(address, port);
-							Thread.sleep(50);
-							this.kvStore.get(key);
+						// } catch (ServerNotResponsibleException e) {
+						// try {
+						// printError("server not responsible. Changing to new server");
+						// kvStore.getKeyrange();
+						// try {
+						// Thread.sleep(50);
+						// } catch (Exception ex) {
+						// }
+						// ECSNode server_node = this.kvStore.metadata.getKeysServer(key);
+						// String address = server_node.getNodeHost();
+						// int port = server_node.getNodePort();
+						// this.newConnection(address, port);
+						// Thread.sleep(50);
+						// this.kvStore.get(key);
 
-						} catch (Exception ex) {
-							printError("Error trying to connect to new server");
-						}
+						// } catch (Exception ex) {
+						// printError("Error trying to connect to new server");
+						// }
 					}
 				} else {
 					printError("Connection has not been established or was lost.");

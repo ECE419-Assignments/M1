@@ -17154,3 +17154,407 @@ java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because "v
 2023-03-26 17:41:45,591 INFO  [Thread-3] Base Connection: TOGGLE_WRITE_LOCK_SUCCESS
 2023-03-26 17:41:45,591 INFO  [Thread-4] Base Connection: CLOSE_LAST_SERVER
 2023-03-26 17:41:45,591 INFO  [Thread-4] KV Server: Closing server!
+2023-03-26 21:51:40,131 INFO  [Thread-0] ECS Client: Initialize server ...
+2023-03-26 21:51:40,136 INFO  [Thread-0] ECS Client: ECS Client listening on port: 51000
+2023-03-26 21:51:40,136 INFO  [Thread-0] ECS Client: opening connection
+2023-03-26 21:51:41,188 INFO  [Thread-1] KV Server: Initialize server ...
+2023-03-26 21:51:41,204 INFO  [Thread-0] ECS Client: Connected to localhost on port 51440
+2023-03-26 21:51:41,205 INFO  [Thread-0] ECS Client: opening connection
+2023-03-26 21:51:41,217 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51440>: 'MESSAGE// -Connection to process established /127.0.0.1 51000'
+2023-03-26 21:51:41,299 INFO  [Thread-1] KV Server: Server listening on port: 50000
+2023-03-26 21:51:41,300 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'MESSAGE// -Connection to process established /127.0.0.1 51440'
+2023-03-26 21:51:41,301 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:41,301 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51440>: 'MESSAGE// -Connection to process established /127.0.0.1 51440'
+2023-03-26 21:51:41,303 INFO  [Thread-3] Base Connection: MESSAGE
+2023-03-26 21:51:41,302 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'NEW_SERVER// -localhost:50000'
+2023-03-26 21:51:41,303 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51440>: 'NEW_SERVER// -localhost:50000'
+2023-03-26 21:51:41,304 INFO  [Thread-3] Base Connection: NEW_SERVER
+2023-03-26 21:51:41,304 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'MESSAGE// -Connection to process established /127.0.0.1 51000'
+2023-03-26 21:51:41,313 INFO  [Thread-4] Base Connection: MESSAGE
+2023-03-26 21:51:41,314 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51440>: 'UPDATE_METADATA// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:41,314 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'UPDATE_METADATA// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:41,314 INFO  [Thread-4] Base Connection: UPDATE_METADATA
+2023-03-26 21:51:41,314 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51440>: 'START_SERVER// - '
+2023-03-26 21:51:41,315 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'START_SERVER// -'
+2023-03-26 21:51:41,315 INFO  [Thread-4] Base Connection: START_SERVER
+2023-03-26 21:51:41,315 INFO  [Thread-3] Base Connection: Updating prev metadata for localhost:50000. The node being added is localhost:50000
+2023-03-26 21:51:47,410 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,411 INFO  [Thread-8] KVStore: starting the KVStore
+2023-03-26 21:51:47,415 INFO  [Thread-8] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,416 INFO  [Thread-9] Base Connection: SEND 	<127.0.0.1:53184>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,416 INFO  [Thread-1] KV Server: Connected to localhost on port 53184
+2023-03-26 21:51:47,417 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,416 INFO  [Thread-9] Base Connection: RECEIVE 	<127.0.0.1:53184>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,416 INFO  [Thread-8] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,417 INFO  [Thread-9] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,418 INFO  [Thread-9] Base Connection: SEND 	<127.0.0.1:53184>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,418 INFO  [Thread-8] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,512 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,513 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53186>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,513 INFO  [Thread-1] KV Server: Connected to localhost on port 53186
+2023-03-26 21:51:47,515 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,514 INFO  [Thread-10] KVStore: starting the KVStore
+2023-03-26 21:51:47,517 INFO  [Thread-10] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,517 INFO  [Thread-11] Base Connection: RECEIVE 	<127.0.0.1:53186>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,517 INFO  [Thread-10] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,517 INFO  [Thread-11] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,518 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53186>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,518 INFO  [Thread-10] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,614 INFO  [main] KVStore: Send message:	 'PUT//foo2-bar2'
+2023-03-26 21:51:47,614 INFO  [Thread-11] Base Connection: RECEIVE 	<127.0.0.1:53186>: 'PUT//foo2-bar2'
+2023-03-26 21:51:47,615 INFO  [Thread-11] Base Connection: PUT
+2023-03-26 21:51:47,616 INFO  [Thread-11] Base Connection: foo2bar2
+2023-03-26 21:51:47,617 INFO  [Thread-11] Base Connection: updating replicas
+2023-03-26 21:51:47,618 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53186>: 'PUT_SUCCESS//foo2-bar2'
+2023-03-26 21:51:47,618 INFO  [Thread-10] KVStore: Receive message:	 'PUT_SUCCESS//foo2-bar2'
+2023-03-26 21:51:47,618 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:47,619 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:47,619 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:47,620 INFO  [Thread-11] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:47,620 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,620 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53188>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,620 INFO  [Thread-1] KV Server: Connected to localhost on port 53188
+2023-03-26 21:51:47,622 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,621 INFO  [Thread-12] KVStore: starting the KVStore
+2023-03-26 21:51:47,623 INFO  [Thread-12] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,623 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53188>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,624 INFO  [Thread-13] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,623 INFO  [Thread-12] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,624 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53188>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,625 INFO  [Thread-12] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,721 INFO  [main] KVStore: Send message:	 'PUT//updateTestValue-initial'
+2023-03-26 21:51:47,721 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53188>: 'PUT//updateTestValue-initial'
+2023-03-26 21:51:47,722 INFO  [Thread-13] Base Connection: PUT
+2023-03-26 21:51:47,724 INFO  [Thread-13] Base Connection: updateTestValueinitial
+2023-03-26 21:51:47,724 INFO  [Thread-13] Base Connection: updating replicas
+2023-03-26 21:51:47,725 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53188>: 'PUT_SUCCESS//updateTestValue-initial'
+2023-03-26 21:51:47,725 INFO  [Thread-12] KVStore: Receive message:	 'PUT_SUCCESS//updateTestValue-initial'
+2023-03-26 21:51:47,726 INFO  [main] KVStore: Send message:	 'PUT//updateTestValue-updated'
+2023-03-26 21:51:47,726 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53188>: 'PUT//updateTestValue-updated'
+2023-03-26 21:51:47,727 INFO  [Thread-13] Base Connection: PUT
+2023-03-26 21:51:47,728 INFO  [Thread-13] Base Connection: updateTestValueupdated
+2023-03-26 21:51:47,729 INFO  [Thread-13] Base Connection: updating replicas
+2023-03-26 21:51:47,729 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53188>: 'PUT_UPDATE//updateTestValue-updated'
+2023-03-26 21:51:47,729 INFO  [Thread-12] KVStore: Receive message:	 'PUT_UPDATE//updateTestValue-updated'
+2023-03-26 21:51:47,731 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:47,731 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:47,732 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:47,732 INFO  [Thread-13] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:47,732 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,733 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53190>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,733 INFO  [Thread-1] KV Server: Connected to localhost on port 53190
+2023-03-26 21:51:47,734 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,733 INFO  [Thread-14] KVStore: starting the KVStore
+2023-03-26 21:51:47,735 INFO  [Thread-14] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,735 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53190>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,736 INFO  [Thread-15] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,736 INFO  [Thread-14] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,736 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53190>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,736 INFO  [Thread-14] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,834 INFO  [main] KVStore: Send message:	 'PUT//deleteTestValue-toDelete'
+2023-03-26 21:51:47,834 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53190>: 'PUT//deleteTestValue-toDelete'
+2023-03-26 21:51:47,834 INFO  [Thread-15] Base Connection: PUT
+2023-03-26 21:51:47,835 INFO  [Thread-15] Base Connection: deleteTestValuetoDelete
+2023-03-26 21:51:47,836 INFO  [Thread-15] Base Connection: updating replicas
+2023-03-26 21:51:47,836 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53190>: 'PUT_SUCCESS//deleteTestValue-toDelete'
+2023-03-26 21:51:47,836 INFO  [Thread-14] KVStore: Receive message:	 'PUT_SUCCESS//deleteTestValue-toDelete'
+2023-03-26 21:51:47,837 INFO  [main] KVStore: Send message:	 'DELETE//deleteTestValue-null'
+2023-03-26 21:51:47,838 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53190>: 'DELETE//deleteTestValue-null'
+2023-03-26 21:51:47,838 INFO  [Thread-15] Base Connection: DELETE
+2023-03-26 21:51:47,838 DEBUG [Thread-15] KV Server: Deleting key value for key
+2023-03-26 21:51:47,839 DEBUG [Thread-15] KV Server: Trying to delete
+2023-03-26 21:51:47,839 INFO  [Thread-15] Base Connection: deleteTestValuenull
+2023-03-26 21:51:47,840 INFO  [Thread-15] Base Connection: updating replicas
+2023-03-26 21:51:47,840 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53190>: 'DELETE_SUCCESS//deleteTestValue-null'
+2023-03-26 21:51:47,840 INFO  [Thread-14] KVStore: Receive message:	 'DELETE_SUCCESS//deleteTestValue-null'
+2023-03-26 21:51:47,842 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:47,842 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:47,843 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:47,843 INFO  [Thread-15] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:47,844 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,844 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53192>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,844 INFO  [Thread-1] KV Server: Connected to localhost on port 53192
+2023-03-26 21:51:47,844 INFO  [Thread-16] KVStore: starting the KVStore
+2023-03-26 21:51:47,845 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,846 INFO  [Thread-16] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,846 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53192>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,846 INFO  [Thread-17] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,846 INFO  [Thread-16] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,847 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53192>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,847 INFO  [Thread-16] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,945 INFO  [main] KVStore: Send message:	 'PUT//foo-bar'
+2023-03-26 21:51:47,945 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53192>: 'PUT//foo-bar'
+2023-03-26 21:51:47,946 INFO  [Thread-17] Base Connection: PUT
+2023-03-26 21:51:47,947 INFO  [Thread-17] Base Connection: foobar
+2023-03-26 21:51:47,949 INFO  [Thread-17] Base Connection: updating replicas
+2023-03-26 21:51:47,949 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53192>: 'PUT_SUCCESS//foo-bar'
+2023-03-26 21:51:47,949 INFO  [Thread-16] KVStore: Receive message:	 'PUT_SUCCESS//foo-bar'
+2023-03-26 21:51:47,951 INFO  [main] KVStore: Send message:	 'GET//foo- '
+2023-03-26 21:51:47,951 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53192>: 'GET//foo-'
+2023-03-26 21:51:47,952 INFO  [Thread-17] Base Connection: GET
+2023-03-26 21:51:47,952 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53192>: 'GET_SUCCESS//foo-bar'
+2023-03-26 21:51:47,952 INFO  [Thread-16] KVStore: Receive message:	 'GET_SUCCESS//foo-bar'
+2023-03-26 21:51:47,954 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:47,954 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:47,955 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:47,955 INFO  [Thread-17] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:47,955 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:47,956 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53194>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,956 INFO  [Thread-1] KV Server: Connected to localhost on port 53194
+2023-03-26 21:51:47,957 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:47,956 INFO  [Thread-18] KVStore: starting the KVStore
+2023-03-26 21:51:47,958 INFO  [Thread-18] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:47,958 INFO  [Thread-19] Base Connection: RECEIVE 	<127.0.0.1:53194>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:47,959 INFO  [Thread-19] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:47,958 INFO  [Thread-18] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:47,959 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53194>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:47,959 INFO  [Thread-18] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:48,057 INFO  [main] KVStore: Send message:	 'GET//an unset value- '
+2023-03-26 21:51:48,057 INFO  [Thread-19] Base Connection: RECEIVE 	<127.0.0.1:53194>: 'GET//an unset value-'
+2023-03-26 21:51:48,058 INFO  [Thread-19] Base Connection: GET
+2023-03-26 21:51:48,059 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53194>: 'GET_ERROR//an unset value- '
+2023-03-26 21:51:48,059 INFO  [Thread-18] KVStore: Receive message:	 'GET_ERROR//an unset value- '
+2023-03-26 21:51:48,061 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:48,061 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:48,062 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:48,062 INFO  [Thread-19] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:48,063 INFO  [main] KVStore: Connection established
+2023-03-26 21:51:48,063 INFO  [Thread-1] KV Server: Connected to localhost on port 53196
+2023-03-26 21:51:48,064 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:51:48,064 INFO  [Thread-20] KVStore: starting the KVStore
+2023-03-26 21:51:48,063 INFO  [Thread-21] Base Connection: SEND 	<127.0.0.1:53196>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:48,066 INFO  [Thread-20] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:51:48,066 INFO  [Thread-21] Base Connection: RECEIVE 	<127.0.0.1:53196>: 'GET_KEYRANGE// -'
+2023-03-26 21:51:48,066 INFO  [Thread-21] Base Connection: GET_KEYRANGE
+2023-03-26 21:51:48,066 INFO  [Thread-20] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:51:48,067 INFO  [Thread-21] Base Connection: SEND 	<127.0.0.1:53196>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:48,067 INFO  [Thread-20] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:51:48,164 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:48,164 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:48,165 INFO  [main] KVStore: connection closed!
+2023-03-26 21:51:48,165 INFO  [Thread-21] Base Connection: Socket is null. Closing connection
+2023-03-26 21:51:48,166 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:51:48,167 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:51:48,170 INFO  [Thread-22] KV Server: Initialize server ...
+2023-03-26 21:51:48,171 INFO  [Thread-24] KV Server: Initialize server ...
+2023-03-26 21:51:48,172 ERROR [Thread-24] KV Server: Error! Cannot open server socket:
+2023-03-26 21:51:48,172 ERROR [Thread-24] KV Server: Port 7000 is already bound!
+2023-03-26 21:51:50,172 INFO  [Thread-27] KV Server: Initialize server ...
+2023-03-26 21:51:50,173 ERROR [Thread-27] KV Server: Error! Cannot open server socket:
+2023-03-26 21:51:50,174 ERROR [Thread-27] KV Server: Port 7000 is already bound!
+2023-03-26 21:51:50,218 INFO  [Thread-5] Base Connection: SEND 	<127.0.0.1:51000>: 'SERVER_SHUTDOWN// -localhost:50000'
+2023-03-26 21:51:50,218 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51440>: 'SERVER_SHUTDOWN// -localhost:50000'
+2023-03-26 21:51:50,219 INFO  [Thread-3] Base Connection: SERVER_SHUTDOWN
+2023-03-26 21:51:50,220 INFO  [Thread-3] Base Connection: Deleting server with address localhost:50000
+2023-03-26 21:51:50,220 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51440>: 'TOGGLE_WRITE_LOCK// - '
+2023-03-26 21:51:50,220 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'TOGGLE_WRITE_LOCK// -'
+2023-03-26 21:51:50,221 INFO  [Thread-4] Base Connection: TOGGLE_WRITE_LOCK
+2023-03-26 21:51:50,222 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'TOGGLE_WRITE_LOCK_SUCCESS// - '
+2023-03-26 21:51:50,321 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51440>: 'CLOSE_LAST_SERVER// - '
+2023-03-26 21:51:50,321 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'CLOSE_LAST_SERVER// -'
+2023-03-26 21:51:50,322 INFO  [Thread-4] Base Connection: CLOSE_LAST_SERVER
+2023-03-26 21:51:50,322 INFO  [Thread-4] KV Server: Closing server!
+2023-03-26 21:51:50,321 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51440>: 'TOGGLE_WRITE_LOCK_SUCCESS// -'
+2023-03-26 21:51:50,323 INFO  [Thread-3] Base Connection: TOGGLE_WRITE_LOCK_SUCCESS
+2023-03-26 21:54:41,782 INFO  [Thread-0] ECS Client: Initialize server ...
+2023-03-26 21:54:41,788 INFO  [Thread-0] ECS Client: ECS Client listening on port: 51000
+2023-03-26 21:54:41,788 INFO  [Thread-0] ECS Client: opening connection
+2023-03-26 21:54:42,827 INFO  [Thread-1] KV Server: Initialize server ...
+2023-03-26 21:54:42,845 INFO  [Thread-0] ECS Client: Connected to localhost on port 51468
+2023-03-26 21:54:42,845 INFO  [Thread-0] ECS Client: opening connection
+2023-03-26 21:54:42,858 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51468>: 'MESSAGE// -Connection to process established /127.0.0.1 51000'
+2023-03-26 21:54:42,941 INFO  [Thread-1] KV Server: Server listening on port: 50000
+2023-03-26 21:54:42,941 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'MESSAGE// -Connection to process established /127.0.0.1 51468'
+2023-03-26 21:54:42,942 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:42,942 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51468>: 'MESSAGE// -Connection to process established /127.0.0.1 51468'
+2023-03-26 21:54:42,942 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'NEW_SERVER// -localhost:50000'
+2023-03-26 21:54:42,943 INFO  [Thread-3] Base Connection: MESSAGE
+2023-03-26 21:54:42,943 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'MESSAGE// -Connection to process established /127.0.0.1 51000'
+2023-03-26 21:54:42,944 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51468>: 'NEW_SERVER// -localhost:50000'
+2023-03-26 21:54:42,944 INFO  [Thread-3] Base Connection: NEW_SERVER
+2023-03-26 21:54:42,944 INFO  [Thread-4] Base Connection: MESSAGE
+2023-03-26 21:54:42,953 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51468>: 'UPDATE_METADATA// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:42,953 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'UPDATE_METADATA// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:42,953 INFO  [Thread-4] Base Connection: UPDATE_METADATA
+2023-03-26 21:54:42,953 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51468>: 'START_SERVER// - '
+2023-03-26 21:54:42,961 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'START_SERVER// -'
+2023-03-26 21:54:42,965 INFO  [Thread-4] Base Connection: START_SERVER
+2023-03-26 21:54:42,967 INFO  [Thread-3] Base Connection: Updating prev metadata for localhost:50000. The node being added is localhost:50000
+2023-03-26 21:54:49,054 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,055 INFO  [Thread-8] KVStore: starting the KVStore
+2023-03-26 21:54:49,059 INFO  [Thread-8] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,059 INFO  [Thread-1] KV Server: Connected to localhost on port 53212
+2023-03-26 21:54:49,060 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,060 INFO  [Thread-8] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,059 INFO  [Thread-9] Base Connection: SEND 	<127.0.0.1:53212>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,061 INFO  [Thread-9] Base Connection: RECEIVE 	<127.0.0.1:53212>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,061 INFO  [Thread-9] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,062 INFO  [Thread-9] Base Connection: SEND 	<127.0.0.1:53212>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,062 INFO  [Thread-8] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,156 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,157 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53214>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,156 INFO  [Thread-1] KV Server: Connected to localhost on port 53214
+2023-03-26 21:54:49,158 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,157 INFO  [Thread-10] KVStore: starting the KVStore
+2023-03-26 21:54:49,161 INFO  [Thread-10] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,161 INFO  [Thread-11] Base Connection: RECEIVE 	<127.0.0.1:53214>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,162 INFO  [Thread-11] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,163 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53214>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,162 INFO  [Thread-10] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,164 INFO  [Thread-10] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,257 INFO  [main] KVStore: Send message:	 'PUT//foo2-bar2'
+2023-03-26 21:54:49,257 INFO  [Thread-11] Base Connection: RECEIVE 	<127.0.0.1:53214>: 'PUT//foo2-bar2'
+2023-03-26 21:54:49,259 INFO  [Thread-11] Base Connection: PUT
+2023-03-26 21:54:49,261 INFO  [Thread-11] Base Connection: foo2bar2
+2023-03-26 21:54:49,262 INFO  [Thread-11] Base Connection: updating replicas
+2023-03-26 21:54:49,262 INFO  [Thread-11] Base Connection: SEND 	<127.0.0.1:53214>: 'PUT_SUCCESS//foo2-bar2'
+2023-03-26 21:54:49,262 INFO  [Thread-10] KVStore: Receive message:	 'PUT_SUCCESS//foo2-bar2'
+2023-03-26 21:54:49,264 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,264 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,265 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,265 INFO  [Thread-11] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,266 INFO  [Thread-1] KV Server: Connected to localhost on port 53216
+2023-03-26 21:54:49,267 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,266 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,266 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53216>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,268 INFO  [Thread-12] KVStore: starting the KVStore
+2023-03-26 21:54:49,271 INFO  [Thread-12] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,271 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53216>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,273 INFO  [Thread-13] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,272 INFO  [Thread-12] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,273 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53216>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,274 INFO  [Thread-12] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,368 INFO  [main] KVStore: Send message:	 'PUT//updateTestValue-initial'
+2023-03-26 21:54:49,368 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53216>: 'PUT//updateTestValue-initial'
+2023-03-26 21:54:49,370 INFO  [Thread-13] Base Connection: PUT
+2023-03-26 21:54:49,371 INFO  [Thread-13] Base Connection: updateTestValueinitial
+2023-03-26 21:54:49,372 INFO  [Thread-13] Base Connection: updating replicas
+2023-03-26 21:54:49,372 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53216>: 'PUT_SUCCESS//updateTestValue-initial'
+2023-03-26 21:54:49,372 INFO  [Thread-12] KVStore: Receive message:	 'PUT_SUCCESS//updateTestValue-initial'
+2023-03-26 21:54:49,373 INFO  [main] KVStore: Send message:	 'PUT//updateTestValue-updated'
+2023-03-26 21:54:49,373 INFO  [Thread-13] Base Connection: RECEIVE 	<127.0.0.1:53216>: 'PUT//updateTestValue-updated'
+2023-03-26 21:54:49,374 INFO  [Thread-13] Base Connection: PUT
+2023-03-26 21:54:49,375 INFO  [Thread-13] Base Connection: updateTestValueupdated
+2023-03-26 21:54:49,376 INFO  [Thread-13] Base Connection: updating replicas
+2023-03-26 21:54:49,376 INFO  [Thread-13] Base Connection: SEND 	<127.0.0.1:53216>: 'PUT_UPDATE//updateTestValue-updated'
+2023-03-26 21:54:49,376 INFO  [Thread-12] KVStore: Receive message:	 'PUT_UPDATE//updateTestValue-updated'
+2023-03-26 21:54:49,377 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,378 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,378 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,378 INFO  [Thread-13] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,379 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,379 INFO  [Thread-1] KV Server: Connected to localhost on port 53218
+2023-03-26 21:54:49,379 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,379 INFO  [Thread-14] KVStore: starting the KVStore
+2023-03-26 21:54:49,379 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53218>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,381 INFO  [Thread-14] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,381 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53218>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,381 INFO  [Thread-15] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,381 INFO  [Thread-14] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,382 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53218>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,382 INFO  [Thread-14] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,480 INFO  [main] KVStore: Send message:	 'PUT//deleteTestValue-toDelete'
+2023-03-26 21:54:49,480 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53218>: 'PUT//deleteTestValue-toDelete'
+2023-03-26 21:54:49,481 INFO  [Thread-15] Base Connection: PUT
+2023-03-26 21:54:49,483 INFO  [Thread-15] Base Connection: deleteTestValuetoDelete
+2023-03-26 21:54:49,484 INFO  [Thread-15] Base Connection: updating replicas
+2023-03-26 21:54:49,484 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53218>: 'PUT_SUCCESS//deleteTestValue-toDelete'
+2023-03-26 21:54:49,484 INFO  [Thread-14] KVStore: Receive message:	 'PUT_SUCCESS//deleteTestValue-toDelete'
+2023-03-26 21:54:49,486 INFO  [main] KVStore: Send message:	 'DELETE//deleteTestValue-null'
+2023-03-26 21:54:49,486 INFO  [Thread-15] Base Connection: RECEIVE 	<127.0.0.1:53218>: 'DELETE//deleteTestValue-null'
+2023-03-26 21:54:49,487 INFO  [Thread-15] Base Connection: DELETE
+2023-03-26 21:54:49,488 DEBUG [Thread-15] KV Server: Deleting key value for key
+2023-03-26 21:54:49,489 DEBUG [Thread-15] KV Server: Trying to delete
+2023-03-26 21:54:49,489 INFO  [Thread-15] Base Connection: deleteTestValuenull
+2023-03-26 21:54:49,490 INFO  [Thread-15] Base Connection: updating replicas
+2023-03-26 21:54:49,490 INFO  [Thread-15] Base Connection: SEND 	<127.0.0.1:53218>: 'DELETE_SUCCESS//deleteTestValue-null'
+2023-03-26 21:54:49,490 INFO  [Thread-14] KVStore: Receive message:	 'DELETE_SUCCESS//deleteTestValue-null'
+2023-03-26 21:54:49,492 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,493 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,493 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,493 INFO  [Thread-15] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,494 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,494 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53220>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,494 INFO  [Thread-1] KV Server: Connected to localhost on port 53220
+2023-03-26 21:54:49,496 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,495 INFO  [Thread-16] KVStore: starting the KVStore
+2023-03-26 21:54:49,497 INFO  [Thread-16] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,497 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53220>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,498 INFO  [Thread-17] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,498 INFO  [Thread-16] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,498 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53220>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,498 INFO  [Thread-16] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,595 INFO  [main] KVStore: Send message:	 'PUT//foo-bar'
+2023-03-26 21:54:49,595 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53220>: 'PUT//foo-bar'
+2023-03-26 21:54:49,597 INFO  [Thread-17] Base Connection: PUT
+2023-03-26 21:54:49,598 INFO  [Thread-17] Base Connection: foobar
+2023-03-26 21:54:49,599 INFO  [Thread-17] Base Connection: updating replicas
+2023-03-26 21:54:49,599 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53220>: 'PUT_SUCCESS//foo-bar'
+2023-03-26 21:54:49,600 INFO  [Thread-16] KVStore: Receive message:	 'PUT_SUCCESS//foo-bar'
+2023-03-26 21:54:49,601 INFO  [main] KVStore: Send message:	 'GET//foo- '
+2023-03-26 21:54:49,601 INFO  [Thread-17] Base Connection: RECEIVE 	<127.0.0.1:53220>: 'GET//foo-'
+2023-03-26 21:54:49,602 INFO  [Thread-17] Base Connection: GET
+2023-03-26 21:54:49,603 INFO  [Thread-17] Base Connection: SEND 	<127.0.0.1:53220>: 'GET_SUCCESS//foo-bar'
+2023-03-26 21:54:49,603 INFO  [Thread-16] KVStore: Receive message:	 'GET_SUCCESS//foo-bar'
+2023-03-26 21:54:49,604 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,605 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,605 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,605 INFO  [Thread-17] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,606 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,606 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53222>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,606 INFO  [Thread-1] KV Server: Connected to localhost on port 53222
+2023-03-26 21:54:49,608 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,607 INFO  [Thread-18] KVStore: starting the KVStore
+2023-03-26 21:54:49,610 INFO  [Thread-18] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,610 INFO  [Thread-19] Base Connection: RECEIVE 	<127.0.0.1:53222>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,611 INFO  [Thread-19] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,610 INFO  [Thread-18] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,611 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53222>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,611 INFO  [Thread-18] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,708 INFO  [main] KVStore: Send message:	 'GET//an unset value- '
+2023-03-26 21:54:49,708 INFO  [Thread-19] Base Connection: RECEIVE 	<127.0.0.1:53222>: 'GET//an unset value-'
+2023-03-26 21:54:49,709 INFO  [Thread-19] Base Connection: GET
+2023-03-26 21:54:49,710 INFO  [Thread-19] Base Connection: SEND 	<127.0.0.1:53222>: 'GET_ERROR//an unset value- '
+2023-03-26 21:54:49,710 INFO  [Thread-18] KVStore: Receive message:	 'GET_ERROR//an unset value- '
+2023-03-26 21:54:49,711 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,711 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,711 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,711 INFO  [Thread-19] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,712 INFO  [main] KVStore: Connection established
+2023-03-26 21:54:49,712 INFO  [Thread-1] KV Server: Connected to localhost on port 53224
+2023-03-26 21:54:49,713 INFO  [Thread-1] KV Server: opening connection
+2023-03-26 21:54:49,713 INFO  [Thread-21] Base Connection: SEND 	<127.0.0.1:53224>: 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,713 INFO  [Thread-20] KVStore: starting the KVStore
+2023-03-26 21:54:49,715 INFO  [Thread-20] KVStore: Send message:	 'GET_KEYRANGE// - '
+2023-03-26 21:54:49,716 INFO  [Thread-21] Base Connection: RECEIVE 	<127.0.0.1:53224>: 'GET_KEYRANGE// -'
+2023-03-26 21:54:49,716 INFO  [Thread-21] Base Connection: GET_KEYRANGE
+2023-03-26 21:54:49,716 INFO  [Thread-20] KVStore: Receive message:	 'MESSAGE// -Connection to process established /127.0.0.1 50000'
+2023-03-26 21:54:49,716 INFO  [Thread-21] Base Connection: SEND 	<127.0.0.1:53224>: 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,717 INFO  [Thread-20] KVStore: Receive message:	 'GET_KEYRANGE_SUCCESS// -2B786438D2C6425DC30DE0077EA6494D,2B786438D2C6425DC30DE0077EA6494D,localhost:50000;'
+2023-03-26 21:54:49,813 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,814 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,814 INFO  [main] KVStore: connection closed!
+2023-03-26 21:54:49,814 INFO  [Thread-21] Base Connection: Socket is null. Closing connection
+2023-03-26 21:54:49,815 INFO  [main] KVStore: try to close connection ...
+2023-03-26 21:54:49,816 INFO  [main] KVStore: tearing down the connection ...
+2023-03-26 21:54:49,818 INFO  [Thread-22] KV Server: Initialize server ...
+2023-03-26 21:54:49,820 INFO  [Thread-24] KV Server: Initialize server ...
+2023-03-26 21:54:49,820 ERROR [Thread-24] KV Server: Error! Cannot open server socket:
+2023-03-26 21:54:49,821 ERROR [Thread-24] KV Server: Port 7000 is already bound!
+2023-03-26 21:54:51,821 INFO  [Thread-27] KV Server: Initialize server ...
+2023-03-26 21:54:51,822 ERROR [Thread-27] KV Server: Error! Cannot open server socket:
+2023-03-26 21:54:51,822 ERROR [Thread-27] KV Server: Port 7000 is already bound!
+2023-03-26 21:54:51,871 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51468>: 'SERVER_SHUTDOWN// -localhost:50000'
+2023-03-26 21:54:51,874 INFO  [Thread-3] Base Connection: SERVER_SHUTDOWN
+2023-03-26 21:54:51,873 INFO  [Thread-5] Base Connection: SEND 	<127.0.0.1:51000>: 'SERVER_SHUTDOWN// -localhost:50000'
+2023-03-26 21:54:51,875 INFO  [Thread-3] Base Connection: Deleting server with address localhost:50000
+2023-03-26 21:54:51,876 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51468>: 'TOGGLE_WRITE_LOCK// - '
+2023-03-26 21:54:51,876 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'TOGGLE_WRITE_LOCK// -'
+2023-03-26 21:54:51,877 INFO  [Thread-4] Base Connection: TOGGLE_WRITE_LOCK
+2023-03-26 21:54:51,877 INFO  [Thread-4] Base Connection: SEND 	<127.0.0.1:51000>: 'TOGGLE_WRITE_LOCK_SUCCESS// - '
+2023-03-26 21:54:51,976 INFO  [Thread-3] Base Connection: SEND 	<127.0.0.1:51468>: 'CLOSE_LAST_SERVER// - '
+2023-03-26 21:54:51,976 INFO  [Thread-4] Base Connection: RECEIVE 	<127.0.0.1:51000>: 'CLOSE_LAST_SERVER// -'
+2023-03-26 21:54:51,978 INFO  [Thread-4] Base Connection: CLOSE_LAST_SERVER
+2023-03-26 21:54:51,977 INFO  [Thread-3] Base Connection: RECEIVE 	<127.0.0.1:51468>: 'TOGGLE_WRITE_LOCK_SUCCESS// -'
+2023-03-26 21:54:51,978 INFO  [Thread-4] KV Server: Closing server!
+2023-03-26 21:54:51,979 INFO  [Thread-3] Base Connection: TOGGLE_WRITE_LOCK_SUCCESS
