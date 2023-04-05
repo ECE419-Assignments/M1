@@ -39,6 +39,7 @@ public class ECSClient extends Thread implements IECSClient {
     private int port;
 
     public Set<ServerConnection> serverConnections;
+    public Set<ServerConnection> backupEcsConnections;
 
     public void close() {
         logger.info("Closing ECS Server!");
@@ -226,6 +227,14 @@ public class ECSClient extends Thread implements IECSClient {
         }
     }
 
+    public void addServerConnection(ServerConnection connection) {
+        serverConnections.add(connection);
+    }
+
+    public void addBackupEcsConnection(ServerConnection connection) {
+        backupEcsConnections.add(connection);
+    }
+
     public void run() {
         running = initializeECSClient();
 
@@ -235,7 +244,6 @@ public class ECSClient extends Thread implements IECSClient {
                     logger.info("opening connection");
                     Socket server = serverSocket.accept();
                     ServerConnection connection = new ServerConnection(this, server);
-                    serverConnections.add(connection);
                     new Thread(connection).start();
 
                     logger.info("Connected to "

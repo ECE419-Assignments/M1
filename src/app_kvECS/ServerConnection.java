@@ -45,6 +45,10 @@ public class ServerConnection extends BaseConnection {
         this.ecsClient.serverConnections.remove(this);
     }
 
+    public void sendUpdateMetadataMessage() throws IOException {
+        this.sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
+    }
+
     @Override()
     public void processMessage(KVM message) throws IOException {
         StatusType status = message.getStatus();
@@ -58,7 +62,12 @@ public class ServerConnection extends BaseConnection {
         boolean sendResponse = false;
 
         try {
+            if (status.equals(StatusType.NEW_ECS)) {
+                this.ecsClient.addBackupEcsConnection(this);
+                sendUpdateMetadataMessage();
+            }
             if (status.equals(StatusType.NEW_SERVER)) {
+                this.ecsClient.addServerConnection(this);
                 address = value;
                 this.ecsClient.kvMetadata.addServer(value);
                 this.sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
