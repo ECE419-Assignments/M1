@@ -54,15 +54,16 @@ public class KVStore extends Thread implements KVCommInterface {
 			this.output = this.clientSocket.getOutputStream();
 			this.input = this.clientSocket.getInputStream();
 			sendMessage(new KVM(StatusType.GET_KEYRANGE, "", ""));
-			logger.info("this is thread-0");
 			while (isRunning()) {
-				while(this.stop){this.wait=false;System.out.println("stopped");}
+				while (this.stop) {
+					this.wait = false;
+				}
 				try {
 					KVM message = receiveMessage();
-					if (message == null){
-						latestMsg = message;
+					if (message == null) {
 						continue;
 					}
+					latestMsg = message;
 					if (latestMsg.getStatus().equals(StatusType.GET_KEYRANGE_SUCCESS)) {
 						metadata.createServerTree(latestMsg.getValue());
 					}
@@ -106,11 +107,11 @@ public class KVStore extends Thread implements KVCommInterface {
 	}
 
 	public void newConnection(String address, int port) {
-		try{
-			logger.info("this is main");
-			this.stop=true;
+		try {
+			this.stop = true;
 			this.wait = true;
-			while(this.wait){}
+			while (this.wait) {
+			}
 			logger.info("tearing down the connection ...");
 			input.close();
 			output.close();
@@ -118,15 +119,15 @@ public class KVStore extends Thread implements KVCommInterface {
 			this.clientSocket = new Socket(address, port);
 			this.output = this.clientSocket.getOutputStream();
 			this.input = this.clientSocket.getInputStream();
-			this.stop=false;
+			this.stop = false;
 			logger.info("Connection established");
 			try {
 				Thread.sleep(100);
 			} catch (Exception e) {
 			}
-		} catch (UnknownHostException e){
+		} catch (UnknownHostException e) {
 			logger.error("Something went wrong connecting to new server.");
-		} catch (IOException e){
+		} catch (IOException e) {
 			logger.error("RUH ROH RAGGY");
 		}
 
@@ -181,10 +182,10 @@ public class KVStore extends Thread implements KVCommInterface {
 		boolean reading;
 
 		/* read first char from stream */
-		if (input.available() != 0){
+		if (input.available() != 0) {
 			read = (byte) input.read();
-			reading = true;	
-		} else{
+			reading = true;
+		} else {
 			return null;
 		}
 
@@ -265,9 +266,10 @@ public class KVStore extends Thread implements KVCommInterface {
 			status = StatusType.DELETE;
 		}
 		sendMessage(new KVM(status, key, value));
-
+		logger.info("msg");
 		KVM message = getNextMsg();
 		status = message.getStatus();
+		logger.info("after_msg");
 
 		if (status == StatusType.SERVER_NOT_RESPONSIBLE) {
 			this.getKeyrange();
