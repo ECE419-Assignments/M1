@@ -2,6 +2,7 @@ package app_kvServer;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,6 +28,79 @@ public class ECSConnection extends BaseConnection {
     public void postStart() throws IOException {
         sendMessage(new KVM(StatusType.NEW_SERVER, " ",
                 String.format("%s:%s", kvServer.getHostname(), kvServer.getPort())));
+    }
+
+    @Override()
+    public void postClosed() {
+        System.out.println("post closed socket");
+        if (!this.kvServer.backupEcsAddress.isBlank()) {
+            System.out.println("closed socket if");
+            try {
+                String host = misc.getHostFromAddress(this.kvServer.backupEcsAddress);
+                int port = misc.getPortFromAddress(this.kvServer.backupEcsAddress);
+                System.out.println("opening socket");
+                this.socket = new Socket(host, port);
+                this.isOpen = true;
+                System.out.println("running again");
+                this.connectToBackupEcs();
+            } catch (Exception e) {
+                this.run();
+            }
+        }
+    }
+
+    public void connectToBackupEcs() {
+        try {
+            output = socket.getOutputStream();
+            input = socket.getInputStream();
+
+            // TODO: CHANGE FROM EMPTY SPACE TO SOMETHING ELSE
+            sendMessage(new KVM(StatusType.MESSAGE, " ",
+                    "Connection to process established "
+                            + socket.getLocalAddress() + " "
+                            + socket.getLocalPort()));
+
+            sendMessage(new KVM(StatusType.NEW_SERVER_CONNECTING_TO_BACKUP_ECS, "",
+                    String.format("%s:%s", kvServer.getHostname(), kvServer.getPort())));
+
+            // TODO: More informative logs on server side.
+            while (isOpen) {
+                try {
+                    KVM latestMsg = receiveMessage();
+                    this.processMessage(latestMsg);
+                } catch (SocketException e) {
+                    logger.info("Server disconnected!");
+                    isOpen = false;
+                } catch (IOException ioe) {
+                    logger.error("Error! Connection lost!", ioe);
+                    isOpen = false;
+                } catch (NumberFormatException e) {
+                    isOpen = false;
+                } catch (Exception e) {
+                    logger.error("Error! Connection lost!", e);
+                    isOpen = false;
+                }
+            }
+
+        } catch (IOException ioe) {
+            logger.error("Error! Connection could not be established!");
+
+        } finally {
+
+            try {
+                if (socket != null) {
+                    logger.info("Socket is null. Closing connection");
+
+                    input.close();
+                    output.close();
+                    socket.close();
+
+                    postClosed();
+                }
+            } catch (IOException ioe) {
+                logger.error("Error! Unable to tear down connection!");
+            }
+        }
     }
 
     public void serverShuttingDown() throws IOException {
@@ -66,6 +140,8 @@ public class ECSConnection extends BaseConnection {
             } else if (status.equals(StatusType.CLOSE_LAST_SERVER)) {
                 this.kvServer.close();
                 this.close();
+            } else if (status.equals(StatusType.SET_BACKUP_ECS_ADDRESS)) {
+                this.kvServer.setBackupECSAddress(value);
             } else if (status.equals(StatusType.UPDATE_METADATA)) {
                 this.kvServer.metadata.createServerTree(value);
             } else if (status.equals(StatusType.SEND_ALL_DATA_TO_PREV)) {

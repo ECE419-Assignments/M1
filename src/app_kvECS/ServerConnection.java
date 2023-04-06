@@ -27,10 +27,10 @@ public class ServerConnection extends BaseConnection {
     public void postClosed() {
         logger.info(String.format("Deleting server with address %s", this.address));
 
-        ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(this.address);
-        logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
-                prevNode.getNodeAddress(), this.address));
         try {
+            ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(this.address);
+            logger.info(String.format("Updating prev metadata for %s. The node being deleted is %s",
+                    prevNode.getNodeAddress(), this.address));
             ServerConnection prevConnection = this.ecsClient
                     .getServerConnectionWithAddress(prevNode.getNodeAddress());
             prevConnection.sendMessage(new KVM(StatusType.MOVE_REPLICA_TO_MAIN_CACHE, "", this.address));
@@ -40,9 +40,22 @@ public class ServerConnection extends BaseConnection {
                     e);
         }
 
-        this.ecsClient.kvMetadata.deleteServer(this.address);
+        try {
+            this.ecsClient.updateBackupEcsMetadata();
+        } catch (Exception e) {
+            System.out.println("error updating backup ecs");
+        }
+        try {
+            this.ecsClient.kvMetadata.deleteServer(this.address);
+        } catch (Exception e) {
+            System.out.println("Connection already closed");
+        }
         this.close();
         this.ecsClient.serverConnections.remove(this);
+    }
+
+    public void sendUpdateMetadataMessage() throws IOException {
+        this.sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
     }
 
     @Override()
@@ -58,19 +71,32 @@ public class ServerConnection extends BaseConnection {
         boolean sendResponse = false;
 
         try {
-            if (status.equals(StatusType.NEW_SERVER)) {
+            if (status.equals(StatusType.NEW_ECS)) {
+                address = value;
+                this.ecsClient.addBackupEcsConnection(this);
+                sendUpdateMetadataMessage();
+                this.ecsClient.sendUpdateAllServerBackupEcsAddresses();
+            } else if (status.equals(StatusType.NEW_SERVER_CONNECTING_TO_BACKUP_ECS)) {
+                this.ecsClient.addServerConnection(this);
+                address = value;
+            } else if (status.equals(StatusType.NEW_SERVER)) {
+                this.ecsClient.addServerConnection(this);
                 address = value;
                 this.ecsClient.kvMetadata.addServer(value);
+                if (this.ecsClient.backupEcsConnection != null) {
+                    this.sendMessage(
+                            new KVM(StatusType.SET_BACKUP_ECS_ADDRESS, "", this.ecsClient.backupEcsConnection.address));
+                }
                 this.sendMessage(new KVM(StatusType.UPDATE_METADATA, " ", this.ecsClient.kvMetadata.getKeyRange()));
 
                 this.sendMessage(new KVM(StatusType.START_SERVER, " ", ""));
 
                 // This should be in the if statement I think
-                ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
-                logger.info(String.format("Updating prev metadata for %s. The node being added is %s",
-                        prevNode.getNodeAddress(), value));
 
                 if (this.ecsClient.kvMetadata.getCountServers() != 1) {
+                    ECSNode prevNode = this.ecsClient.kvMetadata.getSuccesorNode(value);
+                    logger.info(String.format("Updating prev metadata for %s. The node being added is %s",
+                            prevNode.getNodeAddress(), value));
                     ServerConnection prevConnection = this.ecsClient
                             .getServerConnectionWithAddress(prevNode.getNodeAddress());
 
@@ -78,6 +104,9 @@ public class ServerConnection extends BaseConnection {
                     Thread.sleep(500);
                     prevConnection.sendMessage(new KVM(StatusType.SEND_FILTERED_DATA_TO_NEXT,
                             this.ecsClient.kvMetadata.getKeyRange(), this.address));
+                } else {
+                    logger.info("Updating ecs metadata");
+                    this.ecsClient.updateBackupEcsMetadata();
                 }
             } else if (status.equals(StatusType.SERVER_SHUTDOWN)) {
                 logger.info(String.format("Deleting server with address %s", value));
@@ -101,6 +130,7 @@ public class ServerConnection extends BaseConnection {
                 }
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_NEW)) {
                 this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateBackupEcsMetadata();
                 this.ecsClient.updateAllServerReplicas();
                 sendResponse = false;
                 Thread.sleep(10);
@@ -109,10 +139,12 @@ public class ServerConnection extends BaseConnection {
                     || status.equals(StatusType.MOVE_REPLICA_TO_MAIN_CACHE_FAIL)) {
                 Thread.sleep(50);
                 this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateBackupEcsMetadata();
                 this.ecsClient.updateAllServerReplicas();
                 Thread.sleep(50);
             } else if (status.equals(StatusType.DATA_MOVED_CONFIRMATION_SHUTDOWN)) {
                 this.ecsClient.updateAllServerMetadatas();
+                this.ecsClient.updateBackupEcsMetadata();
                 this.ecsClient.updateAllServerReplicas();
                 sendResponse = false;
                 this.close();
