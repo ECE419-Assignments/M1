@@ -37,9 +37,12 @@ public class ECSClient extends Thread implements IECSClient {
     private boolean running;
     private ServerSocket serverSocket;
     private int port;
+    private String primeEcsAddress;
 
     public Set<ServerConnection> serverConnections;
-    public Set<ServerConnection> backupEcsConnections;
+    public ServerConnection backupEcsConnection;
+
+    ECSToECSConnection primeEcsConnection;
 
     public void close() {
         logger.info("Closing ECS Server!");
@@ -47,44 +50,32 @@ public class ECSClient extends Thread implements IECSClient {
         System.exit(0);
     }
 
-    public ECSClient(int port) {
+    public ECSClient(int port, String primeEcsAddress, boolean isBackup) {
         this.port = port;
+        this.primeEcsAddress = primeEcsAddress;
         try {
             serverConnections = new HashSet<ServerConnection>();
             new LogSetup("logs/ecs.log", Level.ALL);
         } catch (IOException e) {
             System.out.println("error setting sup ecs logger");
         }
+        // if (!isBackup) {
+        // new ECSClient(port + 1, String.format("localhost:%d", port), true);
+        // }
         this.start();
     }
 
-    // @Override
-    // public boolean start() {
-    // // try {
-    // // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-    // // ECSNode server = server_entry.getValue();
-    // // server.startServer();
-    // // }
-    // // } catch (Exception e) {
-    // // return false;
-    // // }
-    // // return true;
-    // return false;
-    // }
+    public String getHostname() {
+        return "127.0.0.1";
+    }
 
-    // @Override
-    // public boolean stop() {
-    // // try {
-    // // for (Map.Entry<String, ECSNode> server_entry : server_tree.entrySet()) {
-    // // ECSNode server = server_entry.getValue();
-    // // server.stopServer();
-    // // }
-    // // } catch (Exception e) {
-    // // return false;
-    // // }
-    // // return true;
-    // return false;
-    // }
+    public int getPort() {
+        return this.port;
+    }
+
+    public void switchToPrimeEcs() {
+        this.primeEcsAddress = "";
+    }
 
     @Override
     public boolean shutdown() {
@@ -217,6 +208,22 @@ public class ECSClient extends Thread implements IECSClient {
         }
     }
 
+    public void sendUpdateAllServerBackupEcsAddresses() {
+        System.out.println("updating all server backup ecs addresses");
+        for (ServerConnection connection : serverConnections) {
+            try {
+                System.out.println(this.backupEcsConnection);
+                if (this.backupEcsConnection != null) {
+                    System.out.println("sending the ecs address");
+                    connection.sendMessage(
+                            new KVM(StatusType.SET_BACKUP_ECS_ADDRESS, "", this.backupEcsConnection.address));
+                }
+            } catch (Exception e) {
+                System.out.println("Error in update all server metadatas");
+            }
+        }
+    }
+
     public void updateAllServerReplicas() {
         for (ServerConnection connection : serverConnections) {
             try {
@@ -232,7 +239,14 @@ public class ECSClient extends Thread implements IECSClient {
     }
 
     public void addBackupEcsConnection(ServerConnection connection) {
-        backupEcsConnections.add(connection);
+        backupEcsConnection = connection;
+    }
+
+    public void updateBackupEcsMetadata() throws IOException {
+        if (this.backupEcsConnection != null) {
+            this.backupEcsConnection.sendUpdateMetadataMessage();
+        }
+
     }
 
     public void run() {
@@ -268,11 +282,17 @@ public class ECSClient extends Thread implements IECSClient {
         try {
             serverSocket = new ServerSocket(port);
 
+            // Start ECS Socket
+            if (primeEcsAddress != "") {
+                this.primeEcsConnection = new ECSToECSConnection(this, primeEcsAddress);
+                new Thread(this.primeEcsConnection).start();
+            }
+
             logger.info("ECS Client listening on port: "
                     + serverSocket.getLocalPort());
             return true;
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Error! Cannot open server socket:");
             if (e instanceof BindException) {
                 logger.error("Port " + port + " is already bound!");
@@ -292,12 +312,16 @@ public class ECSClient extends Thread implements IECSClient {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1) {
+        if (args.length != 1 && args.length != 2) {
             System.out.println("Error! Invalid number of arguments!");
-            System.out.println("Usage: ECS <port>!");
+            System.out.println("Usage: ECS <port> <prime ecs address: optional>!");
         }
+        String primeEcsAddress = "";
         int port = Integer.parseInt(args[0]);
-        new ECSClient(port);
+        if (args.length == 2) {
+            primeEcsAddress = args[1];
+        }
+        new ECSClient(port, primeEcsAddress, false);
     }
 
     // Extra for add node

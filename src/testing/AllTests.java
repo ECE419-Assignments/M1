@@ -16,7 +16,7 @@ public class AllTests {
 	static {
 		try {
 			new LogSetup("logs/testing/test.log", Level.ERROR);
-			new ECSClient(51000);
+			new ECSClient(51000, "");
 			Thread.sleep(1000);
 			new KVServer(50000, 10, CacheStrategy.FIFO, "localhost", 51000);
 			Thread.sleep(1000);

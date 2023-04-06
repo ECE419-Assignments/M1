@@ -177,16 +177,25 @@ public class KVMetadata {
 
     // Used for parsing strings received from key range request
     public boolean createServerTree(String key_range) {
+        System.out.println(key_range);
         this.server_tree = new TreeMap<String, ECSNode>();
+
+        if (key_range.isBlank()) {
+            return true;
+        }
 
         String[] tokens = key_range.split(";");
 
         for (String entry : tokens) {
+            System.out.println("0");
+            System.out.println(entry);
             String[] server_def = entry.split(",");
             String[] server_address = server_def[2].split(":");
             String[] hash_range = { server_def[0], server_def[1] };
+            System.out.println("1");
             ECSNode server_node = new ECSNode(server_address[0], Integer.valueOf(server_address[1]));
             server_node.updateNodeHashRanges(hash_range);
+            System.out.println("2");
 
             this.server_tree.put(server_def[0], server_node);
         }

@@ -80,6 +80,7 @@ public class KVServer extends Thread implements IKVServer {
 	private int ecsPort;
 	public volatile KVMetadata metadata;
 	private ECSConnection connectionECS;
+	public String backupEcsAddress;
 
 	protected boolean serverStopped = true;
 
@@ -95,6 +96,11 @@ public class KVServer extends Thread implements IKVServer {
 		this.replicas_caches = new LinkedHashMap<String, Cache>();
 		this.start();
 
+	}
+
+	public void setBackupECSAddress(String address) {
+		this.backupEcsAddress = address;
+		this.ecsPort = misc.getPortFromAddress(address);
 	}
 
 	@Override

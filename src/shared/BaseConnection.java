@@ -15,14 +15,14 @@ public class BaseConnection implements Runnable {
 
     protected Logger logger = Logger.getLogger("Base Connection");
 
-    private boolean isOpen;
-    private static final int BUFFER_SIZE = 1024;
-    private static final int DROP_SIZE = 128 * BUFFER_SIZE;
+    protected boolean isOpen;
+    protected static final int BUFFER_SIZE = 1024;
+    protected static final int DROP_SIZE = 128 * BUFFER_SIZE;
 
-    private Socket socket;
-    private InputStream input;
-    private OutputStream output;
-    private KVM latestMsg;
+    protected Socket socket;
+    protected InputStream input;
+    protected OutputStream output;
+    protected KVM latestMsg;
 
     /**
      * Constructs a new CientConnection object for a given TCP socket.
@@ -35,6 +35,17 @@ public class BaseConnection implements Runnable {
 
     public void postClosed() {
 
+    }
+
+    public BaseConnection(String address) {
+        try {
+            String host = misc.getHostFromAddress(address);
+            int port = misc.getPortFromAddress(address);
+            this.socket = new Socket(host, port);
+            this.isOpen = true;
+        } catch (Exception e) {
+            System.out.println("error connecting to other host and port");
+        }
     }
 
     public BaseConnection(String host, int port) {
@@ -135,7 +146,7 @@ public class BaseConnection implements Runnable {
                 + msg.getMsg() + "'");
     }
 
-    private KVM receiveMessage() throws IOException, Exception {
+    protected KVM receiveMessage() throws IOException, Exception {
 
         int index = 0;
         byte[] msgBytes = null, tmp = null;
