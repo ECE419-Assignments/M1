@@ -1,1 +1,2 @@
-Average Get:1.34217728E8Average Put:2.68435456E8tests
+Average Get:8.5899346E9
+Average Put:1.71798692E10
