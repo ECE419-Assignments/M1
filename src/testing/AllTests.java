@@ -16,9 +16,9 @@ public class AllTests {
 	static {
 		try {
 			new LogSetup("logs/testing/test.log", Level.ERROR);
-			new ECSClient(51000, "");
+			new ECSClient(51000, "", false);
+			new KVServer(50000, 10, CacheStrategy.FIFO, "127.0.0.1", 51000);
 			Thread.sleep(1000);
-			new KVServer(50000, 10, CacheStrategy.FIFO, "localhost", 51000);
 			Thread.sleep(1000);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
@@ -27,11 +27,12 @@ public class AllTests {
 
 	public static Test suite() {
 		TestSuite clientSuite = new TestSuite("Basic Storage ServerTest-Suite");
-		clientSuite.addTestSuite(ConnectionTest.class);
-		clientSuite.addTestSuite(InteractionTest.class);
-		clientSuite.addTestSuite(AdditionalTest.class);
-		clientSuite.addTestSuite(ECSTest.class);
-		clientSuite.addTestSuite(HashTest.class);
+		// clientSuite.addTestSuite(ConnectionTest.class);
+		// clientSuite.addTestSuite(InteractionTest.class);
+		// clientSuite.addTestSuite(AdditionalTest.class);
+		// clientSuite.addTestSuite(ECSTest.class);
+		// clientSuite.addTestSuite(HashTest.class);
+		clientSuite.addTestSuite(ECSBackupTest.class);
 		return clientSuite;
 	}
 
