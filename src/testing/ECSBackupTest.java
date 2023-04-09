@@ -68,6 +68,21 @@ public class ECSBackupTest extends TestCase {
     }
 
     @Test()
+    public void testEcsDeleteKeyrange() {
+        try {
+            String keyrange = server1.metadata.getKeyRange();
+            ecs1.close();
+            Thread.sleep(1000);
+            String keyrange2 = server1.metadata.getKeyRange();
+            assertEquals(keyrange, keyrange2);
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("error");
+            assertEquals(false, true);
+        }
+    }
+
+    @Test()
     public void testEcsDeleteServerAdd() {
         try {
             server1.putKV("hi", "hello");
@@ -108,7 +123,7 @@ public class ECSBackupTest extends TestCase {
     }
 
     @Test()
-    public void testDoubleEcsDelete() {
+    public void testEcsDeleteBackupServerAddress() {
         try {
             server1.putKV("hi", "hello");
             ecs1.close();
@@ -125,4 +140,5 @@ public class ECSBackupTest extends TestCase {
             assertEquals(false, true);
         }
     }
+
 }

@@ -153,7 +153,6 @@ public class ECSConnection extends BaseConnection {
                 ClientConnection connection = createServerConnection(server_address);
 
                 LinkedHashMap<String, String> values = this.kvServer.getAllKeyValues();
-                System.out.println(values);
 
                 if (!(values == null)) {
                     for (Map.Entry<String, String> entry : values.entrySet()) {
