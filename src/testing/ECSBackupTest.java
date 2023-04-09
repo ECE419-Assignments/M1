@@ -99,6 +99,7 @@ public class ECSBackupTest extends TestCase {
             assertEquals(value, "hello");
             server2.deleteKV("hi", false);
             server2.close();
+            ecs3.close();
         } catch (Exception e) {
             System.out.println(e);
             System.out.println("error");

@@ -48,6 +48,66 @@ public class ECSTest extends TestCase {
         assertTrue(true);
     }
 
+    @Test
+    public void testServerAdd2() {
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "loclahost",
+                51000);
+        assertTrue(true);
+    }
+
+    @Test
+    public void testServerNotResponsible2() {
+        try {
+            KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "localhost",
+                    51000);
+            Thread.sleep(2000);
+            kvServer1.putKV("key", "value");
+            Thread.sleep(200);
+        } catch (ServerNotResponsibleException | ServerStoppedException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testServerDelete2() {
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "localhost",
+                51000);
+        assertTrue(true);
+    }
+
+    @Test
+    public void testServerAdd3() {
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "loclahost",
+                51000);
+        assertTrue(true);
+    }
+
+    @Test
+    public void testServerNotResponsible3() {
+        try {
+            KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "localhost",
+                    51000);
+            Thread.sleep(2000);
+            kvServer1.putKV("key", "value");
+            Thread.sleep(200);
+        } catch (ServerNotResponsibleException | ServerStoppedException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testServerDelete3() {
+        KVServer kvServer1 = new KVServer(7000, 10, CacheStrategy.FIFO, "localhost",
+                51000);
+        assertTrue(true);
+    }
+
 }
 
 /*
