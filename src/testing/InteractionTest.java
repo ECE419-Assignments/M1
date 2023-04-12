@@ -18,7 +18,7 @@ public class InteractionTest extends TestCase {
 			System.out.println("Setting up!");
 			kvClient.connect();
 			System.out.println("connected!");
-			// Thread.sleep(500);
+			Thread.sleep(500);
 		} catch (Exception e) {
 			System.out.println("Error setting up");
 			System.out.print(e);

@@ -32,7 +32,6 @@ public class AllTests {
 		clientSuite.addTestSuite(AdditionalTest.class);
 		clientSuite.addTestSuite(ECSTest.class);
 		clientSuite.addTestSuite(HashTest.class);
-		// clientSuite.addTestSuite(ECSBackupTest.class);
 		return clientSuite;
 	}
 
