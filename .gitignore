@@ -2,4 +2,4 @@ bin
 *.jar
 *.MF
 *.log
-.cache/*
+.cache/*/**
